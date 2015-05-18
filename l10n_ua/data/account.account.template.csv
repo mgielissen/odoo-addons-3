@@ -1,0 +1,114 @@
+id,code,name,parent_id/id,user_type/id,type,reconcile
+UA0,0,Компанія,,account.data_account_type_view,View,False
+1,1,Баланс,UA0,account.data_account_type_view,View,False
+10,10,Необоротні активи,1,account.data_account_type_view,View,False
+100,100,Нематеріальні активи,10,account.data_account_type_view,View,False
+1000,1000,Назви брендів,100,account.data_account_type_fixed_assets,Regular,False
+1001,1001,Заголовки та назви видань,100,account.data_account_type_fixed_assets,Regular,False
+1002,1002,Комп’ютерне програмне забезпечення,100,account.data_account_type_fixed_assets,Regular,False
+1003,1003,Ліцензії та привілеї,100,account.data_account_type_fixed_assets,Regular,False
+1004,1004,"Авторські права, патенти, та інші права",100,account.data_account_type_fixed_assets,Regular,False
+1005,1005,Нематеріальні активи на етапі розробки,100,account.data_account_type_fixed_assets,Regular,False
+1009,1009,Амортизація нематеріальних активів,100,account.data_account_type_fixed_assets,Regular,False
+101,101,Основні засоби,10,account.data_account_type_view,View,False
+1010,1010,Земля,101,account.data_account_type_fixed_assets,Regular,False
+1011,1011,Будівлі,101,account.data_account_type_fixed_assets,Regular,False
+1012,1012,Машини та обладнання,101,account.data_account_type_fixed_assets,Regular,False
+1013,1013,Автомобілі,10,account.data_account_type_fixed_assets,Regular,False
+1014,1014,Меблі та приладдя,101,account.data_account_type_fixed_assets,Regular,False
+1015,1015,Офісне обладнання,101,account.data_account_type_fixed_assets,Regular,False
+1019,1019,Амортизація основних засобів,101,account.data_account_type_fixed_assets,Regular,False
+102,102,Гудвіл,10,account.data_account_type_view,View,False
+1020,1020,Гудвіл,102,account.data_account_type_fixed_assets,Regular,False
+103,103,Біологічні активи,10,account.data_account_type_view,View,False
+1030,1030,Біологічні активи,103,account.data_account_type_fixed_assets,Regular,False
+104,104,Інвестиції,10,account.data_account_type_view,View,False
+1040,1040,Інвестиції,104,account.data_account_type_fixed_assets,Regular,False
+11,11,Оборотні активи,1,account.data_account_type_view,View,False
+110,110,Товаро-матеріальні запаси,11,account.data_account_type_view,View,False
+1100,1100,Склад,110,account.data_account_type_current_assets,Regular,True
+1101,1101,Незавершене виробництво,110,account.data_account_type_current_assets,Regular,False
+1102,1102,Готова продукція,110,account.data_account_type_current_assets,Regular,False
+111,111,Грошові кошти та їх еквіваленти,11,account.data_account_type_view,View,False
+1110,1110,Готівка в касі,111,account.data_account_type_cash,Liquidity,True
+1111,1111,Розрахунковий рахунок в банку,111,account.data_account_type_bank,Liquidity,True
+112,112,Дебіторська заборгованість,11,account.data_account_type_view,View,False
+1120,1120,Дебіторська заборгованість за товари та послуги,112,account.data_account_type_receivable,Receivable,True
+113,113,Попередня оплата постачальникам та інші оборонті активи,11,account.data_account_type_view,View,False
+1130,1130,Аванси партнерам,113,account.data_account_type_receivable,Receivable,False
+1131,1131,Інші оборотні активи,113,account.data_account_type_current_assets,Regular,False
+114,114,"Податки, що компенсуються та попередня оплата за податками",11,account.data_account_type_view,View,False
+1140,1140,Аванс по податку на прибуток,114,account.data_account_type_current_assets,Regular,False
+1141,1141,Кошти на електронному рахунку з ПДВ,114,account.data_account_type_current_assets,Regular,False
+1142,1142,Кошти на лицьовому рахунку з ПДВ,114,account.data_account_type_current_assets,Regular,False
+1143,1143,Аванс по ЕСВ,114,account.data_account_type_current_assets,Regular,False
+115,115,Короткострокові фінансові інвестиції,11,account.data_account_type_view,View,False
+1150,1150,Короткострокові фінансові інвестиції,115,account.data_account_type_current_assets,Regular,False
+116,116,Довгострокові інвестиції,11,account.data_account_type_view,View,False
+1160,1160,Довгострокові інвестиції,116,account.data_account_type_current_assets,Regular,False
+117,117,Довгострокова дебіторська заборгованість,11,account.data_account_type_view,View,False
+1170,1170,Довгострокова дебіторська заборгованість,117,account.data_account_type_current_assets,Regular,False
+118,118,Відстрочені податкові активи,11,account.data_account_type_view,View,False
+1180,1180,Відстрочені податкові активи,118,account.data_account_type_current_assets,Regular,False
+12,12,Поточні зобов’язання,1,account.data_account_type_view,View,False
+120,120,Кредиторська заборгованість,12,account.data_account_type_view,View,False
+1200,1200,Кредиторська заборгованість за товари та послуги,120,account.data_account_type_payable,Payable,True
+1201,1201,Кредиторська заборгованість перед іншими партнерами,120,account.data_account_type_payable,Payable,True
+1202,1202,Податок на прибуток,120,account.data_account_type_payable,Payable,True
+1203,1203,ПДВ,120,account.data_account_type_payable,Payable,True
+1204,1204,Податкові зобов’язання по ПДВ,120,account.data_account_type_output_tax,Regular,True
+1205,1205,Податковий кредит по ПДВ,120,account.data_account_type_input_tax,Regular,True
+1206,1206,ПДФО,120,account.data_account_type_payable,Payable,True
+1207,1207,ЄСВ,120,account.data_account_type_payable,Payable,True
+1208,1208,Інші податки,120,account.data_account_type_payable,Payable,True
+1209,1209,Заробітня плата та винагороди,120,account.data_account_type_payable,Payable,True
+121,121,Аванси одержані від покупців та замовників,12,account.data_account_type_view,View,False
+1210,1210,Аванси одержані від покупців та замовників,121,account.data_account_type_payable,Payable,True
+122,122,Інші короткострокові зобов’язання,12,account.data_account_type_view,View,False
+1220,1220,Інші короткострокові зобов’язання,122,account.data_account_type_current_liabilities,Regular,True
+123,123,Короткострокові позики,12,account.data_account_type_view,View,False
+1230,1230,Короткострокові позики,123,account.data_account_type_current_liabilities,Regular,True
+124,124,Короткострокова частка за довгострокові позики,12,account.data_account_type_view,View,False
+1240,1240,Короткострокова частка за довгострокові позики,124,account.data_account_type_current_liabilities,Regular,True
+13,13,Довгострокові зобов’язання,1,account.data_account_type_view,View,False
+130,130,Довгострокові позики,13,account.data_account_type_view,View,False
+1300,1300,Довгострокові позики,130,account.data_account_type_current_liabilities,Regular,False
+1301,1301,Довгострокові кредити,130,account.data_account_type_current_liabilities,Regular,False
+1302,1302,Іпотека,130,account.data_account_type_current_liabilities,Regular,False
+131,131,Відстрочені податкові зобов’язання,13,account.data_account_type_view,View,False
+1310,1310,Відстрочені податкові зобов’язання,131,account.data_account_type_current_liabilities,Regular,False
+132,132,Доходи майбутніх періодів,13,account.data_account_type_view,View,False
+1320,1320,Доходи майбутніх періодів,132,account.data_account_type_current_liabilities,Regular,False
+133,133,Інші довгострокові зобов’язання,13,account.data_account_type_view,View,False
+1330,1330,Інші довгострокові зобов’язання,133,account.data_account_type_current_liabilities,Regular,False
+14,14,Капітал та резерви,1,account.data_account_type_view,View,False
+1400,1400,Статутний капітал,14,account.data_account_type_equity,Regular,False
+1401,1401,Емісійний фонд,14,account.data_account_type_equity,Regular,False
+1402,1402,Вилучений капітал,14,account.data_account_type_equity,Regular,False
+1403,1403,Додатковий оплачений капітал,14,account.data_account_type_equity,Regular,False
+1404,1404,Резерв переоцінки,14,account.data_account_type_equity,Regular,False
+1405,1405,Неоплачений капітал,14,account.data_account_type_equity,Regular,False
+1406,1406,Нерозподілений прибуток (непокритий збиток),14,account.data_account_type_profit_and_loss,Regular,False
+1407,1407,Частка меншості,14,account.data_account_type_equity,Regular,False
+1408,1408,Ефект курсових різниць,14,account.data_account_type_equity,Regular,False
+2,2,Доходи та витарти,UA0,account.data_account_type_view,View,False
+20,20,Операційні доходи,2,account.data_account_type_view,View,False
+2000,2000,Дохід від продажу (категорія № 1),20,account.data_account_type_income,Regular,False
+2001,2001,Дохід від продажу (категорія № 2),20,account.data_account_type_income,Regular,False
+2002,2002,Дохід від продажу (категорія № 3),20,account.data_account_type_income,Regular,False
+2003,2003,Дохід від продажу (категорія № 4),20,account.data_account_type_income,Regular,False
+21,21,Інші доходи,2,account.data_account_type_view,View,False
+2100,2100,Неопераційний дохід,21,account.data_account_type_income,Regular,False
+22,22,Операційні витрати,2,account.data_account_type_view,View,False
+2200,2200,Собівартість продажу (категорія № 1),22,account.data_account_type_expense,Regular,False
+2201,2201,Собівартість продажу (категорія № 2),22,account.data_account_type_expense,Regular,False
+2202,2202,Собівартість продажу (категорія № 3),22,account.data_account_type_expense,Regular,False
+2203,2203,Собівартість продажу (категорія № 4),22,account.data_account_type_expense,Regular,False
+23,23,Адміністративні витрати,2,account.data_account_type_view,View,False
+2300,2300,Адміністративні витрати,23,account.data_account_type_expense,Regular,False
+24,24,Витрати на збут,2,account.data_account_type_view,View,False
+2400,2400,Витрати на збут,24,account.data_account_type_expense,Regular,False
+25,25,Інші витрати,2,account.data_account_type_view,View,False
+2500,2500,Інші витрати,25,account.data_account_type_expense,Regular,False
+26,26,Корпоративні податки,2,account.data_account_type_view,View,False
+2600,2600,Податок на прибуток,26,account.data_account_type_expense,Regular,False
