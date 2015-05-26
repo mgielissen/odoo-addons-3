@@ -1,0 +1,91 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_ua_vat
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-aeaf7ef\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-26 13:37+0000\n"
+"PO-Revision-Date: 2015-05-26 13:37+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ua_vat
+#: model:ir.actions.act_window,help:l10n_ua_vat.customer_tax_invoice_list_action
+msgid "<p class=\"oe_view_nocontent_create\">Create the first customer tax invoice\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">Створіть першу вихідну податкову накладну.\n"
+"                </p>\n"
+"            "
+
+#. module: l10n_ua_vat
+#: model:ir.actions.act_window,help:l10n_ua_vat.supplier_tax_invoice_list_action
+msgid "<p class=\"oe_view_nocontent_create\">Create the first supplier tax invoice\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">Створіть першу вхідну податкову накладну.\n"
+"                </p>\n"
+"            "
+
+#. module: l10n_ua_vat
+#: view:uatax.invoice:l10n_ua_vat.tax_invoice_form_view
+msgid "Tax Invoice Form"
+msgstr "Форма податкової накладної"
+
+#. module: l10n_ua_vat
+#: field:uatax.invoice,create_uid:0
+msgid "Created by"
+msgstr "Створив"
+
+#. module: l10n_ua_vat
+#: field:uatax.invoice,create_date:0
+msgid "Created on"
+msgstr "Дата створення"
+
+#. module: l10n_ua_vat
+#: model:ir.ui.menu,name:l10n_ua_vat.menu_customer_vat_invoices
+msgid "Customer Tax Invoices"
+msgstr "Видані податкові накладні"
+
+#. module: l10n_ua_vat
+#: field:uatax.invoice,id:0
+msgid "ID"
+msgstr "ІД"
+
+#. module: l10n_ua_vat
+#: field:uatax.invoice,write_uid:0
+msgid "Last Updated by"
+msgstr "Востаннє редагував"
+
+#. module: l10n_ua_vat
+#: field:uatax.invoice,write_date:0
+msgid "Last Updated on"
+msgstr "Дата оновлення"
+
+#. module: l10n_ua_vat
+#: model:ir.ui.menu,name:l10n_ua_vat.menu_supplier_vat_invoices
+msgid "Supplier Tax Invoices"
+msgstr "Отримані податкові накладні"
+
+#. module: l10n_ua_vat
+#: model:ir.model,name:l10n_ua_vat.model_uatax_invoice
+msgid "Tax Invoice"
+msgstr "Податкова накладна"
+
+#. module: l10n_ua_vat
+#: model:ir.actions.act_window,name:l10n_ua_vat.customer_tax_invoice_list_action
+#: model:ir.actions.act_window,name:l10n_ua_vat.supplier_tax_invoice_list_action
+msgid "Tax Invoices"
+msgstr "Податкові накладні"
+
+#. module: l10n_ua_vat
+#: field:uatax.invoice,name:0
+msgid "Title"
+msgstr "Назва"
+

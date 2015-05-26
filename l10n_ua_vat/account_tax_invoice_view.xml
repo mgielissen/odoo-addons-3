@@ -2,7 +2,7 @@
 <openerp>
     <data>
       
-	    <record model="ir.ui.view" id="tax_invoice_form_view">
+    <record model="ir.ui.view" id="tax_invoice_form_view">
             <field name="name">taxinvoice.form</field>
             <field name="model">uatax.invoice</field>
             <field name="arch" type="xml">
@@ -16,18 +16,55 @@
             </field>
         </record>
 	
-	<record model="ir.actions.act_window" id="tax_invoice_list_action">
+	<record model="ir.actions.act_window" id="customer_tax_invoice_list_action">
             <field name="name">Tax Invoices</field>
             <field name="res_model">uatax.invoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'default_name':"cust", 'search_default_name':"cust"}</field>
+            <field name="filter" eval="True"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Create the first tax invoice
+                <p class="oe_view_nocontent_create">Create the first customer tax invoice
                 </p>
             </field>
         </record>
 	
-        <menuitem id="menu_customer_vat_invoices" name="Customer VAT Invoices" parent="account.menu_finance_receivables" action="tax_invoice_list_action" sequence="51"/>
-	<menuitem id="menu_supplier_vat_invoices" name="Supplier VAT Invoices" parent="account.menu_finance_payables" action="tax_invoice_list_action" sequence="51"/>
+    <record model="ir.actions.act_window" id="supplier_tax_invoice_list_action">
+            <field name="name">Tax Invoices</field>
+            <field name="res_model">uatax.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'default_name':"supp", 'search_default_name':"supp"}</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Create the first supplier tax invoice
+                </p>
+            </field>
+        </record>
+
+    <menuitem id="menu_customer_vat_invoices"
+            name="Customer Tax Invoices"
+            parent="account.menu_finance_receivables"
+            action="customer_tax_invoice_list_action"
+            sequence="51"/>
+
+    <menuitem id="menu_supplier_vat_invoices"
+            name="Supplier Tax Invoices"
+            parent="account.menu_finance_payables"
+            action="supplier_tax_invoice_list_action"
+            sequence="51"/>
+<!--
+    <record model="ir.ui.view" id="tax_invoice_view_filter">
+            <field name="name">taxinvoice.list.select</field>
+            <field name="model">uatax.invoice</field>
+            <field name="arch" type="xml">
+            <search string="Search Tax Invoices">
+                <field name="name"/>
+            </search>
+            </field>
+        </record>
+-->
     </data>
 </openerp> 
