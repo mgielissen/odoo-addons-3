@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_ua_vat_l10n_ua_vat,l10n_ua_vat.l10n_ua_vat,model_l10n_ua_vat_l10n_ua_vat,,1,0,0,0

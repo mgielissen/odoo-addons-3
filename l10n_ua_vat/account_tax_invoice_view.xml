@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+      
+	    <record model="ir.ui.view" id="tax_invoice_form_view">
+            <field name="name">taxinvoice.form</field>
+            <field name="model">uatax.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Course Form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+	<record model="ir.actions.act_window" id="tax_invoice_list_action">
+            <field name="name">Tax Invoices</field>
+            <field name="res_model">uatax.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Create the first tax invoice
+                </p>
+            </field>
+        </record>
+	
+        <menuitem id="menu_customer_vat_invoices" name="Customer VAT Invoices" parent="account.menu_finance_receivables" action="tax_invoice_list_action" sequence="51"/>
+	<menuitem id="menu_supplier_vat_invoices" name="Supplier VAT Invoices" parent="account.menu_finance_payables" action="tax_invoice_list_action" sequence="51"/>
+    </data>
+</openerp> 
