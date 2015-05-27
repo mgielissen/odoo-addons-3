@@ -1,70 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-      
+    
+    <!-- Form of Tax Invoice -->  
     <record model="ir.ui.view" id="tax_invoice_form_view">
             <field name="name">taxinvoice.form</field>
-            <field name="model">uatax.invoice</field>
+            <field name="model">account.taxinvoice</field>
             <field name="arch" type="xml">
-                <form string="Course Form">
+                <form string="Форма податкової накладної">
                     <sheet>
                         <group>
-                            <field name="name"/>
+                            <field name="date_vyp"/>
                         </group>
                     </sheet>
                 </form>
             </field>
-        </record>
+    </record>
 	
+    <!-- List of Customer Tax Invoices -->
 	<record model="ir.actions.act_window" id="customer_tax_invoice_list_action">
             <field name="name">Tax Invoices</field>
-            <field name="res_model">uatax.invoice</field>
+            <field name="res_model">account.taxinvoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
-            <field name="context">{'default_name':"cust", 'search_default_name':"cust"}</field>
+            <field name="context">{'category':'out_tax_invoice', 'search_default_category':'out_tax_invoice'}</field>
             <field name="filter" eval="True"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Create the first customer tax invoice
+                <p class="oe_view_nocontent_create">Створіть першу вихідну податкову накладну.
                 </p>
             </field>
         </record>
 	
+    <!-- List of Supplier Tax Invoices -->
     <record model="ir.actions.act_window" id="supplier_tax_invoice_list_action">
             <field name="name">Tax Invoices</field>
-            <field name="res_model">uatax.invoice</field>
+            <field name="res_model">account.taxinvoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
-            <field name="context">{'default_name':"supp", 'search_default_name':"supp"}</field>
+            <field name="context">{'category':'in_tax_invoice', 'search_default_category':'in_tax_invoice'}</field>
             <field name="filter" eval="True"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Create the first supplier tax invoice
+                <p class="oe_view_nocontent_create">Створіть першу вхідну податкову накладну.
                 </p>
             </field>
         </record>
 
+    <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_customer_vat_invoices"
-            name="Customer Tax Invoices"
+            name="Видані ПН"
             parent="account.menu_finance_receivables"
             action="customer_tax_invoice_list_action"
             sequence="51"/>
 
+    <!-- Menu entry Supplier Tax Invoices -->
     <menuitem id="menu_supplier_vat_invoices"
-            name="Supplier Tax Invoices"
+            name="Отримані ПН"
             parent="account.menu_finance_payables"
             action="supplier_tax_invoice_list_action"
             sequence="51"/>
-<!--
+
+    <!--Add search by Category  -->
     <record model="ir.ui.view" id="tax_invoice_view_filter">
             <field name="name">taxinvoice.list.select</field>
-            <field name="model">uatax.invoice</field>
+            <field name="model">account.taxinvoice</field>
             <field name="arch" type="xml">
-            <search string="Search Tax Invoices">
-                <field name="name"/>
+            <search string="Пошук за категорією">
+                <field name="category"/>
             </search>
             </field>
         </record>
--->
+
     </data>
 </openerp> 
