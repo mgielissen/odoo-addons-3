@@ -27,6 +27,8 @@
         # 'security/ir.model.access.csv',
         'templates.xml',
         'account_tax_invoice_view.xml',
+        'account_spr_sti_view.xml',
+        'company_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -11,6 +11,12 @@
                     <sheet>
                         <group>
                             <field name="date_vyp"/>
+                            <field name="date_reg"/>
+                            <field name="number"/>
+                            <field name="number1"/>
+                            <field name="number2"/>
+                            <field name="category"/>
+                            <field name="doc_type"/>
                         </group>
                     </sheet>
                 </form>
@@ -19,7 +25,7 @@
 	
     <!-- List of Customer Tax Invoices -->
 	<record model="ir.actions.act_window" id="customer_tax_invoice_list_action">
-            <field name="name">Tax Invoices</field>
+            <field name="name">Видані податкові накладні</field>
             <field name="res_model">account.taxinvoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -30,11 +36,11 @@
                 <p class="oe_view_nocontent_create">Створіть першу вихідну податкову накладну.
                 </p>
             </field>
-        </record>
+    </record>
 	
     <!-- List of Supplier Tax Invoices -->
     <record model="ir.actions.act_window" id="supplier_tax_invoice_list_action">
-            <field name="name">Tax Invoices</field>
+            <field name="name">Отримані податкові накладні</field>
             <field name="res_model">account.taxinvoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -45,7 +51,7 @@
                 <p class="oe_view_nocontent_create">Створіть першу вхідну податкову накладну.
                 </p>
             </field>
-        </record>
+    </record>
 
     <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_customer_vat_invoices"
@@ -70,7 +76,7 @@
                 <field name="category"/>
             </search>
             </field>
-        </record>
+    </record>
 
     </data>
 </openerp> 

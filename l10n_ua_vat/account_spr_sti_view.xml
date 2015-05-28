@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    <!-- Form of spr sti -->  
+    <record model="ir.ui.view" id="spr_sti_form_view">
+            <field name="name">sprsti.form</field>
+            <field name="model">account.sprsti</field>
+            <field name="arch" type="xml">
+                <form string="Форма довідника ДПІ">
+                    <sheet>
+                        <group>
+                            <field name="c_sti"/>
+                            <field name="c_raj"/>
+                            <field name="t_sti"/>
+                            <field name="name"/>
+                            <field name="name_raj"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+	
+	<!-- override the automatically generated list view for spr sti -->
+    <record model="ir.ui.view" id="spr_sti_tree_view">
+        <field name="name">sprsti.tree</field>
+        <field name="model">account.sprsti</field>
+        <field name="arch" type="xml">
+            <tree string="Список ДПІ">
+                <field name="name"/>
+                <field name="c_sti"/>
+                <field name="name_raj"/>
+                <field name="c_raj"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- List of spr sti -->
+	<record model="ir.actions.act_window" id="spr_sti_list_action">
+            <field name="name">Довідник ДПІ</field>
+            <field name="res_model">account.sprsti</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'category':'out_tax_invoice', 'search_default_category':'out_tax_invoice'}</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Додайте інформацію про ДПІ.
+                </p>
+            </field>
+        </record>
+
+    <!-- Menu entry Customer Tax Invoices -->
+    <menuitem id="menu_spr_sti"
+            name="Довідник ДПІ"
+            parent="account.menu_configuration_misc"
+            action="spr_sti_list_action"
+            sequence="51"/>
+
+
+    <!--Add search by Category  -->
+    <record model="ir.ui.view" id="spr_sti_view_filter">
+            <field name="name">sprsti.list.select</field>
+            <field name="model">account.sprsti</field>
+            <field name="arch" type="xml">
+            <search string="Пошук ДПІ">
+                <field name="name"/>
+                <field name="c_sti"/>
+                <field name="name_raj"/>
+                <field name="c_raj"/>
+            </search>
+            </field>
+    </record>
+
+    </data>
+</openerp> 
+ 
