@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <form string="Форма довідника ДПІ">
                     <sheet>
-                        <group>
+                        <group string="Детальна інформація про податковий орган">
                             <field name="c_sti"/>
                             <field name="c_raj"/>
                             <field name="t_sti"/>
