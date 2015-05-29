@@ -30,7 +30,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
-            <field name="context">{'category':'out_tax_invoice', 'search_default_category':'out_tax_invoice'}</field>
+            <field name="context">{'default_category':'out_tax_invoice', 'category':'out_tax_invoice', 'search_default_category':'out_tax_invoice'}</field>
             <field name="filter" eval="True"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Створіть першу вихідну податкову накладну.
@@ -45,7 +45,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
-            <field name="context">{'category':'in_tax_invoice', 'search_default_category':'in_tax_invoice'}</field>
+            <field name="context">{'default_category':'in_tax_invoice', 'category':'in_tax_invoice', 'search_default_category':'in_tax_invoice'}</field>
             <field name="filter" eval="True"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Створіть першу вхідну податкову накладну.

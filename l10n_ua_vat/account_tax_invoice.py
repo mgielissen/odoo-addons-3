@@ -20,7 +20,7 @@ class TaxInvoice(models.Model):
         ('out_tax_invoice','Видані ПН'),
         ('in_tax_invoice','Отримані ПН'),
         ], string='Category', readonly=True, index=True, 
-        change_default=True, default='out_tax_invoice', 
+        change_default=True, default=lambda self: self._context.get('category', 'out_tax_invoice'), 
         track_visibility='always')
 
 	doc_type = fields.Selection([
@@ -45,7 +45,7 @@ class TaxInvoice(models.Model):
 		}
 		result = []
 		for inv in self:
-			date = fields.Date.from_string(inv.date_reg)
+			date = fields.Date.from_string(inv.date_vyp)
 			datef = date.strftime('%d.%m.%Y')
 			result.append((inv.id, _("%s № %s від %s") % (TYPES[inv.doc_type], inv.number, datef)))
 		return result
