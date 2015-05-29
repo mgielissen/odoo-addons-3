@@ -7,7 +7,7 @@ class res_partner(osv.osv):
     _inherit = "res.partner"
 
     _columns = {
-        'company_registry' : fields.char('ЕДРПОУ', size=10, help='Код організації в ЕДРПОУ або код в ДРФО для фізичної особи'),
+        'company_registry' : fields.char('EDRPOU', size=10, help='Kod organizacii v EDRPOU abo kod v DRFO dlya fizychnoi osoby'),
     }
 
     def vat_change(self, cr, uid, ids, value, context=None):

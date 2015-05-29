@@ -12,12 +12,12 @@
 			  
 				<label for="company_registry"/>
 				<div name="company_codes">
-					<field name="company_registry" placeholder="ЕДРПОУ або код в ДРФО" />
+					<field name="company_registry" placeholder="EDRPOU abo kod v DRFO" />
 				</div>
 				
 				<label for="vat"/>
 				<div name="vat_info">	
-					<field name="vat" on_change="vat_change(vat)" placeholder="ІПН" class="oe_inline"/>
+					<field name="vat" on_change="vat_change(vat)" placeholder="IPN" class="oe_inline"/>
 					<field name="vat_subjected" class="oe_inline"/>
 				</div>
 				
