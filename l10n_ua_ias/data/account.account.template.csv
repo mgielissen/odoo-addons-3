@@ -30,10 +30,9 @@ UA0,0,Компанія,,account.data_account_type_view,View,False
 1101,1101,Незавершене виробництво,110,account.data_account_type_current_assets,Regular,False
 1102,1102,Готова продукція,110,account.data_account_type_current_assets,Regular,False
 111,111,Грошові кошти та їх еквіваленти,11,account.data_account_type_view,View,False
-1110,1110,Готівка в касі,111,account.data_account_type_cash,Liquidity,True
-1111,1111,Розрахунковий рахунок в банку,111,account.data_account_type_bank,Liquidity,True
 112,112,Дебіторська заборгованість,11,account.data_account_type_view,View,False
 1120,1120,Дебіторська заборгованість за товари та послуги,112,account.data_account_type_receivable,Receivable,True
+1121,1121,Відвантажено зі складу без рахунку-фактури,112,account.data_account_type_current_assets,Regular,True
 113,113,Попередня оплата постачальникам та інші оборонті активи,11,account.data_account_type_view,View,False
 1130,1130,Аванси партнерам,113,account.data_account_type_receivable,Receivable,False
 1131,1131,Інші оборотні активи,113,account.data_account_type_current_assets,Regular,False
@@ -53,7 +52,8 @@ UA0,0,Компанія,,account.data_account_type_view,View,False
 12,12,Поточні зобов’язання,1,account.data_account_type_view,View,False
 120,120,Кредиторська заборгованість,12,account.data_account_type_view,View,False
 1200,1200,Кредиторська заборгованість за товари та послуги,120,account.data_account_type_payable,Payable,True
-1201,1201,Кредиторська заборгованість перед іншими партнерами,120,account.data_account_type_payable,Payable,True
+1201,1201,Отримано на склад без рахунку-фактури,120,account.data_account_type_current_liabilities,Regular,True
+1202,1202,Кредиторська заборгованість перед іншими партнерами,120,account.data_account_type_payable,Payable,True
 1202,1202,Податок на прибуток,120,account.data_account_type_payable,Payable,True
 1203,1203,ПДВ,120,account.data_account_type_payable,Payable,True
 1204,1204,Податкові зобов’язання по ПДВ,120,account.data_account_type_output_tax,Regular,True
