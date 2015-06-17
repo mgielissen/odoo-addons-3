@@ -53,7 +53,7 @@
     <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_spr_sti"
             name="Довідник ДПІ"
-            parent="account.menu_configuration_misc"
+            parent="account.next_id_27"
             action="spr_sti_list_action"
             sequence="51"/>
 
