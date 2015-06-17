@@ -14,7 +14,7 @@ UA0,0,Компанія,,account.data_account_type_view,View,False
 1010,1010,Земля,101,account.data_account_type_fixed_assets,Regular,False
 1011,1011,Будівлі,101,account.data_account_type_fixed_assets,Regular,False
 1012,1012,Машини та обладнання,101,account.data_account_type_fixed_assets,Regular,False
-1013,1013,Автомобілі,10,account.data_account_type_fixed_assets,Regular,False
+1013,1013,Автомобілі,101,account.data_account_type_fixed_assets,Regular,False
 1014,1014,Меблі та приладдя,101,account.data_account_type_fixed_assets,Regular,False
 1015,1015,Офісне обладнання,101,account.data_account_type_fixed_assets,Regular,False
 1019,1019,Амортизація основних засобів,101,account.data_account_type_fixed_assets,Regular,False
@@ -53,7 +53,6 @@ UA0,0,Компанія,,account.data_account_type_view,View,False
 120,120,Кредиторська заборгованість,12,account.data_account_type_view,View,False
 1200,1200,Кредиторська заборгованість за товари та послуги,120,account.data_account_type_payable,Payable,True
 1201,1201,Отримано на склад без рахунку-фактури,120,account.data_account_type_current_liabilities,Regular,True
-1202,1202,Кредиторська заборгованість перед іншими партнерами,120,account.data_account_type_payable,Payable,True
 1202,1202,Податок на прибуток,120,account.data_account_type_payable,Payable,True
 1203,1203,ПДВ,120,account.data_account_type_payable,Payable,True
 1204,1204,Податкові зобов’язання по ПДВ,120,account.data_account_type_output_tax,Regular,True
