@@ -7,9 +7,9 @@
             <field name="name">sprsti.form</field>
             <field name="model">account.sprsti</field>
             <field name="arch" type="xml">
-                <form string="Форма довідника ДПІ">
+                <form string="Forma dovidnyka DPI">
                     <sheet>
-                        <group string="Детальна інформація про податковий орган">
+                        <group string="Detalna informatsiya pro podatkovyj organ">
                             <field name="c_sti"/>
                             <field name="c_raj"/>
                             <field name="t_sti"/>
@@ -26,7 +26,7 @@
         <field name="name">sprsti.tree</field>
         <field name="model">account.sprsti</field>
         <field name="arch" type="xml">
-            <tree string="Список ДПІ">
+            <tree string="Spysok DPI">
                 <field name="name"/>
                 <field name="c_sti"/>
                 <field name="name_raj"/>
@@ -37,7 +37,7 @@
 
     <!-- List of spr sti -->
 	<record model="ir.actions.act_window" id="spr_sti_list_action">
-            <field name="name">Довідник ДПІ</field>
+            <field name="name">Dovidnyk DPI</field>
             <field name="res_model">account.sprsti</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -45,14 +45,14 @@
             <field name="context">{'category':'out_tax_invoice', 'search_default_category':'out_tax_invoice'}</field>
             <field name="filter" eval="True"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Додайте інформацію про ДПІ.
+                <p class="oe_view_nocontent_create">Dodajte informatsiyu pro DPI.
                 </p>
             </field>
         </record>
 
     <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_spr_sti"
-            name="Довідник ДПІ"
+            name="Dovidnyk DPI"
             parent="account.next_id_27"
             action="spr_sti_list_action"
             sequence="51"/>
@@ -63,7 +63,7 @@
             <field name="name">sprsti.list.select</field>
             <field name="model">account.sprsti</field>
             <field name="arch" type="xml">
-            <search string="Пошук ДПІ">
+            <search string="Poshuk DPI">
                 <field name="name"/>
                 <field name="c_sti"/>
                 <field name="name_raj"/>

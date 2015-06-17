@@ -7,7 +7,7 @@
             <field name="name">taxinvoice.form</field>
             <field name="model">account.taxinvoice</field>
             <field name="arch" type="xml">
-                <form string="Форма податкової накладної">
+                <form string="Forma podatkovoi nakladnoi">
                     <sheet>
                         <group>
                             <field name="date_vyp"/>
@@ -25,7 +25,7 @@
 	
     <!-- List of Customer Tax Invoices -->
 	<record model="ir.actions.act_window" id="customer_tax_invoice_list_action">
-            <field name="name">Видані податкові накладні</field>
+            <field name="name">Vydani podatkovi nakladni</field>
             <field name="res_model">account.taxinvoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -33,14 +33,14 @@
             <field name="context">{'default_category':'out_tax_invoice', 'category':'out_tax_invoice', 'search_default_category':'out_tax_invoice'}</field>
             <field name="filter" eval="True"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Створіть першу вихідну податкову накладну.
+                <p class="oe_view_nocontent_create">Stvorit pershu vyhidnu podatkovu nakladnu.
                 </p>
             </field>
     </record>
 	
     <!-- List of Supplier Tax Invoices -->
     <record model="ir.actions.act_window" id="supplier_tax_invoice_list_action">
-            <field name="name">Отримані податкові накладні</field>
+            <field name="name">Otrymani podatkovi nakladni</field>
             <field name="res_model">account.taxinvoice</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -48,21 +48,21 @@
             <field name="context">{'default_category':'in_tax_invoice', 'category':'in_tax_invoice', 'search_default_category':'in_tax_invoice'}</field>
             <field name="filter" eval="True"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Створіть першу вхідну податкову накладну.
+                <p class="oe_view_nocontent_create">Stvorit pershu vhidnu podatkovu nakladnu.
                 </p>
             </field>
     </record>
 
     <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_customer_vat_invoices"
-            name="Видані ПН"
+            name="Vydani PN"
             parent="account.menu_finance_receivables"
             action="customer_tax_invoice_list_action"
             sequence="51"/>
 
     <!-- Menu entry Supplier Tax Invoices -->
     <menuitem id="menu_supplier_vat_invoices"
-            name="Отримані ПН"
+            name="Otrymani PN"
             parent="account.menu_finance_payables"
             action="supplier_tax_invoice_list_action"
             sequence="51"/>
@@ -72,7 +72,7 @@
             <field name="name">taxinvoice.list.select</field>
             <field name="model">account.taxinvoice</field>
             <field name="arch" type="xml">
-            <search string="Пошук за категорією">
+            <search string="Poshuk za kategorieyu">
                 <field name="category"/>
             </search>
             </field>

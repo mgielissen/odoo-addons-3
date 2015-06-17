@@ -6,46 +6,50 @@ class TaxInvoice(models.Model):
 	_name = 'account.taxinvoice'
 	_description = 'Tax Invoice'
     
-	date_vyp = fields.Date(string='Дата документу', index=True,				# TODO readonly=True, states={'draft': [('readonly', False)]},
-        help="Дата першої події з ПДВ", copy=True, required=True)
+	h01 = fields.Integer(string = 'Skladaetsya investorom', default = 0)
+	horig1 = fields.Integer(string = 'Ne vydaetsya pokuptsyu', default = 0)
+	htypr = fields.Integer(string = 'Typ prychyny', default = 0)
 
-	date_reg = fields.Date(string='Дата реєстрації', index=True,				# TODO readonly=True, states={'draft': [('readonly', False)]},
-        help="Дата реєстрації документу в ЄРПН", copy=False)
+	date_vyp = fields.Date(string='Data dokumentu', index=True,				# TODO readonly=True, states={'draft': [('readonly', False)]},
+        help="Data pershoi podii z PDV", copy=True, required=True)
 
-  	number = fields.Char(string = ' Номер ПН')
-	number1 = fields.Integer(string = 'Ознака спеціальної ПН')
-	number2 = fields.Integer(string = 'Код філії')
+	date_reg = fields.Date(string='Data reestracii', index=True,				# TODO readonly=True, states={'draft': [('readonly', False)]},
+        help="Data reestracii dokumentu v ERPN", copy=False)
+
+  	number = fields.Char(string = 'Nomer PN')
+	number1 = fields.Integer(string = 'Oznaka specialnoi PN')
+	number2 = fields.Integer(string = 'Kod Filii')
 
 	category = fields.Selection([
-        ('out_tax_invoice','Видані ПН'),
-        ('in_tax_invoice','Отримані ПН'),
+        ('out_tax_invoice','Vydani PN'),
+        ('in_tax_invoice','Otrymani PNН'),
         ], string='Category', readonly=True, index=True, 
         change_default=True, default=lambda self: self._context.get('category', 'out_tax_invoice'), 
         track_visibility='always')
 
 	doc_type = fields.Selection([
-        ('pn','Податкова накладна'),
-        ('rk','Розрахунок коригування до ПН'),
-        ('vmd','Митна декларація'),
-        ('tk','Транспортний квиток'),
-        ('bo','Бухгалтерська довідка'),
-        ], string='Тип документу', index=True, 
+        ('pn','Podatkova nakladna'),
+        ('rk','Rozrakhunok koryguvannya do PN'),
+        ('vmd','Mytna deklaratsiya'),
+        ('tk','Transportnyj kvytok'),
+        ('bo','Buhgalterska dovidka'),
+        ], string='Typ dokumentu', index=True, 
         change_default=True, default='pn', 
         track_visibility='always')
 
-	# Modificated record name on form view
+	# Modified record name on form view
 	@api.multi
 	def name_get(self):
 		TYPES = {
-			'pn': _('Податкова накладна'),
-			'rk': _('Розрахунок коригування до ПН'),
-			'vmd': _('Митна декларація'),
-			'tk': _('Транспортний квиток'),
-			'bo': _('Бухгалтерська довідка'),
+			'pn': 'Podatkova nakladna',
+			'rk': 'Rozrakhunok koryguvannya do PN',
+			'vmd': 'Mytna deklaratsiyaя',
+			'tk': 'Transportnyj kvytok',
+			'bo': 'Buhgalterska dovidka',
 		}
 		result = []
 		for inv in self:
 			date = fields.Date.from_string(inv.date_vyp)
 			datef = date.strftime('%d.%m.%Y')
-			result.append((inv.id, _("%s № %s від %s") % (TYPES[inv.doc_type], inv.number, datef)))
+			result.append((inv.id, "%s # %s vid %s" % (TYPES[inv.doc_type], inv.number, datef)))
 		return result
