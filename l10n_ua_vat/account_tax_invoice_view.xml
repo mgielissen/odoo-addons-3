@@ -10,6 +10,10 @@
                 <form string="Forma podatkovoi nakladnoi">
                     <sheet>
                         <group>
+                            <field name="h01"/>
+                            <field name="horig1"/>
+                            <field name="htypr"/>
+
                             <field name="date_vyp"/>
                             <field name="date_reg"/>
                             <field name="number"/>
@@ -17,6 +21,19 @@
                             <field name="number2"/>
                             <field name="category"/>
                             <field name="doc_type"/>
+
+                            <field name="company_seller"/>
+                            <field name="ipn_seller"/>
+                            <field name="adr_seller"/>
+                            <field name="tel_seller"/>
+                            <field name="company_buyer"/>
+                            <field name="ipn_buyer"/>
+                            <field name="adr_buyer"/>
+                            <field name="tel_buyer"/>
+                            <field name="contract_type"/>
+                            <field name="contract_date"/>
+                            <field name="contract_numb"/>
+                            <field name="payment_meth"/>
                         </group>
                     </sheet>
                 </form>
@@ -52,6 +69,19 @@
                 </p>
             </field>
     </record>
+
+    <!-- Payment method list -->
+    <record model="ir.ui.view" id="ti_paymeth_tree_view">
+        <field name="name">tipaymeth.tree</field>
+        <field name="model">account.taxinvoice.paymeth</field>
+        <field name="arch" type="xml">
+            <tree string="Sposoby oplaty">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
 
     <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_customer_vat_invoices"
