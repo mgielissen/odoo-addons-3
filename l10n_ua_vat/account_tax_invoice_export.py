@@ -9,5 +9,5 @@ class TaxInvoiceExport(models.TransientModel):
     # see account/wizard/account_invoice_state.py (old api there)
     @api.one
     def taxinvoice_export(self):
-	return {'type': 'ir.actions.act_window_close'}
+        return {'type': 'ir.actions.act_window_close'}
       

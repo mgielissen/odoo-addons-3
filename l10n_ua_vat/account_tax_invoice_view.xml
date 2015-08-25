@@ -8,40 +8,67 @@
             <field name="model">account.taxinvoice</field>
             <field name="arch" type="xml">
                 <form string="Forma podatkovoi nakladnoi">
+                    <header>
+                    </header>
                     <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Podatkova nakladna" attrs="{'invisible': [('doc_type', '&lt;&gt;', 'pn')]}"/>
+                                <label string="Rozrakhunok koryguvannya do PN" attrs="{'invisible': [('doc_type', '&lt;&gt;', 'rk')]}"/>
+                                <label string="Mytna deklaratsiya" attrs="{'invisible': [('doc_type', '&lt;&gt;', 'vmd')]}"/>
+                                <label string="Transportnyj kvytok" attrs="{'invisible': [('doc_type', '&lt;&gt;', 'tk')]}"/>
+                                <label string="Buhgalterska dovidka" attrs="{'invisible': [('doc_type', '&lt;&gt;', 'bo')]}"/>
+                            </h1>
+                            <label for="date_vyp" class="oe_edit_only"/>
+                            <h3>
+                                Vid <field name="date_vyp" class="oe_inline"/> nomer <field name="number" class="oe_inline"/> / <field name="number1" class="oe_inline"/> / <field name="number2" class="oe_inline"/>
+                            </h3>
+                        </div>
                         <group>
-                            <field name="h01"/>
-                            <field name="horig1"/>
-                            <field name="htypr"/>
-
-                            <field name="date_vyp"/>
-                            <field name="date_reg"/>
-                            <field name="number"/>
-                            <field name="number1"/>
-                            <field name="number2"/>
-                            <field name="category"/>
-                            <field name="doc_type"/>
-
-                            <field name="company_seller"/>
-                            <field name="ipn_seller"/>
-                            <field name="adr_seller"/>
-                            <field name="tel_seller"/>
-                            <field name="company_buyer"/>
-                            <field name="ipn_buyer"/>
-                            <field name="adr_buyer"/>
-                            <field name="tel_buyer"/>
-                            <field name="contract_type"/>
-                            <field name="contract_date"/>
-                            <field name="contract_numb"/>
-                            <field name="payment_meth"/>
+                            <group>
+                                <field name="company_seller"/>
+                                <field name="ipn_seller"/>
+                                <field name="adr_seller"/>
+                                <field name="tel_seller"/>
+                                <newline />
+                                <field name="contract_type"/>
+                                <field name="payment_meth"/>
+                            </group>
+                            <group>
+                                <field name="company_buyer"/>
+                                <field name="ipn_buyer"/>
+                                <field name="adr_buyer"/>
+                                <field name="tel_buyer"/>
+                                <field name="contract_numb"/>
+                                <field name="contract_date"/>
+                            </group>  
                         </group>
+                        <notebook>
+                            <page string="Nomenklatura">
+                            </page>
+
+                            <page string="Insha informatsiya">
+                                <group>
+                                    <group>
+                                        <field name="h01"/>
+                                        <field name="category"/>
+                                        <field name="date_reg"/>
+                                    </group>
+                                    <group>
+                                        <field name="horig1"/>
+                                        <field name="htypr"/>
+                                        <field name="doc_type"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
     </record>
-	
+    
     <!-- List of Customer Tax Invoices -->
-	<record model="ir.actions.act_window" id="customer_tax_invoice_list_action">
+    <record model="ir.actions.act_window" id="customer_tax_invoice_list_action">
             <field name="name">Vydani podatkovi nakladni</field>
             <field name="res_model">account.taxinvoice</field>
             <field name="view_type">form</field>
@@ -54,7 +81,7 @@
                 </p>
             </field>
     </record>
-	
+    
     <!-- List of Supplier Tax Invoices -->
     <record model="ir.actions.act_window" id="supplier_tax_invoice_list_action">
             <field name="name">Otrymani podatkovi nakladni</field>
