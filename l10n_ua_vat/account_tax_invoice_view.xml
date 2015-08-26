@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    
-    <!-- Form of Tax Invoice -->  
+
+    <!-- Form of Tax Invoice -->
     <record model="ir.ui.view" id="tax_invoice_form_view">
             <field name="name">taxinvoice.form</field>
             <field name="model">account.taxinvoice</field>
@@ -41,7 +41,7 @@
                                 <field name="tel_buyer"/>
                                 <field name="contract_numb"/>
                                 <field name="contract_date"/>
-                            </group>  
+                            </group>
                         </group>
                         <notebook>
                             <page string="Nomenklatura">
@@ -66,7 +66,24 @@
                 </form>
             </field>
     </record>
-    
+
+    <!-- Tree view of tax invoices -->
+    <record model="ir.ui.view" id="tax_invoice_tree_view">
+        <field name="name">taxinvoice.tree</field>
+        <field name="model">account.taxinvoice</field>
+        <field name="arch" type="xml">
+            <tree string="Taxinvoice List">
+                <field name="date_vyp"/>
+                <field name="number"/>
+                <field name="company_seller"/>
+                <field name="ipn_seller"/>
+                <field name="company_buyer"/>
+                <field name="ipn_buyer"/>
+            </tree>
+        </field>
+    </record>
+
+
     <!-- List of Customer Tax Invoices -->
     <record model="ir.actions.act_window" id="customer_tax_invoice_list_action">
             <field name="name">Vydani podatkovi nakladni</field>
@@ -81,7 +98,7 @@
                 </p>
             </field>
     </record>
-    
+
     <!-- List of Supplier Tax Invoices -->
     <record model="ir.actions.act_window" id="supplier_tax_invoice_list_action">
             <field name="name">Otrymani podatkovi nakladni</field>
@@ -112,28 +129,28 @@
 
     <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_customer_vat_invoices"
-            name="Vydani PN"
-            parent="account.menu_finance_receivables"
-            action="customer_tax_invoice_list_action"
-            sequence="51"/>
+        name="Vydani PN"
+        parent="account.menu_finance_receivables"
+        action="customer_tax_invoice_list_action"
+        sequence="51"/>
 
     <!-- Menu entry Supplier Tax Invoices -->
     <menuitem id="menu_supplier_vat_invoices"
-            name="Otrymani PN"
-            parent="account.menu_finance_payables"
-            action="supplier_tax_invoice_list_action"
-            sequence="51"/>
+        name="Otrymani PN"
+        parent="account.menu_finance_payables"
+        action="supplier_tax_invoice_list_action"
+        sequence="51"/>
 
     <!--Add search by Category  -->
     <record model="ir.ui.view" id="tax_invoice_view_filter">
-            <field name="name">taxinvoice.list.select</field>
-            <field name="model">account.taxinvoice</field>
-            <field name="arch" type="xml">
+        <field name="name">taxinvoice.list.select</field>
+        <field name="model">account.taxinvoice</field>
+        <field name="arch" type="xml">
             <search string="Poshuk za kategorieyu">
-                <field name="category"/>
+                    <field name="category"/>
             </search>
-            </field>
+        </field>
     </record>
 
     </data>
-</openerp> 
+</openerp>
