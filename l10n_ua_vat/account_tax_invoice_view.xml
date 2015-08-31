@@ -45,6 +45,13 @@
                         </group>
                         <notebook>
                             <page string="Nomenklatura">
+
+                                <field name="taxinvoice_line" widget="one2many_list">
+                                <tree string=" Tax Invoice Lines" editable="bottom">
+                                    <field name="date_vynyk"/>
+                                    <field name="product_id"/>
+                                </tree>
+                            </field>
                             </page>
 
                             <page string="Insha informatsiya">

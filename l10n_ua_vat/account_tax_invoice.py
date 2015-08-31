@@ -19,7 +19,7 @@ class TIPayMeth(models.Model):
 class TaxInvoice(models.Model):
     _name = 'account.taxinvoice'
     _description = 'Tax Invoice'
-    
+
     h01 = fields.Boolean(string = 'Skladaetsya investorom', default = False)
     horig1 = fields.Boolean(string = 'Ne vydaetsya pokuptsyu', default = False)
     htypr = fields.Selection([
@@ -41,25 +41,26 @@ class TaxInvoice(models.Model):
         ('15','15 - Skladena na sumu perevyshchennya tsiny prydbannya'),
         ('16','16 - Skladena na sumu perevyshchennya balansovoyi (zalyshkovoyi) vartosti'),
         ('17','17 - Skladena na sumu perevyshchennya sobivartosti vyhotovlenykh tovariv'),
-        ], string='Typ prychyny', index=True, 
-        change_default=True, default='00', 
+        ], string='Typ prychyny', index=True,
+        change_default=True, default='00',
         track_visibility='always')
 
-    date_vyp = fields.Date(string='Data dokumentu', index=True,             # TODO readonly=True, states={'draft': [('readonly', False)]},
+    date_vyp = fields.Date(string='Data dokumentu', index=True,                 # TODO readonly=True, states={'draft': [('readonly', False)]},
         help="Data pershoi podii z PDV", copy=True, required=True)
 
     date_reg = fields.Date(string='Data reestracii', index=True,                # TODO readonly=True, states={'draft': [('readonly', False)]},
         help="Data reestracii dokumentu v ERPN", copy=False)
 
-    number = fields.Integer(string = 'Nomer PN', size=7)
+    number = fields.Integer(string = 'Nomer PN', size=7)                        # TODO change to char
     number1 = fields.Integer(string = 'Oznaka specialnoi PN', size=1)
     number2 = fields.Integer(string = 'Kod Filii', size=4)
 
     category = fields.Selection([
         ('out_tax_invoice','Vydani PN'),
         ('in_tax_invoice','Otrymani PN'),
-        ], string='Category', readonly=True, index=True, 
-        change_default=True, default=lambda self: self._context.get('category', 'out_tax_invoice'), 
+        ], string='Category', readonly=True,
+        index=True, change_default=True,
+        default=lambda self: self._context.get('category', 'out_tax_invoice'),
         track_visibility='always')
 
     doc_type = fields.Selection([
@@ -68,16 +69,16 @@ class TaxInvoice(models.Model):
         ('vmd','Mytna deklaratsiya'),
         ('tk','Transportnyj kvytok'),
         ('bo','Buhgalterska dovidka'),
-        ], string='Typ dokumentu', index=True, 
-        change_default=True, default='pn', 
+        ], string='Typ dokumentu', index=True,
+        change_default=True, default='pn',
         track_visibility='always')
 
     company_seller = fields.Many2one('res.partner',
-        string="Prodavets", ondelete='set null', 
+        string="Prodavets", ondelete='set null',
         help='Kompaniya postachalnyk', index=True)
 
     company_buyer = fields.Many2one('res.partner',
-        string="Pokupets", ondelete='set null', 
+        string="Pokupets", ondelete='set null',
         help='Kompaniya pokupets', index=True)
 
     ipn_seller = fields.Char(string = 'IPN prodavtsya')
@@ -88,12 +89,12 @@ class TaxInvoice(models.Model):
     tel_buyer = fields.Char(string = 'Telefon pokuptsya')
 
     contract_type = fields.Many2one('account.taxinvoice.contrtype',
-        string="Typ dogovoru", ondelete='set null', 
+        string="Typ dogovoru", ondelete='set null',
         help='Typ dogovoru zgidno civilnogo kodeksu', index=True)
     contract_date = fields.Date(string = 'Data dogovoru')
     contract_numb = fields.Char(string = 'Nomer dogovoru')
     payment_meth = fields.Many2one('account.taxinvoice.paymeth',
-        string="Sposib oplaty", ondelete='set null', 
+        string="Sposib oplaty", ondelete='set null',
         help='Sposib oplatu za postachannya', index=True)
 
 
@@ -115,7 +116,7 @@ class TaxInvoice(models.Model):
             result.append((inv.id, "%s # %s vid %s" % (TYPES[inv.doc_type], inv.number, datef)))
         return result
 
-    @api.onchange('company_seller') 
+    @api.onchange('company_seller')
     def update_seller_info(self):
         if not self.company_seller:
             return
@@ -154,3 +155,20 @@ class TaxInvoice(models.Model):
             if self.company_buyer.street2:
                 self.adr_buyer = self.adr_buyer + ', ' + self.company_buyer.street2
         return {}
+
+    taxinvoice_line = fields.One2many('account.taxinvoice.line',
+        'taxinvoice_id', string=' Tax Invoice Lines',
+#TODO    readonly=True, states={'draft': [('readonly', False)]},
+        copy=True)
+
+
+class TaxInvoiceLine(models.Model):
+    _name = 'account.taxinvoice.line'
+    _description = 'Tax Invoice Line'
+
+    taxinvoice_id = fields.Many2one('account.taxinvoice',
+        string=' Tax Invoice Reference', ondelete='cascade', index=True)
+    date_vynyk = fields.Date(string='Data vynyknennya PZ', index=True,
+        help="Data pershoi podii z PDV", copy=True, required=True)
+    product_id = fields.Many2one('product.product', string='Product',
+        ondelete='restrict', index=True)
