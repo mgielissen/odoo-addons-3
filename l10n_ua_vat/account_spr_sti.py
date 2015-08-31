@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api
 
+
 class SprSti(models.Model):
     _name = 'account.sprsti'
     _description = 'Dovidnyk STI'
