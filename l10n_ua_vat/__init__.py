@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
 
-import account_tax_invoice
-import account_spr_sti
-import company
-import account_tax_invoice_export
+import models
+import wizard
