@@ -31,6 +31,7 @@
         'views/account_tax_invoice_view.xml',
         'views/account_spr_sti_view.xml',
         'views/company_view.xml',
+        'views/product_view.xml',
         'wizard/account_tax_invoice_export_wizard.xml',
         'data/account.sprsti.csv',
         'data/account.taxinvoice.paymeth.csv',
