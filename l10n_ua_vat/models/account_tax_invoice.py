@@ -233,3 +233,16 @@ class TaxInvoiceLine(models.Model):
     quantity = fields.Float(string='Quantity',
                             digits=dp.get_precision('Product Unit of Measure'),
                             required=True, default=1)
+    ukt_zed = fields.Char(string='Kod UKT ZED',
+                          help="Kod zgidno UKT ZED",
+                          size=10)
+
+    # TODO add @api.onchange for product field
+    # to update uom and ukt zed code
+    #
+    # inherit product.uom to add uom code
+
+    @api.onchange('product_id')
+    def update_ukt_zed(self):
+        self.ukt_zed = self.product_id.ukt_zed
+        return {}

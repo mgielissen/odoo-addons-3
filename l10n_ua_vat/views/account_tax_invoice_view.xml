@@ -57,6 +57,7 @@
                                         <field name="sequence" widget="handle"/>
                                         <field name="date_vynyk"/>
                                         <field name="product_id"/>
+                                        <field name="ukt_zed"/>
                                         <field name="uom_id"/>
                                         <field name="quantity"/>
                                         <field name="price_unit"/>
