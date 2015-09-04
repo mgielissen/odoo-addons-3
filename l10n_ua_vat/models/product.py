@@ -18,3 +18,12 @@ class ProductUktZed(models.Model):
     ukt_zed = fields.Char(string='Kod UKT ZED',
                           help="Kod zgidno UKT ZED",
                           size=10)
+
+
+class ProductUomCode(models.Model):
+    _inherit = 'product.uom'
+
+    uom_code = fields.Char(string='Kod odynyts vymiru',
+                           help="Kod zgidno KSPOVO",
+                           size=4)
+# TODO Char to integer.  <field name="uom_code" digits="[42, 5]"/>

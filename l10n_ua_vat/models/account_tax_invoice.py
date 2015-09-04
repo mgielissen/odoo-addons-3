@@ -238,9 +238,9 @@ class TaxInvoiceLine(models.Model):
                           size=10)
 
     # TODO add @api.onchange for product field
-    # to update uom and ukt zed code
+    # to update uom and oum_code
     #
-    # inherit product.uom to add uom code
+    # add uom_code field
 
     @api.onchange('product_id')
     def update_ukt_zed(self):
