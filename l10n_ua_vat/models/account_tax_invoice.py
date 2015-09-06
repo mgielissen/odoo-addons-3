@@ -227,6 +227,9 @@ class TaxInvoiceLine(models.Model):
                                  ondelete='restrict', index=True)
     uom_id = fields.Many2one('product.uom', string='Unit of Measure',
                              ondelete='set null', index=True)
+    uom_code = fields.Char(string='Kod KSPOVO',
+                           help="Kod zgidno KSPOVO",
+                           size=4)
     price_unit = fields.Float(string='Unit Price', required=True,
                               digits=dp.get_precision('Product Price'),
                               default=0)
@@ -243,6 +246,28 @@ class TaxInvoiceLine(models.Model):
     # add uom_code field
 
     @api.onchange('product_id')
-    def update_ukt_zed(self):
-        self.ukt_zed = self.product_id.ukt_zed
-        return {}
+    def onchange_product_id(self):
+        """Update other fields when product is changed"""
+        domain = {}
+        if not self.taxinvoice_id:
+            return
+
+        if not self.product_id:
+            self.price_unit = 0.0
+            self.quantity = 0.0
+            self.ukt_zed = ''
+            self.uom_code = ''
+            domain['uom_id'] = []
+        else:
+            self.ukt_zed = self.product_id.ukt_zed
+
+            if not self.uom_id or \
+                    self.product_id.uom_id.category_id.id != \
+                    self.uom_id.category_id.id:
+                self.uom_id = self.product_id.uom_id.id
+                self.uom_code = self.product_id.uom_id.uom_code
+
+            domain['uom_id'] = [
+                ('category_id', '=', self.product_id.uom_id.category_id.id)]
+
+        return {'domain': domain}
