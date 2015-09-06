@@ -240,14 +240,9 @@ class TaxInvoiceLine(models.Model):
                           help="Kod zgidno UKT ZED",
                           size=10)
 
-    # TODO add @api.onchange for product field
-    # to update uom and oum_code
-    #
-    # add uom_code field
-
     @api.onchange('product_id')
     def onchange_product_id(self):
-        """Update other fields when product is changed"""
+        """Update other fields when product is changed."""
         domain = {}
         if not self.taxinvoice_id:
             return
