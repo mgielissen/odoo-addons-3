@@ -62,7 +62,7 @@
                                         <field name="uom_code"/>
                                         <field name="quantity"/>
                                         <field name="price_unit"/>
-                                        <field name="invoice_line_tax_id"
+                                        <field name="taxinvoice_line_tax_id"
                                             widget="many2many_tags"/>
                                     </tree>
                                 </field>
