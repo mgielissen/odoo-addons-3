@@ -1,7 +1,7 @@
 <?xml version="1.0"  encoding="utf-8"?>
 <openerp>
 	<data>
-	
+
 	<!-- Поле ЕДРПОУ на вкладці бухобліку для форми партнери -->
 	<record model="ir.ui.view" id="view_partner_form_l1">
 		<field name="name">res.partner.vat.inherit_l1</field>
@@ -9,22 +9,22 @@
 		<field name="inherit_id" ref="account.view_partner_property_form"/>
 		<field name="arch" type="xml">
 			<field name="property_account_position" position="after">
-			  
+
 				<label for="company_registry"/>
 				<div name="company_codes">
 					<field name="company_registry" placeholder="EDRPOU abo kod v DRFO" />
 				</div>
-				
+
 				<label for="vat"/>
-				<div name="vat_info">	
+				<div name="vat_info">
 					<field name="vat" on_change="vat_change(vat)" placeholder="IPN" class="oe_inline"/>
 					<field name="vat_subjected" class="oe_inline"/>
 				</div>
-				
+
 			</field>
-		</field>	
+		</field>
 	</record>
-	
+
 	<!-- Пошук по ЕДРПОУ та ІПН для меню партнери -->
 	<record model="ir.ui.view" id="view_res_partner_filter_l">
             <field name="name">res.partner.select_l1</field>

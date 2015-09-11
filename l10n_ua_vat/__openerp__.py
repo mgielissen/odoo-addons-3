@@ -22,7 +22,9 @@
     'currency': 'EUR',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'account_chart'],
+    'depends': ['base', 'account',
+                'account_chart'
+                ],
 
     # always loaded
     'data': [

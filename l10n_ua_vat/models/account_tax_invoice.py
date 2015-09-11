@@ -208,6 +208,17 @@ class TaxInvoice(models.Model):
                                       # TODO readonly=True, states={'draft':
                                       # [('readonly', False)]},
                                       copy=True)
+    tax_line = fields.One2many('account.taxinvoice.tax', 'taxinvoice_id',
+                               string='Tax Lines',
+                               # readonly=True,
+                               # states={'draft': [('readonly', False)]},
+                               copy=True)
+    move_id = fields.Many2one('account.move', string='Journal Entry',
+                              readonly=True,
+                              index=True,
+                              ondelete='restrict',
+                              copy=False,
+                              help="Link to the Journal Items.")
 
 
 class TaxInvoiceLine(models.Model):
@@ -266,3 +277,36 @@ class TaxInvoiceLine(models.Model):
                 ('category_id', '=', self.product_id.uom_id.category_id.id)]
 
         return {'domain': domain}
+
+
+class TaxInvoiceTax(models.Model):
+    _name = 'account.taxinvoice.tax'
+    _description = 'Tax Invoice taxes'
+
+    sequence = fields.Integer(string='Sequence', default=10,
+                              help="Gives the sequence of this line "
+                                   "when displaying the taxes.")
+
+    taxinvoice_id = fields.Many2one('account.taxinvoice',
+                                    string=' Tax Invoice Reference',
+                                    ondelete='cascade', index=True)
+    name = fields.Char(string='Tax Description',
+                       required=True)
+    account_id = fields.Many2one('account.account', string='Tax Account',
+                                 required=True)
+    account_analytic_id = fields.Many2one('account.analytic.account',
+                                          string='Analytic account')
+    base = fields.Float(string='Base', digits=dp.get_precision('Account'))
+    amount = fields.Float(string='Amount', digits=dp.get_precision('Account'))
+    manual = fields.Boolean(string='Manual', default=True)
+    base_code_id = fields.Many2one('account.tax.code', string='Base Code',
+                                   help="The account basis of tax declaration")
+    base_amount = fields.Float(string='Base Code Amount',
+                               digits=dp.get_precision('Account'),
+                               default=0.0)
+    tax_code_id = fields.Many2one('account.tax.code', string='Tax Code',
+                                  help="The tax basis of tax declaration")
+    tax_amount = fields.Float(string='Tax Code Amount',
+                              digits=dp.get_precision('Account'),
+                              default=0.0)
+# TODO add tax to taxinvoice line
