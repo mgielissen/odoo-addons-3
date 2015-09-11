@@ -225,6 +225,22 @@ class TaxInvoiceLine(models.Model):
     _name = 'account.taxinvoice.line'
     _description = 'Tax Invoice Line'
 
+    @api.one
+    @api.depends('price_unit', 'discount', 'taxinvoice_line_tax_id',
+                 'quantity', 'product_id')
+    def _compute_subtotal(self):
+        tl_id = self.taxinvoice_line_tax_id
+        price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
+        taxes = tl_id.compute_all(price,
+                                  self.quantity,
+                                  product=self.product_id,
+                                  # partner=self.invoice_id.partner_id
+                                  )
+        self.price_subtotal = taxes['total']
+        # if self.taxinvoice_id:
+        #     self.price_subtotal = self.taxinvoice_id.currency_id.round(
+        #         self.price_subtotal)
+
     sequence = fields.Integer(string='Sequence', default=10,
                               help="Gives the sequence of this line "
                                    "when displaying the tax invoice.")
@@ -244,6 +260,9 @@ class TaxInvoiceLine(models.Model):
     price_unit = fields.Float(string='Unit Price', required=True,
                               digits=dp.get_precision('Product Price'),
                               default=0)
+    discount = fields.Float(string='Discount (%)',
+                            digits=dp.get_precision('Discount'),
+                            default=0.0)
     quantity = fields.Float(string='Quantity',
                             digits=dp.get_precision('Product Unit of Measure'),
                             required=True, default=1)
@@ -254,6 +273,12 @@ class TaxInvoiceLine(models.Model):
                                               'account_invoice_line_tax',
                                               'invoice_line_id', 'tax_id',
                                               string='Taxes')
+    price_subtotal = fields.Float(string='Amount',
+                                  digits=dp.get_precision('Account'),
+                                  store=True,
+                                  readonly=True,
+                                  compute='_compute_subtotal'
+                                  )
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -313,4 +338,3 @@ class TaxInvoiceTax(models.Model):
     tax_amount = fields.Float(string='Tax Code Amount',
                               digits=dp.get_precision('Account'),
                               default=0.0)
-# TODO add tax to taxinvoice line

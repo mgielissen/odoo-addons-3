@@ -64,6 +64,7 @@
                                         <field name="price_unit"/>
                                         <field name="taxinvoice_line_tax_id"
                                             widget="many2many_tags"/>
+                                        <field name="price_subtotal"/>
                                     </tree>
                                 </field>
                             </page>
