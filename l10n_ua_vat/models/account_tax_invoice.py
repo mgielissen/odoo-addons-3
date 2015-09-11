@@ -250,6 +250,10 @@ class TaxInvoiceLine(models.Model):
     ukt_zed = fields.Char(string='Kod UKT ZED',
                           help="Kod zgidno UKT ZED",
                           size=10)
+    invoice_line_tax_id = fields.Many2many('account.tax',
+                                           'account_invoice_line_tax',
+                                           'invoice_line_id', 'tax_id',
+                                           string='Taxes')
 
     @api.onchange('product_id')
     def onchange_product_id(self):
