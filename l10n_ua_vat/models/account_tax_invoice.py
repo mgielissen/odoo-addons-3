@@ -283,6 +283,7 @@ class TaxInvoiceLine(models.Model):
     @api.onchange('product_id')
     def onchange_product_id(self):
         """Update other fields when product is changed."""
+        # TODO UPDATE onchange_product_id function with new fields
         domain = {}
         if not self.taxinvoice_id:
             return
