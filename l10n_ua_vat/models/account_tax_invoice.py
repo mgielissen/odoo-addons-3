@@ -8,146 +8,153 @@ class TIContrType(models.Model):
     _name = 'account.taxinvoice.contrtype'
     _description = 'Tax Invoice Contract Type'
 
-    name = fields.Char(string='Typ dogovoru')
+    name = fields.Char(string=u"Тип договору")
 
 
 class TIPayMeth(models.Model):
     _name = 'account.taxinvoice.paymeth'
     _description = 'Tax Invoice Payment method'
 
-    name = fields.Char(string='Sposib oplaty')
+    name = fields.Char(string=u"Спосіб оплати")
 
 
 class TaxInvoice(models.Model):
     _name = 'account.taxinvoice'
     _description = 'Tax Invoice'
 
-    h01 = fields.Boolean(string='Skladaetsya investorom', default=False)
-    horig1 = fields.Boolean(string='Ne vydaetsya pokuptsyu', default=False)
+    h01 = fields.Boolean(string=u"Складається інвестором", default=False)
+    horig1 = fields.Boolean(string=u"Не видається покупцю", default=False)
     htypr = fields.Selection([
-        ('00', 'Nemae'),
-        ('01', '01 - '
-         'Vypysana na sumu perevyshchennya zvychaynoyi tsiny nad faktychnoyu'),
-        ('02', '02 - '
-         'Postachannya neplatnyku podatku'),
-        ('03', '03 - '
-         'Naturalna vyplata v rakhunok oplaty pratsi fizychnym osobam'),
-        ('04', '04 - '
-         'Postachannya u mezhakh balansu dlya nevyrobnychoho vykorystann'),
-        ('05', '05 - '
-         'Likvidatsiya osnovnykh zasobiv za rishennyam platnyka podatku'),
-        ('06', '06 - '
-         'Perevedennya vyrobnychykh osnovnykh zasobiv do nevyrobnychykh'),
-        ('07', '07 - '
-         'Eksportni postachannya'),
-        ('08',
-         '08 - '
-         'Postachannya dlya operatsiy, yaki ne ye obyektom opodatkuvannya'),
-        ('09',
-         '09 - '
-         'Postachannya dlya operatsiy, yaki zvilneni vid opodatkuvannya'),
-        ('10', '10 - '
-         'Vyznannya umovnoho postachannya tovarnykh zalyshkiv'),
-        ('11', '11 - '
-         'Vypysana za shchodennymy pidsumkamy operatsiy'),
-        ('12',
-         '12 - '
-         'Vypysana na vartist bezoplatno postavlenykh tovariv-posluh'),
-        ('13',
-         '13 - '
-         'Vykorystannya zasobiv, tovariv-posluh ne u hospodarskiy diyalnosti'),
-        ('14',
-         '14 - '
-         'Vypysana pokuptsem (otrymuvachem) posluh vid nerezydenta'),
-        ('15', '15 - '
-         'Skladena na sumu perevyshchennya tsiny prydbannya'),
-        ('16',
-         '16 - '
-         'Skladena na sumu perevyshchennya balansovoyi vartosti'),
-        ('17',
-         '17 - '
-         'Skladena na sumu perevyshchennya sobivartosti vyhotovlenyh tovariv'),
-    ], string='Typ prychyny', index=True,
+        ('00', u"Немає"),
+        ('01', u"01 - "
+         u"Складена на суму перевищення звичайної ціни над фактичною"),
+        ('02', u"02 - "
+         u"Постачання неплатнику податку"),
+        ('03', u"03 - "
+         u"Постачання товарів/послуг у рахунок оплати праці фізичним особам, "
+         u"які перебувають у трудових відносинах із платником податку"),
+        ('04', u"04 - "
+         u"Постачання у межах балансу для невиробничого використання"),
+        ('05', u"05 - "
+         u"Ліквідація основних засобів за самостійним "
+         u"рішенням платника податку"),
+        ('06', u"06 - "
+         u"Переведення виробничих основних засобів до складу невиробничих"),
+        ('07', u"07 - "
+         u"Експортні постачання"),
+        ('08', u"08 - "
+         u"Постачання для операцій, які не є об'єктом оподаткування "
+         u"податком на додану вартість"),
+        ('09', u"09 - "
+         u"Постачання для операцій, які звільнені від оподаткування "
+         u"податком на додану вартість"),
+        ('10', u"10 - "
+         u"Визначення при анулюванні платника податку податкових зобов'язань "
+         u"по товарах/послугах, необоротних активах, суми податку по яких "
+         u"були включені до складу податкового кредиту, не були використані "
+         u"в оподатковуваних операціях у межах господарської діяльності"),
+        ('11', u"11 - "
+         u"Складена за щоденними підсумками операцій"),
+        ('12', u"12 - "
+         u"Складена на вартість безоплатно поставлених товарів/послуг, "
+         u"обчислену виходячи з рівня звичайних цін"),
+        ('13', u"13 - "
+         u"Використання виробничих або невиробничих засобів, інших "
+         u"товарів/послуг не у господарській діяльності"),
+        ('14', u"14 - "
+         u"Складена покупцем (отримувачем) послуг від нерезидента"),
+        ('15', u"15 - "
+         u"Складена на суму перевищення митної вартості над фактичною "
+         u"ціною постачання"),
+        ('16', u"16 - "
+         u"Складена на суму перевищення балансової (залишкової) вартості "
+         u"необоротних активів над фактичною ціною їх постачання"),
+        ('17', u"17 - "
+         u"Складена на суму перевищення собівартості самостійно виготовлених "
+         u"товарів/послуг над фактичною ціною їх постачання"),
+    ], string=u"Тип причини", index=True,
         change_default=True, default='00',
         track_visibility='always')
 
-    date_vyp = fields.Date(string='Data dokumentu', index=True,
+    date_vyp = fields.Date(string=u"Дата документу", index=True,
                            # TODO readonly=True, states={'draft': [('readonly',
                            # False)]},
-                           help="Data pershoi podii z PDV", copy=True,
+                           help=u"Дата першої події з ПДВ", copy=True,
                            required=True)
 
-    date_reg = fields.Date(string='Data reestracii', index=True,
+    date_reg = fields.Date(string=u"Дата реєстрації", index=True,
                            # TODO readonly=True, states={'draft': [('readonly',
                            # False)]},
-                           help="Data reestracii dokumentu v ERPN", copy=False)
+                           help=u"Дата реєстрації в ЄРПН", copy=False)
 
     # TODO change to char
-    number = fields.Integer(string='Nomer PN', size=7)
-    number1 = fields.Integer(string='Oznaka specialnoi PN', size=1)
-    number2 = fields.Integer(string='Kod Filii', size=4)
+    number = fields.Integer(string=u"Номер ПН", size=7)
+    number1 = fields.Integer(string=u"Ознака спеціальної ПН", size=1)
+    number2 = fields.Integer(string=u"Код філії", size=4)
 
     category = fields.Selection([
-        ('out_tax_invoice', 'Vydani PN'),
-        ('in_tax_invoice', 'Otrymani PN'),
-    ], string='Category', readonly=True,
+        ('out_tax_invoice', u"Видані ПН"),
+        ('in_tax_invoice', u"Отримані ПН"),
+    ], string=u"Категорія", readonly=True,
         index=True, change_default=True,
         default=lambda self: self._context.get('category', 'out_tax_invoice'),
         track_visibility='always')
 
     doc_type = fields.Selection([
-        ('pn', 'Podatkova nakladna'),
-        ('rk', 'Rozrakhunok koryguvannya do PN'),
-        ('vmd', 'Mytna deklaratsiya'),
-        ('tk', 'Transportnyj kvytok'),
-        ('bo', 'Buhgalterska dovidka'),
-    ], string='Typ dokumentu', index=True,
+        ('pn', u"Податкова накладна"),
+        ('rk', u"Розрахунок коригування до ПН"),
+        ('vmd', u"Митна декларація"),
+        ('tk', u"Транспортний квиток"),
+        ('bo', u"Бухгалтерська довідка"),
+    ], string=u"Тип документу", index=True,
         change_default=True, default='pn',
         track_visibility='always')
 
     company_seller = fields.Many2one('res.partner',
-                                     string="Prodavets", ondelete='set null',
-                                     help='Kompaniya postachalnyk', index=True)
+                                     string=u"Продавець", ondelete='set null',
+                                     help=u"Компанія-постачальник", index=True)
 
     company_buyer = fields.Many2one('res.partner',
-                                    string="Pokupets", ondelete='set null',
-                                    help='Kompaniya pokupets', index=True)
+                                    string=u"Покупець", ondelete='set null',
+                                    help=u"Компанія-отримувач", index=True)
 
-    ipn_seller = fields.Char(string='IPN prodavtsya')
-    ipn_buyer = fields.Char(string='IPN pokuptsya')
-    adr_seller = fields.Char(string='Adresa prodavtsya')
-    adr_buyer = fields.Char(string='Adresa pokuptsya')
-    tel_seller = fields.Char(string='Telefon prodavtsya')
-    tel_buyer = fields.Char(string='Telefon pokuptsya')
+    ipn_seller = fields.Char(string=u"ІПН продавця")
+    ipn_buyer = fields.Char(string=u"ІПН покупця")
+    adr_seller = fields.Char(string=u"Адреса продавця")
+    adr_buyer = fields.Char(string=u"Адреса покупця")
+    tel_seller = fields.Char(string=u"Телефон продавця")
+    tel_buyer = fields.Char(string=u"Телефон покупця")
 
     contract_type = fields.Many2one('account.taxinvoice.contrtype',
-                                    string="Typ dogovoru", ondelete='set null',
-                                    help='Typ dogovoru zgidno civiln kodeksu',
+                                    string=u"Тип договору",
+                                    ondelete='set null',
+                                    help=u"Тип договору згідно ЦКУ",
                                     index=True)
-    contract_date = fields.Date(string='Data dogovoru')
-    contract_numb = fields.Char(string='Nomer dogovoru')
+    contract_date = fields.Date(string=u"Дата договору")
+    contract_numb = fields.Char(string=u"Номер договору")
     payment_meth = fields.Many2one('account.taxinvoice.paymeth',
-                                   string="Sposib oplaty", ondelete='set null',
-                                   help='Sposib oplatu za postachannya',
+                                   string=u"Спосіб оплати",
+                                   ondelete='set null',
+                                   help=u"Спосіб оплати за постачання",
                                    index=True)
 
     # Modified record name on form view
     @api.multi
     def name_get(self):
         TYPES = {
-            'pn': 'Podatkova nakladna',
-            'rk': 'Rozrakhunok koryguvannya do PN',
-            'vmd': 'Mytna deklaratsiya',
-            'tk': 'Transportnyj kvytok',
-            'bo': 'Buhgalterska dovidka',
+            'pn': u"Податкова накладна",
+            'rk': u"Розрахунок коригування до ПН",
+            'vmd': u"Митна декларація",
+            'tk': u"Транспортний квиток",
+            'bo': u"Бухгалтерська довідка",
         }
         result = []
         for inv in self:
             date = fields.Date.from_string(inv.date_vyp)
             datef = date.strftime('%d.%m.%Y')
             result.append(
-                (inv.id, "%s # %s vid %s" % (TYPES[inv.doc_type], inv.number,
-                                             datef)))
+                (inv.id, u"%s № %s від %s" %
+                    (TYPES[inv.doc_type], inv.number, datef)))
         return result
 
     @api.onchange('company_seller')
@@ -204,21 +211,21 @@ class TaxInvoice(models.Model):
 
     taxinvoice_line = fields.One2many('account.taxinvoice.line',
                                       'taxinvoice_id',
-                                      string=' Tax Invoice Lines',
+                                      string=u"Рядки ПН",
                                       # TODO readonly=True, states={'draft':
                                       # [('readonly', False)]},
                                       copy=True)
     tax_line = fields.One2many('account.taxinvoice.tax', 'taxinvoice_id',
-                               string='Tax Lines',
+                               string=u"Рядки податків",
                                # readonly=True,
                                # states={'draft': [('readonly', False)]},
                                copy=True)
-    move_id = fields.Many2one('account.move', string='Journal Entry',
+    move_id = fields.Many2one('account.move', string=u"Запис в журналі",
                               readonly=True,
                               index=True,
                               ondelete='restrict',
                               copy=False,
-                              help="Link to the Journal Items.")
+                              help=u"Посилання на запис в журналі проведень")
 
 
 class TaxInvoiceLine(models.Model):
@@ -241,39 +248,38 @@ class TaxInvoiceLine(models.Model):
         #     self.price_subtotal = self.taxinvoice_id.currency_id.round(
         #         self.price_subtotal)
 
-    sequence = fields.Integer(string='Sequence', default=10,
-                              help="Gives the sequence of this line "
-                                   "when displaying the tax invoice.")
+    sequence = fields.Integer(string=u"Послідовність", default=10,
+                              help=u"Перетягніть для зміни порядкового номеру")
     taxinvoice_id = fields.Many2one('account.taxinvoice',
-                                    string=' Tax Invoice Reference',
+                                    string=u"Посилання на ПН",
                                     ondelete='cascade', index=True)
-    date_vynyk = fields.Date(string='Data vynyknennya PZ', index=True,
-                             help="Data pershoi podii z PDV",
+    date_vynyk = fields.Date(string=u"Дата виникнення ПЗ", index=True,
+                             help=u"Дата першої події з ПДВ",
                              copy=True, required=True)
     product_id = fields.Many2one('product.product', string='Product',
                                  ondelete='restrict', index=True)
-    uom_id = fields.Many2one('product.uom', string='Unit of Measure',
+    uom_id = fields.Many2one('product.uom', string=u"Одиниця виміру",
                              ondelete='set null', index=True)
-    uom_code = fields.Char(string='Kod KSPOVO',
-                           help="Kod zgidno KSPOVO",
+    uom_code = fields.Char(string=u"Код КСПОВО",
+                           help=u"Код одниниць згідно КСПОВО",
                            size=4)
-    price_unit = fields.Float(string='Unit Price', required=True,
+    price_unit = fields.Float(string=u"Ціна за одиницю", required=True,
                               digits=dp.get_precision('Product Price'),
                               default=0)
-    discount = fields.Float(string='Discount (%)',
+    discount = fields.Float(string=u"Скидка (%)",
                             digits=dp.get_precision('Discount'),
                             default=0.0)
-    quantity = fields.Float(string='Quantity',
+    quantity = fields.Float(string=u"Кількість",
                             digits=dp.get_precision('Product Unit of Measure'),
                             required=True, default=1)
-    ukt_zed = fields.Char(string='Kod UKT ZED',
-                          help="Kod zgidno UKT ZED",
+    ukt_zed = fields.Char(string=u"Код УКТ ЗЕД",
+                          help=u"Код згідно УКТ ЗЕД",
                           size=10)
     taxinvoice_line_tax_id = fields.Many2many('account.tax',
                                               'account_invoice_line_tax',
                                               'invoice_line_id', 'tax_id',
-                                              string='Taxes')
-    price_subtotal = fields.Float(string='Amount',
+                                              string=u"Ставка податку")
+    price_subtotal = fields.Float(string=u"Вартість",
                                   digits=dp.get_precision('Account'),
                                   store=True,
                                   readonly=True,
@@ -313,29 +319,29 @@ class TaxInvoiceTax(models.Model):
     _name = 'account.taxinvoice.tax'
     _description = 'Tax Invoice taxes'
 
-    sequence = fields.Integer(string='Sequence', default=10,
-                              help="Gives the sequence of this line "
-                                   "when displaying the taxes.")
+    sequence = fields.Integer(string=u"Послідовність", default=10,
+                              help=u"Перетягніть для зміни порядкового номеру")
 
     taxinvoice_id = fields.Many2one('account.taxinvoice',
-                                    string=' Tax Invoice Reference',
+                                    string=u"Посилання на ПН",
                                     ondelete='cascade', index=True)
-    name = fields.Char(string='Tax Description',
+    name = fields.Char(string=u"Назва податку",
                        required=True)
-    account_id = fields.Many2one('account.account', string='Tax Account',
+    account_id = fields.Many2one('account.account', string=u"Рахунок податку",
                                  required=True)
     account_analytic_id = fields.Many2one('account.analytic.account',
-                                          string='Analytic account')
-    base = fields.Float(string='Base', digits=dp.get_precision('Account'))
-    amount = fields.Float(string='Amount', digits=dp.get_precision('Account'))
-    manual = fields.Boolean(string='Manual', default=True)
-    base_code_id = fields.Many2one('account.tax.code', string='Base Code',
-                                   help="The account basis of tax declaration")
-    base_amount = fields.Float(string='Base Code Amount',
+                                          string=u"Аналітичний рахунок")
+    base = fields.Float(string=u"База", digits=dp.get_precision('Account'))
+    amount = fields.Float(string=u"Величина",
+                          digits=dp.get_precision('Account'))
+    manual = fields.Boolean(string=u"Вручну", default=True)
+    base_code_id = fields.Many2one('account.tax.code', string=u"Код бази",
+                                   help=u"Код бази оподаткування")
+    base_amount = fields.Float(string=u"Величина бази податку",
                                digits=dp.get_precision('Account'),
                                default=0.0)
-    tax_code_id = fields.Many2one('account.tax.code', string='Tax Code',
-                                  help="The tax basis of tax declaration")
-    tax_amount = fields.Float(string='Tax Code Amount',
+    tax_code_id = fields.Many2one('account.tax.code', string=u"Код податку",
+                                  help=u"Код величини податку")
+    tax_amount = fields.Float(string=u"Величина податку",
                               digits=dp.get_precision('Account'),
                               default=0.0)
