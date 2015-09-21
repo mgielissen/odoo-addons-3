@@ -36,7 +36,7 @@
         'views/product_view.xml',
         'wizard/account_tax_invoice_export_wizard.xml',
         'data/account.sprsti.csv',
-        'data/account.taxinvoice.paymeth.csv',
+        'data/taxinvoice_paymeth_data.xml',
         'data/account.taxinvoice.contrtype.csv',
     ],
     # only loaded in demonstration mode

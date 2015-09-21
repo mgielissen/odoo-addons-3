@@ -8,7 +8,7 @@ class CompanySti(models.Model):
 
     # Add a new column to the res.company model
     comp_sti = fields.Many2one('account.sprsti',
-                               string="Podatkovyj organ", ondelete='set null',
-                               help='Vyberit DPI v yakij vzyato na oblik '
-                               'pidpryemstvo',
+                               string=u"Податковий орган", ondelete='set null',
+                               help=u"Виберіть ДПІ в якій взято на облік "
+                               u"ваше підприємство",
                                index=True)
