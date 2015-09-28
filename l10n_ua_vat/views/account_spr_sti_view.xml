@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    
-    <!-- Form of spr sti -->  
+
+    <!-- Form of spr sti -->
     <record model="ir.ui.view" id="spr_sti_form_view">
             <field name="name">sprsti.form</field>
             <field name="model">account.sprsti</field>
             <field name="arch" type="xml">
-                <form string="Forma dovidnyka DPI">
+                <form string="Форма довідника ДПІ">
                     <sheet>
-                        <group string="Detalna informatsiya pro podatkovyj organ">
+                        <group string="Детальна інформація про податковий орган">
                             <field name="c_sti"/>
                             <field name="c_raj"/>
                             <field name="t_sti"/>
@@ -20,13 +20,13 @@
                 </form>
             </field>
     </record>
-	
+
 	<!-- override the automatically generated list view for spr sti -->
     <record model="ir.ui.view" id="spr_sti_tree_view">
         <field name="name">sprsti.tree</field>
         <field name="model">account.sprsti</field>
         <field name="arch" type="xml">
-            <tree string="Spysok DPI">
+            <tree string="Список ДПІ">
                 <field name="name"/>
                 <field name="c_sti"/>
                 <field name="name_raj"/>
@@ -37,19 +37,19 @@
 
     <!-- List of spr sti -->
 	<record model="ir.actions.act_window" id="spr_sti_list_action">
-            <field name="name">Dovidnyk DPI</field>
+            <field name="name">Довідник ДПІ</field>
             <field name="res_model">account.sprsti</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Dodajte informatsiyu pro DPI.
+                <p class="oe_view_nocontent_create">Додайте інформацію про ДПІ.
                 </p>
             </field>
         </record>
 
     <!-- Menu entry Customer Tax Invoices -->
     <menuitem id="menu_spr_sti"
-            name="Dovidnyk DPI"
+            name="Довідник ДПІ"
             parent="account.next_id_27"
             action="spr_sti_list_action"
             sequence="51"/>
@@ -60,7 +60,7 @@
             <field name="name">sprsti.list.select</field>
             <field name="model">account.sprsti</field>
             <field name="arch" type="xml">
-            <search string="Poshuk DPI">
+            <search string="Пошук ДПІ">
                 <field name="name"/>
                 <field name="c_sti"/>
                 <field name="name_raj"/>
@@ -70,5 +70,4 @@
     </record>
 
     </data>
-</openerp> 
- 
+</openerp>
