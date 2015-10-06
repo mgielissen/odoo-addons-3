@@ -21,11 +21,10 @@
     'category': 'Localization/Account Charts',
     'version': '0.1',
     'price': 200.00,
-    'currency': 'EUR',
+    'currency': 'UAH',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'account',
-                'account_anglo_saxon'
                 ],
 
     # always loaded
@@ -33,12 +32,13 @@
         # 'security/ir.model.access.csv',
         'templates.xml',
         'partner_view.xml',
-        'data/account.account.type.csv',
-        'data/account.account.template.csv',
-        'data/account.tax.code.template.csv',
-        'data/account.chart.template.csv',
-        'data/account.tax.template.csv',
-        'l10n_ua_ias_wizard.xml',
+        'data/account_chart_template.xml',
+        # 'data/account.account.type.csv',
+        # 'data/account.account.template.csv',
+        # 'data/account.tax.code.template.csv',
+        # 'data/account.chart.template.csv',
+        # 'data/account.tax.template.csv',
+        # 'l10n_ua_ias_wizard.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
