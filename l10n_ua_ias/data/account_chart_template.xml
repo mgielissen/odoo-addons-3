@@ -33,7 +33,7 @@
             <field name="name">Шаблон плану рахунків для України</field>
             <field name="bank_account_code_prefix">1112</field>
             <field name="cash_account_code_prefix">1111</field>
-            <field name="code_digits">5</field>
+            <field name="code_digits">6</field>
             <field name="currency_id" ref="base.UAH"/>
             <field name="transfer_account_id" ref="ua_ias_transfer_account"/>
         </record>

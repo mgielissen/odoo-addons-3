@@ -1,2 +1,0 @@
-id,name,account_root_id:id,tax_code_root_id:id,bank_account_view_id:id,property_account_receivable:id,property_account_payable:id,property_account_expense_categ:id,property_account_income_categ:id
-l10n_ua_ias,Шаблон плану рахунків для України,UA0,0,111,1120,1200,2200,2000
