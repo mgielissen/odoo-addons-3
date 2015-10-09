@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Ukraine - Accounting IAS",
+    'name': "Ukraine - Accounting",
 
-    'summary': """Український бухоблік згідно міжнародних стандартів""",
+    'summary': """Український бухоблік згідно МСФО""",
 
     'description': """
         Цей модуль дає можливість вести бухгалтерський
         облік діяльності підприємства згідно міжнародних
-        стандартів бухгалтерського обліку та міжнародних
         стандартів фінансової звітності.
     """,
 
@@ -24,26 +23,16 @@
     'currency': 'UAH',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account',
-                ],
+    'depends': ['account'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'templates.xml',
         'partner_view.xml',
         'data/account_chart_template.xml',
         'data/account.account.template.csv',
+        'data/account_tax_template.xml',
         'data/account_chart_template_config.xml',
         'data/account_chart_template.yml',
-        # 'data/account.tax.code.template.csv',
-        # 'data/account.chart.template.csv',
-        # 'data/account.tax.template.csv',
-        # 'l10n_ua_ias_wizard.xml',
-    ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo.xml',
     ],
     'installable': True,
 }

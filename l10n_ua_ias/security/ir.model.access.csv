@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_l10n_ua_ias_l10n_ua_ias,l10n_ua_ias.l10n_ua_ias,model_l10n_ua_ias_l10n_ua_ias,,1,0,0,0
