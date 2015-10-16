@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!-- Enable tax cash basis -->
+        <record id="tax_simplified_chash_basis" model="account.config.settings">
+            <field name="module_account_tax_cash_basis" eval="True"/>
+        </record>
+        <!-- Sale taxes -->
+        <record id="simple_tax_sale_product" model="account.tax">
+            <field name="sequence">30</field>
+            <field name="name">Дохід від продажу товарів</field>
+            <field name="description">Дохід від продажу товарів</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+        <record id="simple_tax_sale_gift" model="account.tax">
+            <field name="sequence">31</field>
+            <field name="name">Дохід від безоплатно отриманих товарів</field>
+            <field name="description">Дохід від безоплатно отриманих товарів</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+        <record id="simple_tax_sale_old" model="account.tax">
+            <field name="sequence">32</field>
+            <field name="name">Дохід від заборгованності, за якою минув строк позивної давності</field>
+            <field name="description">Дохід від заборгованності, за якою минув строк позивної давності</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+        <record id="simple_tax_sale_15" model="account.tax">
+            <field name="sequence">33</field>
+            <field name="name">Дохід, що оподатковується за ставкою 15%</field>
+            <field name="description">Дохід за ставкою 15%</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+        <!-- Purchase taxes -->
+        <record id="simple_tax_purchase_product" model="account.tax">
+            <field name="sequence">40</field>
+            <field name="name">Витрати від продажу товарів</field>
+            <field name="description">Витрати від продажу товарів</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">purchase</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+        <record id="simple_tax_purchase_salary" model="account.tax">
+            <field name="sequence">41</field>
+            <field name="name">Витрати на оплату праці найманих працівників</field>
+            <field name="description">Витрати на оплату праці найманих працівників</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">purchase</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+        <record id="simple_tax_purchase_esv" model="account.tax">
+            <field name="sequence">42</field>
+            <field name="name">Витрати на ЄСВ</field>
+            <field name="description">Витрати на ЄСВ</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">purchase</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+        <record id="simple_tax_purchase_other" model="account.tax">
+            <field name="sequence">43</field>
+            <field name="name">Витрати інші</field>
+            <field name="description">Витрати інші</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">purchase</field>
+            <field name="use_cash_basis" eval="True"/>
+        </record>
+    </data>
+</openerp>
