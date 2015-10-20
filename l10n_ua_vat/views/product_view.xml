@@ -7,7 +7,7 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
-                <field name="ean13" position="after">
+                <field name="barcode" position="after">
                     <field name="ukt_zed" attrs="{'invisible': [('product_variant_count', '>', 1)]}"/>
                 </field>
             </field>
@@ -18,7 +18,7 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
-                <field name="ean13" position="after">
+                <field name="barcode" position="after">
                     <field name="ukt_zed"/>
                 </field>
             </field>

@@ -22,6 +22,33 @@ class TaxInvoice(models.Model):
     _name = 'account.taxinvoice'
     _description = 'Tax Invoice'
 
+    state = fields.Selection([
+                             ('draft', 'Draft'),
+                             ('proforma', 'Pro-forma'),   # TODO edit states
+                             ('proforma2', 'Pro-forma'),
+                             ('open', 'Open'),
+                             ('paid', 'Paid'),
+                             ('cancel', 'Cancelled'),
+                             ],
+                             string='Status',
+                             index=True,
+                             readonly=True,
+                             default='draft',
+                             track_visibility='onchange',
+                             copy=False,
+                             help=" * The 'Draft' status is used when a user "
+                             "is encoding a new and unconfirmed Invoice.\n"
+                             " * The 'Pro-forma' status is used the invoice "
+                             "does not have an invoice number.\n"
+                             " * The 'Open' status is used when user create "
+                             "invoice, an invoice number is generated. Its in "
+                             "open status till user does not pay invoice.\n"
+                             " * The 'Paid' status is set automatically when "
+                             "the invoice is paid. Its related journal "
+                             "entries may or may not be reconciled.\n"
+                             " * The 'Cancelled' status is used when user "
+                             "cancel invoice.")
+
     h01 = fields.Boolean(string=u"Складається інвестором", default=False)
     horig1 = fields.Boolean(string=u"Не видається покупцю", default=False)
     htypr = fields.Selection([
@@ -77,15 +104,17 @@ class TaxInvoice(models.Model):
         track_visibility='always')
 
     date_vyp = fields.Date(string=u"Дата документу", index=True,
-                           # TODO readonly=True, states={'draft': [('readonly',
-                           # False)]},
-                           help=u"Дата першої події з ПДВ", copy=True,
+                           readonly=True,
+                           states={'draft': [('readonly', False)]},
+                           help=u"Дата першої події з ПДВ",
+                           copy=True,
                            required=True)
 
     date_reg = fields.Date(string=u"Дата реєстрації", index=True,
-                           # TODO readonly=True, states={'draft': [('readonly',
-                           # False)]},
-                           help=u"Дата реєстрації в ЄРПН", copy=False)
+                           readonly=True,
+                           states={'draft': [('readonly', False)]},
+                           help=u"Дата реєстрації в ЄРПН",
+                           copy=False)
 
     # TODO change to char
     number = fields.Integer(string=u"Номер ПН", size=7)
@@ -209,16 +238,29 @@ class TaxInvoice(models.Model):
                     ', ' + self.company_buyer.street2
         return {}
 
+    @api.model
+    def _default_journal(self):
+        company_id = self._context.get('company_id',
+                                       self.env.user.company_id.id)
+        domain = [('company_id', '=', company_id)]
+        return self.env['account.journal'].search(domain, limit=1)
+        # TODO fix domains here. see account.invoice
+
+    @api.model
+    def _default_currency(self):
+        journal = self._default_journal()
+        return journal.currency_id or journal.company_id.currency_id
+
     taxinvoice_line = fields.One2many('account.taxinvoice.line',
                                       'taxinvoice_id',
                                       string=u"Рядки ПН",
-                                      # TODO readonly=True, states={'draft':
-                                      # [('readonly', False)]},
+                                      readonly=True,
+                                      states={'draft': [('readonly', False)]},
                                       copy=True)
     tax_line = fields.One2many('account.taxinvoice.tax', 'taxinvoice_id',
                                string=u"Рядки податків",
-                               # readonly=True,
-                               # states={'draft': [('readonly', False)]},
+                               readonly=True,
+                               states={'draft': [('readonly', False)]},
                                copy=True)
     move_id = fields.Many2one('account.move', string=u"Запис в журналі",
                               readonly=True,
@@ -226,6 +268,27 @@ class TaxInvoice(models.Model):
                               ondelete='restrict',
                               copy=False,
                               help=u"Посилання на запис в журналі проведень")
+    currency_id = fields.Many2one('res.currency', string='Currency',
+                                  required=True,
+                                  readonly=True,
+                                  states={'draft': [('readonly', False)]},
+                                  default=_default_currency,
+                                  track_visibility='always')
+    # company_currency_id = fields.Many2one('res.currency',
+    #                                       related='company_id.currency_id',
+    #                                       readonly=True)
+    # no conpany_id here!
+    journal_id = fields.Many2one('account.journal',
+                                 string='Journal',
+                                 required=True,
+                                 readonly=True,
+                                 states={'draft': [('readonly', False)]},
+                                 default=_default_journal,
+                                 domain="[('category', 'in', \
+                                          {'out_tax_invoice': ['sale'], \
+                                           'in_tax_invoice': ['purchase'], \
+                                           }.get(type, [])), ]")
+    # TODO fix domain here
 
 
 class TaxInvoiceLine(models.Model):
@@ -236,17 +299,35 @@ class TaxInvoiceLine(models.Model):
     @api.depends('price_unit', 'discount', 'taxinvoice_line_tax_id',
                  'quantity', 'product_id')
     def _compute_subtotal(self):
+        if self.taxinvoice_id:
+            currency = self.taxinvoice_id.currency_id
+            if self.taxinvoice_id.category == 'out_tax_invoice':
+                partner = self.taxinvoice_id.company_buyer
+                company = self.taxinvoice_id.company_seller
+            if self.taxinvoice_id.category == 'in_tax_invoice':
+                partner = self.taxinvoice_id.company_seller
+                company = self.taxinvoice_id.company_buyer
+        else:
+            currency = None
+            partner = None
+
         tl_id = self.taxinvoice_line_tax_id
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = tl_id.compute_all(price,
+                                  currency,
                                   self.quantity,
                                   product=self.product_id,
-                                  # partner=self.invoice_id.partner_id
-                                  )
-        self.price_subtotal = taxes['total']
-        # if self.taxinvoice_id:
-        #     self.price_subtotal = self.taxinvoice_id.currency_id.round(
-        #         self.price_subtotal)
+                                  partner=partner)
+        if taxes:
+            self.price_subtotal = taxes['total_excluded']
+        else:
+            self.price_subtotal = self.quantity * price
+
+        if currency:
+            if currency != company.currency_id:
+                price_subtotal_signed = \
+                    currency.compute(price_subtotal_signed,
+                                     company.currency_id)
 
     sequence = fields.Integer(string=u"Послідовність", default=10,
                               help=u"Перетягніть для зміни порядкового номеру")

@@ -8,7 +8,9 @@
             <field name="model">account.taxinvoice</field>
             <field name="arch" type="xml">
                 <form string="Форма податкової накладної">
-                    <header></header>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,open,paid" statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <h1>
@@ -77,11 +79,14 @@
                                         <field name="h01"/>
                                         <field name="category"/>
                                         <field name="date_reg"/>
+                                        <field name="currency_id"/>
                                     </group>
                                     <group>
                                         <field name="horig1"/>
                                         <field name="htypr"/>
                                         <field name="doc_type"/>
+                                        <field name="journal_id"/>
+                                        <field name="move_id"/>
                                     </group>
                                 </group>
                             </page>
