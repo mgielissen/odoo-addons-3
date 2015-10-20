@@ -80,12 +80,13 @@
                                         <field name="category"/>
                                         <field name="date_reg"/>
                                         <field name="currency_id"/>
+                                        <field name="company_id"/>
                                     </group>
                                     <group>
                                         <field name="horig1"/>
                                         <field name="htypr"/>
                                         <field name="doc_type"/>
-                                        <field name="journal_id"/>
+                                        <field name="journal_id" groups="account.group_account_user" options="{'no_create': True}"/>
                                         <field name="move_id"/>
                                     </group>
                                 </group>
@@ -108,6 +109,9 @@
                     <field name="ipn_seller"/>
                     <field name="company_buyer"/>
                     <field name="ipn_buyer"/>
+                    <field name="state"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="journal_id" invisible="1"/>
                 </tree>
             </field>
         </record>

@@ -4,6 +4,13 @@ from openerp import models, fields, api, _
 import openerp.addons.decimal_precision as dp
 
 
+# mapping taxinvoice type to journal type
+TYPE2JOURNAL = {
+    'out_tax_invoice': 'sale',
+    'in_tax_invoice': 'purchase',
+}
+
+
 class TIContrType(models.Model):
     _name = 'account.taxinvoice.contrtype'
     _description = 'Tax Invoice Contract Type'
@@ -240,11 +247,15 @@ class TaxInvoice(models.Model):
 
     @api.model
     def _default_journal(self):
+        tinv_type = self._context.get('category', 'out_tax_invoice')
+        tinv_types = tinv_type if isinstance(tinv_type, list) else [tinv_type]
         company_id = self._context.get('company_id',
                                        self.env.user.company_id.id)
-        domain = [('company_id', '=', company_id)]
+        domain = [('type', 'in',
+                   filter(None, map(TYPE2JOURNAL.get, tinv_types))),
+                  ('company_id', '=', company_id),
+                  ]
         return self.env['account.journal'].search(domain, limit=1)
-        # TODO fix domains here. see account.invoice
 
     @api.model
     def _default_currency(self):
@@ -284,11 +295,17 @@ class TaxInvoice(models.Model):
                                  readonly=True,
                                  states={'draft': [('readonly', False)]},
                                  default=_default_journal,
-                                 domain="[('category', 'in', \
-                                          {'out_tax_invoice': ['sale'], \
-                                           'in_tax_invoice': ['purchase'], \
-                                           }.get(type, [])), ]")
-    # TODO fix domain here
+                                 domain="[('company_id', '=', company_id)]"
+                                 )
+    company_id = fields.Many2one('res.company',
+                                 string=u"Компанія",
+                                 change_default=True,
+                                 required=True,
+                                 readonly=True,
+                                 states={'draft': [('readonly', False)]},
+                                 default=lambda self: (
+                                  self.env['res.company']._company_default_get(
+                                     'account.invoice')))
 
 
 class TaxInvoiceLine(models.Model):
