@@ -320,10 +320,8 @@ class TaxInvoiceLine(models.Model):
             currency = self.taxinvoice_id.currency_id
             if self.taxinvoice_id.category == 'out_tax_invoice':
                 partner = self.taxinvoice_id.company_buyer
-                company = self.taxinvoice_id.company_seller
             if self.taxinvoice_id.category == 'in_tax_invoice':
                 partner = self.taxinvoice_id.company_seller
-                company = self.taxinvoice_id.company_buyer
         else:
             currency = None
             partner = None
@@ -336,15 +334,18 @@ class TaxInvoiceLine(models.Model):
                                   product=self.product_id,
                                   partner=partner)
         if taxes:
-            self.price_subtotal = taxes['total_excluded']
+            self.price_subtotal = price_subtotal_sign = taxes['total_excluded']
         else:
-            self.price_subtotal = self.quantity * price
+            self.price_subtotal = price_subtotal_sign = self.quantity * price
 
-        if currency:
-            if currency != company.currency_id:
-                price_subtotal_signed = \
-                    currency.compute(price_subtotal_signed,
-                                     company.currency_id)
+        # if currency:
+        #     if currency != self.taxinvoice_id.company_id.currency_id:
+        #         price_subtotal_sign = \
+        #             currency.compute(price_subtotal_sign,
+        #                             self.taxinvoice_id.company_id.currency_id)
+        # sign= self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
+        # self.price_subtotal_signed = price_subtotal_signed * sign
+        # used to calculate signed subtotal for analytic line
 
     sequence = fields.Integer(string=u"Послідовність", default=10,
                               help=u"Перетягніть для зміни порядкового номеру")
