@@ -262,17 +262,18 @@ class TaxInvoice(models.Model):
         journal = self._default_journal()
         return journal.currency_id or journal.company_id.currency_id
 
-    taxinvoice_line = fields.One2many('account.taxinvoice.line',
-                                      'taxinvoice_id',
-                                      string=u"Рядки ПН",
-                                      readonly=True,
-                                      states={'draft': [('readonly', False)]},
-                                      copy=True)
-    tax_line = fields.One2many('account.taxinvoice.tax', 'taxinvoice_id',
-                               string=u"Рядки податків",
-                               readonly=True,
-                               states={'draft': [('readonly', False)]},
-                               copy=True)
+    taxinvoice_line_ids = fields.One2many('account.taxinvoice.line',
+                                          'taxinvoice_id',
+                                          string=u"Рядки ПН",
+                                          readonly=True,
+                                          states={'draft': [('readonly',
+                                                             False)]},
+                                          copy=True)
+    tax_line_ids = fields.One2many('account.taxinvoice.tax', 'taxinvoice_id',
+                                   string=u"Рядки податків",
+                                   readonly=True,
+                                   states={'draft': [('readonly', False)]},
+                                   copy=True)
     move_id = fields.Many2one('account.move', string=u"Запис в журналі",
                               readonly=True,
                               index=True,
@@ -318,6 +319,55 @@ class TaxInvoice(models.Model):
                                          readonly=True,
                                          states={'draft': [('readonly',
                                                             False)]})
+
+    @api.onchange('journal_id')
+    def _onchange_journal_id(self):
+        if self.journal_id:
+            self.currency_id = self.journal_id.currency_id.id or \
+              self.journal_id.company_id.currency_id.id
+
+    @api.onchange('taxinvoice_line_ids')
+    def _onchange_taxinvoice_line_ids(self):
+        taxes_grouped = self.get_taxes_values()
+        tax_lines = self.tax_line_ids.browse([])
+        for tax in taxes_grouped.values():
+            tax_lines += tax_lines.new(tax)
+        self.tax_line_ids = tax_lines
+        return
+
+    @api.multi
+    def get_taxes_values(self):
+        tax_grouped = {}
+        if self.category == 'out_tax_invoice':
+            partner = self.company_buyer
+        if self.category == 'in_tax_invoice':
+            partner = self.company_seller
+        for line in self.taxinvoice_line_ids:
+            price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            tl_id = line.taxinvoice_line_tax_id
+            taxes = tl_id.compute_all(price_unit,
+                                      self.currency_id,
+                                      line.quantity,
+                                      line.product_id,
+                                      partner=partner)['taxes']
+            for tax in taxes:
+                val = {
+                    'invoice_id': self.id,
+                    'name': tax['name'],
+                    'tax_id': tax['id'],
+                    'amount': tax['amount'],
+                    'manual': False,
+                    'sequence': tax['sequence'],
+                    'account_analytic_id': tax['analytic'],
+                    'account_id': (tax['account_id'] or line.account_id.id),
+                }
+
+                key = tax['id']
+                if key not in tax_grouped:
+                    tax_grouped[key] = val
+                else:
+                    tax_grouped[key]['amount'] += val['amount']
+        return tax_grouped
 
 
 class TaxInvoiceLine(models.Model):
@@ -513,7 +563,13 @@ class TaxInvoiceLine(models.Model):
     @api.onchange('taxinvoice_line_tax_id')
     def onchange_taxinvoice_line_tax_id(self):
         """Update account_id field when taxinvoice_line_tax_id is changed."""
-        self.onchange_product_id()
+        if self.taxinvoice_line_tax_id:
+            if self.taxinvoice_line_tax_id.account_id:
+                self.account_id = self.taxinvoice_line_tax_id.account_id
+            else:
+                self.account_id = None
+        else:
+            self.account_id = None
 
 
 class TaxInvoiceTax(models.Model):
@@ -521,7 +577,7 @@ class TaxInvoiceTax(models.Model):
     _description = 'Tax Invoice taxes'
     _order = 'sequence'
 
-    sequence = fields.Integer(string=u"Послідовність", default=10,
+    sequence = fields.Integer(string=u"Послідовність",
                               help=u"Перетягніть для зміни порядкового номеру")
     taxinvoice_id = fields.Many2one('account.taxinvoice',
                                     string=u"Посилання на ПН",
