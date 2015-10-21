@@ -37,7 +37,7 @@ class TaxInvoice(models.Model):
                              ('paid', 'Paid'),
                              ('cancel', 'Cancelled'),
                              ],
-                             string='Status',
+                             string=u"Статус",
                              index=True,
                              readonly=True,
                              default='draft',
@@ -388,30 +388,82 @@ class TaxInvoiceLine(models.Model):
     @api.onchange('product_id')
     def onchange_product_id(self):
         """Update other fields when product is changed."""
-        # TODO UPDATE onchange_product_id function with new fields
         domain = {}
         if not self.taxinvoice_id:
             return
+
+        company = self.taxinvoice_id.company_id
+        currency = self.taxinvoice_id.currency_id
+        category = self.taxinvoice_id.category
 
         if not self.product_id:
             self.price_unit = 0.0
             self.quantity = 0.0
             self.ukt_zed = ''
-            self.uom_code = ''
+            if self.uom_id:
+                if self.uom_code != self.uom_id.uom_code:
+                    self.uom_code = self.uom_id.uom_code
+            else:
+                self.uom_code = ''
             domain['uom_id'] = []
         else:
-            self.ukt_zed = self.product_id.ukt_zed
+            product = self.product_id
+            self.ukt_zed = product.ukt_zed
+
+            if category == 'in_tax_invoice':
+                self.price_unit = self.price_unit or \
+                                  product.standard_price
+            else:
+                self.price_unit = product.lst_price
 
             if not self.uom_id or \
-                    self.product_id.uom_id.category_id.id != \
+                    product.uom_id.category_id.id != \
                     self.uom_id.category_id.id:
-                self.uom_id = self.product_id.uom_id.id
-                self.uom_code = self.product_id.uom_id.uom_code
+                self.uom_id = product.uom_id.id
+                self.uom_code = product.uom_id.uom_code
+            if self.uom_id:
+                if self.uom_code != self.uom_id.uom_code:
+                    self.uom_code = self.uom_id.uom_code
+
+            if company and currency:
+                if company.currency_id != currency:
+                    if category == 'in_tax_invoice':
+                        self.price_unit = product.standard_price
+                    self.price_unit = self.price_unit * \
+                        currency.with_context(dict(self._context or {},
+                                              date=self.date_vynyk)).rate
+
+                if self.uom_id and self.uom_id.id != product.uom_id.id:
+                    self.price_unit = \
+                     self.env['product.uom']._compute_price(
+                        product.uom_id.id, self.price_unit, self.uom_id.id)
 
             domain['uom_id'] = [
-                ('category_id', '=', self.product_id.uom_id.category_id.id)]
+                ('category_id', '=', product.uom_id.category_id.id)]
 
         return {'domain': domain}
+
+    @api.onchange('uom_id')
+    def onchange_uom_id(self):
+        """Update uom_code field when uom_id is changed."""
+        warning = {}
+        result = {}
+        self.onchange_product_id()
+        if not self.uom_id:
+            self.price_unit = 0.0
+        if self.product_id and self.uom_id:
+            if self.product_id.uom_id.category_id.id != \
+               self.uom_id.category_id.id:
+                warning = {
+                    'title': _(u"Попередження!"),
+                    'message': _("Обрана одиниця виміру не "
+                                 "сумісна з одиницею виміру "
+                                 "товару."),
+                }
+                self.uom_id = self.product_id.uom_id.id
+        if warning:
+            result['warning'] = warning
+        return result
 
 
 class TaxInvoiceTax(models.Model):
