@@ -285,10 +285,9 @@ class TaxInvoice(models.Model):
                                   states={'draft': [('readonly', False)]},
                                   default=_default_currency,
                                   track_visibility='always')
-    # company_currency_id = fields.Many2one('res.currency',
-    #                                       related='company_id.currency_id',
-    #                                       readonly=True)
-    # no conpany_id here!
+    company_currency_id = fields.Many2one('res.currency',
+                                          related='company_id.currency_id',
+                                          readonly=True)
     journal_id = fields.Many2one('account.journal',
                                  string='Journal',
                                  required=True,
@@ -306,6 +305,19 @@ class TaxInvoice(models.Model):
                                  default=lambda self: (
                                   self.env['res.company']._company_default_get(
                                      'account.invoice')))
+    account_id = fields.Many2one('account.account',
+                                 string=u"Рахунок",
+                                 required=True,
+                                 readonly=True,
+                                 states={'draft': [('readonly', False)]},
+                                 domain=[('deprecated', '=', False)],
+                                 help=u"Рахунок розрахунків по ПДВ")
+    fiscal_position_id = fields.Many2one('account.fiscal.position',  # Drop me
+                                         string='Fiscal Position',
+                                         oldname='fiscal_position',
+                                         readonly=True,
+                                         states={'draft': [('readonly',
+                                                            False)]})
 
 
 class TaxInvoiceLine(models.Model):
@@ -374,16 +386,19 @@ class TaxInvoiceLine(models.Model):
     ukt_zed = fields.Char(string=u"Код УКТ ЗЕД",
                           help=u"Код згідно УКТ ЗЕД",
                           size=10)
-    taxinvoice_line_tax_id = fields.Many2many('account.tax',
-                                              'account_invoice_line_tax',
-                                              'invoice_line_id', 'tax_id',
-                                              string=u"Ставка податку")
+    taxinvoice_line_tax_id = fields.Many2one('account.tax',
+                                             string=u"Ставка податку",
+                                             )
     price_subtotal = fields.Float(string=u"Вартість",
                                   digits=dp.get_precision('Account'),
                                   store=True,
                                   readonly=True,
                                   compute='_compute_subtotal'
                                   )
+    account_id = fields.Many2one('account.account', string=u"Рахунок",
+                                 required=True,
+                                 domain=[('deprecated', '=', False)],
+                                 help=u"Рахунок підтверженного ПДВ")
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -405,10 +420,40 @@ class TaxInvoiceLine(models.Model):
                     self.uom_code = self.uom_id.uom_code
             else:
                 self.uom_code = ''
+            if self.taxinvoice_line_tax_id:
+                if self.account_id != self.taxinvoice_line_tax_id.account_id:
+                    self.account_id = self.taxinvoice_line_tax_id.account_id
+
             domain['uom_id'] = []
         else:
             product = self.product_id
             self.ukt_zed = product.ukt_zed
+
+            if category == 'out_tax_invoice':
+                taxes = product.taxes_id
+            else:
+                taxes = product.supplier_taxes_id
+
+            if taxes:
+                found = False
+                for t in taxes:
+                    if not found:
+                        if t.company_id == company:
+                            if t.name.find(u"ПДВ"):
+                                self.taxinvoice_line_tax_id = t
+                                found = True
+                    else:
+                        break
+            else:
+                self.taxinvoice_line_tax_id = None
+
+            if self.taxinvoice_line_tax_id:
+                if self.taxinvoice_line_tax_id.account_id:
+                    self.account_id = self.taxinvoice_line_tax_id.account_id
+                else:
+                    self.account_id = None
+            else:
+                self.account_id = None
 
             if category == 'in_tax_invoice':
                 self.price_unit = self.price_unit or \
@@ -465,14 +510,19 @@ class TaxInvoiceLine(models.Model):
             result['warning'] = warning
         return result
 
+    @api.onchange('taxinvoice_line_tax_id')
+    def onchange_taxinvoice_line_tax_id(self):
+        """Update account_id field when taxinvoice_line_tax_id is changed."""
+        self.onchange_product_id()
+
 
 class TaxInvoiceTax(models.Model):
     _name = 'account.taxinvoice.tax'
     _description = 'Tax Invoice taxes'
+    _order = 'sequence'
 
     sequence = fields.Integer(string=u"Послідовність", default=10,
                               help=u"Перетягніть для зміни порядкового номеру")
-
     taxinvoice_id = fields.Many2one('account.taxinvoice',
                                     string=u"Посилання на ПН",
                                     ondelete='cascade', index=True)
@@ -482,17 +532,13 @@ class TaxInvoiceTax(models.Model):
                                  required=True)
     account_analytic_id = fields.Many2one('account.analytic.account',
                                           string=u"Аналітичний рахунок")
-    base = fields.Float(string=u"База", digits=dp.get_precision('Account'))
-    amount = fields.Float(string=u"Величина",
-                          digits=dp.get_precision('Account'))
+    amount = fields.Monetary()
     manual = fields.Boolean(string=u"Вручну", default=True)
-    base_code_id = fields.Many2one('account.tax.code', string=u"Код бази",
-                                   help=u"Код бази оподаткування")
-    base_amount = fields.Float(string=u"Величина бази податку",
-                               digits=dp.get_precision('Account'),
-                               default=0.0)
-    tax_code_id = fields.Many2one('account.tax.code', string=u"Код податку",
-                                  help=u"Код величини податку")
-    tax_amount = fields.Float(string=u"Величина податку",
-                              digits=dp.get_precision('Account'),
-                              default=0.0)
+    company_id = fields.Many2one('res.company',
+                                 string=u"Компанія",
+                                 related='account_id.company_id',
+                                 store=True, readonly=True)
+    tax_id = fields.Many2one('account.tax', string=u"Податок")
+    currency_id = fields.Many2one('res.currency',
+                                  related='taxinvoice_id.currency_id',
+                                  store=True, readonly=True)

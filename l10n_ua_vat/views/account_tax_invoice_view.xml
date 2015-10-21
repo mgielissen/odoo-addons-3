@@ -67,10 +67,43 @@
                                         <field name="discount"
                                             groups="sale.group_discount_per_so_line"/>
                                         <field name="taxinvoice_line_tax_id"
-                                            widget="many2many_tags"/>
+                                            context="{'category':parent.category}"
+                                            domain="[('company_id', '=', parent.company_id)]"
+                                            options="{'no_create': True}"/>
+                                        <field name="account_id"
+                                            groups="account.group_account_manager"
+                                            domain="[('company_id', '=', parent.company_id)]"/>
                                         <field name="price_subtotal"/>
                                     </tree>
                                 </field>
+                                <group>
+                                    <!-- <group>
+                                        <div class="oe_inline">
+                                            <field name="tax_line_ids">
+                                                <tree editable="bottom" string="Taxes">
+                                                    <field name="name"/>
+                                                    <field name="tax_id" invisible="1"/>
+                                                    <field name="account_analytic_id" invisible="1"/>
+                                                    <field name="sequence" invisible="1"/>
+                                                    <field name="manual" invisible="1"/>
+                                                    <field name="account_id" groups="account.group_account_invoice"/>
+                                                    <field name="account_analytic_id" domain="[('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting"/>
+                                                    <field name="amount"/>
+                                                    <field name="currency_id" invisible="1"/>
+                                                </tree>
+                                            </field>
+                                        </div>
+                                    </group> -->
+                                    <!-- <group class="oe_subtotal_footer oe_right">
+                                        <field name="amount_untaxed"/>
+                                        <field name="amount_tax"/>
+                                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                        <field name="payments_widget" colspan="2" nolabel="1" widget="payment"/>
+                                        <field name="residual" class="oe_subtotal_footer_separator" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                                        <field name="reconciled" invisible="1"/>
+                                        <field name="outstanding_credits_debits_widget" colspan="2" nolabel="1" widget="payment" attrs="{'invisible': [('state', 'not in', 'open')]}"/>
+                                    </group> -->
+                            </group>
                             </page>
 
                             <page string="Додатково">
@@ -81,13 +114,23 @@
                                         <field name="date_reg"/>
                                         <field name="currency_id"/>
                                         <field name="company_id"/>
+                                        <field name="account_id"
+                                            groups="account.group_account_manager"
+                                            domain="[('company_id', '=', company_id)]"/>
                                     </group>
                                     <group>
                                         <field name="horig1"/>
                                         <field name="htypr"/>
                                         <field name="doc_type"/>
-                                        <field name="journal_id" groups="account.group_account_user" options="{'no_create': True}"/>
-                                        <field name="move_id"/>
+                                        <field name="journal_id"
+                                            groups="account.group_account_user"
+                                            options="{'no_create': True}"
+                                            domain="[('company_id', '=', company_id)]"/>
+                                        <field name="move_id"
+                                            groups="account.group_account_manager"
+                                            attrs="{'invisible': [('move_id', '=', False)]}"/>
+                                        <field name="fiscal_position_id"
+                                            domain="[('company_id', '=', company_id)]"/>
                                     </group>
                                 </group>
                             </page>
