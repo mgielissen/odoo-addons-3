@@ -164,7 +164,7 @@ class TaxInvoice(models.Model):
                      }.get(category, []), \
                     'True'), \
                 ]"  # Show only customers or suppliers
-                                    )
+    )
 
     ipn_partner = fields.Char(string=u"ІПН партнера")
     adr_partner = fields.Char(string=u"Адреса партнера")
@@ -287,15 +287,15 @@ class TaxInvoice(models.Model):
                                            ('company_id', '=', \
                                            company_id)]"
                                  )
-    company_id = fields.Many2one('res.company',
-                                 string=u"Компанія",
-                                 change_default=True,
-                                 required=True,
-                                 readonly=True,
-                                 states={'draft': [('readonly', False)]},
-                                 default=lambda self: (
-                                  self.env['res.company']._company_default_get(
-                                     'account.taxinvoice')))
+    company_id = fields.Many2one(
+        'res.company',
+        string=u"Компанія",
+        change_default=True,
+        required=True,
+        readonly=True,
+        states={'draft': [('readonly', False)]},
+        default=lambda self: (self.env['res.company']._company_default_get(
+            'account.taxinvoice')))
     account_id = fields.Many2one('account.account',
                                  string=u"Рахунок",
                                  required=True,
@@ -303,18 +303,25 @@ class TaxInvoice(models.Model):
                                  states={'draft': [('readonly', False)]},
                                  domain=[('deprecated', '=', False)],
                                  help=u"Рахунок розрахунків по ПДВ")
-    fiscal_position_id = fields.Many2one('account.fiscal.position',  # Drop me
-                                         string='Fiscal Position',
-                                         oldname='fiscal_position',
-                                         readonly=True,
-                                         states={'draft': [('readonly',
-                                                            False)]})
+    amount_untaxed = fields.Monetary(string=u"Разом",
+                                     store=True,
+                                     readonly=True,
+                                     compute='_compute_amount',
+                                     track_visibility='always')
+    amount_tax = fields.Monetary(string=u"Податок",
+                                 store=True,
+                                 readonly=True,
+                                 compute='_compute_amount')
+    amount_total = fields.Monetary(string=u"Всього",
+                                   store=True,
+                                   readonly=True,
+                                   compute='_compute_amount')
 
     @api.onchange('journal_id')
     def _onchange_journal_id(self):
         if self.journal_id:
             self.currency_id = self.journal_id.currency_id.id or \
-              self.journal_id.company_id.currency_id.id
+                self.journal_id.company_id.currency_id.id
 
     @api.onchange('taxinvoice_line_ids')
     def _onchange_taxinvoice_line_ids(self):
@@ -356,6 +363,19 @@ class TaxInvoice(models.Model):
                     tax_grouped[key]['amount'] += val['amount']
         return tax_grouped
 
+    @api.one
+    @api.depends('taxinvoice_line_ids.price_subtotal',
+                 'tax_line_ids.amount',
+                 'currency_id',
+                 'company_id')
+    def _compute_amount(self):
+        self.amount_untaxed = sum(
+            line.price_subtotal for line in self.taxinvoice_line_ids)
+        self.amount_tax = sum(line.amount for line in self.tax_line_ids)
+        self.amount_total = self.amount_untaxed + self.amount_tax
+        amount_total_company_signed = self.amount_total
+        amount_untaxed_signed = self.amount_untaxed
+
 
 class TaxInvoiceLine(models.Model):
     _name = 'account.taxinvoice.line'
@@ -380,9 +400,9 @@ class TaxInvoiceLine(models.Model):
                                   product=self.product_id,
                                   partner=partner)
         if taxes:
-            self.price_subtotal = price_subtotal_sign = taxes['total_excluded']
+            self.price_subtotal = taxes['total_excluded']
         else:
-            self.price_subtotal = price_subtotal_sign = self.quantity * price
+            self.price_subtotal = self.quantity * price
 
         # if currency:
         #     if currency != self.taxinvoice_id.company_id.currency_id:
@@ -449,6 +469,13 @@ class TaxInvoiceLine(models.Model):
         if not self.taxinvoice_id:
             return
 
+        if not self.taxinvoice_id.partner_id:
+            warning = {
+                'title': _(u"Попередження!"),
+                'message': _(u"Спочатку оберіть партнера!"),
+            }
+            return {'warning': warning}
+
         company = self.taxinvoice_id.company_id
         currency = self.taxinvoice_id.currency_id
         category = self.taxinvoice_id.category
@@ -499,7 +526,7 @@ class TaxInvoiceLine(models.Model):
 
             if category == 'in_tax_invoice':
                 self.price_unit = self.price_unit or \
-                                  product.standard_price
+                    product.standard_price
             else:
                 self.price_unit = product.lst_price
 
@@ -518,12 +545,12 @@ class TaxInvoiceLine(models.Model):
                         self.price_unit = product.standard_price
                     self.price_unit = self.price_unit * \
                         currency.with_context(dict(self._context or {},
-                                              date=self.date_vynyk)).rate
+                                                   date=self.date_vynyk)).rate
 
                 if self.uom_id and self.uom_id.id != product.uom_id.id:
                     self.price_unit = \
-                     self.env['product.uom']._compute_price(
-                        product.uom_id.id, self.price_unit, self.uom_id.id)
+                        self.env['product.uom']._compute_price(
+                            product.uom_id.id, self.price_unit, self.uom_id.id)
 
             domain['uom_id'] = [
                 ('category_id', '=', product.uom_id.category_id.id)]
