@@ -148,8 +148,8 @@ class TaxInvoice(models.Model):
 
     partner_id = fields.Many2one(
         'res.partner',
-        string=u"Продавець", ondelete='set null',
-        help=u"Компанія-постачальник", index=True,
+        string=u"Партнер", ondelete='set null',
+        help=u"Компанія-партнер", index=True,
         domain="[ \
                   ('supplier', \
                    { \
@@ -166,9 +166,9 @@ class TaxInvoice(models.Model):
                 ]"  # Show only customers or suppliers
                                     )
 
-    ipn_partner = fields.Char(string=u"ІПН продавця")
-    adr_partner = fields.Char(string=u"Адреса продавця")
-    tel_partner = fields.Char(string=u"Телефон продавця")
+    ipn_partner = fields.Char(string=u"ІПН партнера")
+    adr_partner = fields.Char(string=u"Адреса партнера")
+    tel_partner = fields.Char(string=u"Телефон партнера")
 
     contract_type = fields.Many2one('account.taxinvoice.contrtype',
                                     string=u"Тип договору",
@@ -431,7 +431,7 @@ class TaxInvoiceLine(models.Model):
                                                        ('company_id', '=', \
                                                        parent.company_id)]"
                                              )
-    price_subtotal = fields.Float(string=u"Вартість",
+    price_subtotal = fields.Float(string=u"Сума",
                                   digits=dp.get_precision('Account'),
                                   store=True,
                                   readonly=True,
@@ -580,7 +580,7 @@ class TaxInvoiceTax(models.Model):
                                  required=True)
     account_analytic_id = fields.Many2one('account.analytic.account',
                                           string=u"Аналітичний рахунок")
-    amount = fields.Monetary()
+    amount = fields.Monetary(string=u"Сума")
     manual = fields.Boolean(string=u"Вручну", default=True)
     company_id = fields.Many2one('res.company',
                                  string=u"Компанія",

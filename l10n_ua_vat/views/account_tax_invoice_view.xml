@@ -9,19 +9,26 @@
             <field name="arch" type="xml">
                 <form string="Форма податкової накладної">
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,open,paid" statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
+                        <field name="state" widget="statusbar"
+                            statusbar_visible="draft,open,paid"
+                            statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
                     </header>
                     <sheet>
-                        <div>
-                            <h1 class="mt0">
-                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'pn')]}" string="Податкова накладна"/>
-                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'rk')]}" string="Розрахунок коригування до ПН"/>
-                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'vmd')]}" string="Митна декларація"/>
-                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'tk')]}" string="Транспортний квиток"/>
-                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'bo')]}" string="Бухгалтерська довідка"/>
+                        <div class="oe_title">
+                            <h1>
+                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'pn')]}"
+                                    string="Податкова накладна"/>
+                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'rk')]}"
+                                    string="Розрахунок коригування до ПН"/>
+                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'vmd')]}"
+                                    string="Митна декларація"/>
+                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'tk')]}"
+                                    string="Транспортний квиток"/>
+                                <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'bo')]}"
+                                    string="Бухгалтерська довідка"/>
                             </h1>
                             <label class="oe_edit_only" for="date_vyp"/>
-                            <h3 class="mt0">
+                            <h3>
                                 Від
                                 <field class="oe_inline" name="date_vyp"/>
                                 номер
@@ -35,10 +42,31 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_id"/>
-                                <field name="ipn_partner"/>
-                                <field name="adr_partner"/>
-                                <field name="tel_partner"/>
+                                <field name="partner_id"
+                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
+                                    string="Покупець"/>
+                                <field name="partner_id"
+                                    attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
+                                    string="Продавець"/>
+                                <field name="ipn_partner"
+                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
+                                    string="ІПН покупця"/>
+                                <field name="ipn_partner"
+                                        attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
+                                        string="ІПН продавця"/>
+                                <field name="adr_partner"
+                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
+                                    string="Адреса покупця"/>
+                                <field name="adr_partner"
+                                        attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
+                                        string="Адреса продавця"/>
+                                <field name="tel_partner"
+                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
+                                    string="Телефон покупця"/>
+                                <field name="tel_partner"
+                                        attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
+                                        string="Телефон продавця"/>
+                                <field name="category" invisible="1"/>
                             </group>
                             <group>
                                 <field name="contract_numb"/>
