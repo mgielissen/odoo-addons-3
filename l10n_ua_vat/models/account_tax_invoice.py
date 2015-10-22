@@ -146,20 +146,29 @@ class TaxInvoice(models.Model):
         change_default=True, default='pn',
         track_visibility='always')
 
-    company_seller = fields.Many2one('res.partner',
-                                     string=u"Продавець", ondelete='set null',
-                                     help=u"Компанія-постачальник", index=True)
+    partner_id = fields.Many2one(
+        'res.partner',
+        string=u"Продавець", ondelete='set null',
+        help=u"Компанія-постачальник", index=True,
+        domain="[ \
+                  ('supplier', \
+                   { \
+                     'out_tax_invoice': '<=', \
+                     'in_tax_invoice': '=' \
+                    }.get(category, []), \
+                   'True'), \
+                   ('customer', \
+                    { \
+                      'out_tax_invoice': '=', \
+                      'in_tax_invoice': '<=' \
+                     }.get(category, []), \
+                    'True'), \
+                ]"  # Show only customers or suppliers
+                                    )
 
-    company_buyer = fields.Many2one('res.partner',
-                                    string=u"Покупець", ondelete='set null',
-                                    help=u"Компанія-отримувач", index=True)
-
-    ipn_seller = fields.Char(string=u"ІПН продавця")
-    ipn_buyer = fields.Char(string=u"ІПН покупця")
-    adr_seller = fields.Char(string=u"Адреса продавця")
-    adr_buyer = fields.Char(string=u"Адреса покупця")
-    tel_seller = fields.Char(string=u"Телефон продавця")
-    tel_buyer = fields.Char(string=u"Телефон покупця")
+    ipn_partner = fields.Char(string=u"ІПН продавця")
+    adr_partner = fields.Char(string=u"Адреса продавця")
+    tel_partner = fields.Char(string=u"Телефон продавця")
 
     contract_type = fields.Many2one('account.taxinvoice.contrtype',
                                     string=u"Тип договору",
@@ -193,56 +202,30 @@ class TaxInvoice(models.Model):
                     (TYPES[inv.doc_type], inv.number, datef)))
         return result
 
-    @api.onchange('company_seller')
-    def update_seller_info(self):
-        if not self.company_seller:
+    @api.onchange('partner_id')
+    def update_partner_info(self):
+        if not self.partner_id:
             return
         else:
-            self.ipn_seller = self.company_seller.vat if \
-                self.company_seller.vat else ''
-            self.tel_seller = self.company_seller.phone if \
-                self.company_seller.phone else ''
-            self.adr_seller = ''
-            if self.company_seller.zip:
-                self.adr_seller = self.adr_seller + self.company_seller.zip
-            if self.company_seller.state_id.name:
-                self.adr_seller = self.adr_seller + ', ' + \
-                    self.company_seller.state_id.name
-            if self.company_seller.city:
-                self.adr_seller = self.adr_seller + \
-                    ', ' + self.company_seller.city
-            if self.company_seller.street:
-                self.adr_seller = self.adr_seller + \
-                    ', ' + self.company_seller.street
-            if self.company_seller.street2:
-                self.adr_seller = self.adr_seller + \
-                    ', ' + self.company_seller.street2
-        return {}
-
-    @api.onchange('company_buyer')
-    def update_buyer_info(self):
-        if not self.company_buyer:
-            return
-        else:
-            self.ipn_buyer = self.company_buyer.vat if \
-                self.company_buyer.vat else ''
-            self.tel_buyer = self.company_buyer.phone if \
-                self.company_buyer.phone else ''
-            self.adr_buyer = ''
-            if self.company_buyer.zip:
-                self.adr_buyer = self.adr_buyer + self.company_buyer.zip
-            if self.company_buyer.state_id.name:
-                self.adr_buyer = self.adr_buyer + ', ' + \
-                    self.company_buyer.state_id.name
-            if self.company_buyer.city:
-                self.adr_buyer = self.adr_buyer + \
-                    ', ' + self.company_buyer.city
-            if self.company_buyer.street:
-                self.adr_buyer = self.adr_buyer + \
-                    ', ' + self.company_buyer.street
-            if self.company_buyer.street2:
-                self.adr_buyer = self.adr_buyer + \
-                    ', ' + self.company_buyer.street2
+            self.ipn_partner = self.partner_id.vat if \
+                self.partner_id.vat else ''
+            self.tel_partner = self.partner_id.phone if \
+                self.partner_id.phone else ''
+            self.adr_partner = ''
+            if self.partner_id.zip:
+                self.adr_partner = self.adr_partner + self.partner_id.zip
+            if self.partner_id.state_id.name:
+                self.adr_partner = self.adr_partner + ', ' + \
+                    self.partner_id.state_id.name
+            if self.partner_id.city:
+                self.adr_partner = self.adr_partner + \
+                    ', ' + self.partner_id.city
+            if self.partner_id.street:
+                self.adr_partner = self.adr_partner + \
+                    ', ' + self.partner_id.street
+            if self.partner_id.street2:
+                self.adr_partner = self.adr_partner + \
+                    ', ' + self.partner_id.street2
         return {}
 
     @api.model
@@ -295,7 +278,14 @@ class TaxInvoice(models.Model):
                                  readonly=True,
                                  states={'draft': [('readonly', False)]},
                                  default=_default_journal,
-                                 domain="[('company_id', '=', company_id)]"
+                                 domain="[('type', 'in', \
+                                          {'out_tax_invoice': \
+                                           ['sale'], \
+                                           'in_tax_invoice': \
+                                           ['purchase']}.get( \
+                                           category, [])), \
+                                           ('company_id', '=', \
+                                           company_id)]"
                                  )
     company_id = fields.Many2one('res.company',
                                  string=u"Компанія",
@@ -305,7 +295,7 @@ class TaxInvoice(models.Model):
                                  states={'draft': [('readonly', False)]},
                                  default=lambda self: (
                                   self.env['res.company']._company_default_get(
-                                     'account.invoice')))
+                                     'account.taxinvoice')))
     account_id = fields.Many2one('account.account',
                                  string=u"Рахунок",
                                  required=True,
@@ -338,10 +328,7 @@ class TaxInvoice(models.Model):
     @api.multi
     def get_taxes_values(self):
         tax_grouped = {}
-        if self.category == 'out_tax_invoice':
-            partner = self.company_buyer
-        if self.category == 'in_tax_invoice':
-            partner = self.company_seller
+        partner = self.partner_id
         for line in self.taxinvoice_line_ids:
             price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             tl_id = line.taxinvoice_line_tax_id
@@ -380,10 +367,7 @@ class TaxInvoiceLine(models.Model):
     def _compute_subtotal(self):
         if self.taxinvoice_id:
             currency = self.taxinvoice_id.currency_id
-            if self.taxinvoice_id.category == 'out_tax_invoice':
-                partner = self.taxinvoice_id.company_buyer
-            if self.taxinvoice_id.category == 'in_tax_invoice':
-                partner = self.taxinvoice_id.company_seller
+            partner = self.taxinvoice_id.partner_id
         else:
             currency = None
             partner = None
@@ -438,6 +422,14 @@ class TaxInvoiceLine(models.Model):
                           size=10)
     taxinvoice_line_tax_id = fields.Many2one('account.tax',
                                              string=u"Ставка податку",
+                                             domain="[('type_tax_use', 'in', \
+                                                      {'out_tax_invoice': \
+                                                       ['sale'], \
+                                                       'in_tax_invoice': \
+                                                       ['purchase']}.get( \
+                                                       parent.category, [])), \
+                                                       ('company_id', '=', \
+                                                       parent.company_id)]"
                                              )
     price_subtotal = fields.Float(string=u"Вартість",
                                   digits=dp.get_precision('Account'),

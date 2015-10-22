@@ -12,8 +12,8 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,open,paid" statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
                     </header>
                     <sheet>
-                        <div class="oe_title">
-                            <h1>
+                        <div>
+                            <h1 class="mt0">
                                 <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'pn')]}" string="Податкова накладна"/>
                                 <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'rk')]}" string="Розрахунок коригування до ПН"/>
                                 <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'vmd')]}" string="Митна декларація"/>
@@ -21,7 +21,7 @@
                                 <label attrs="{'invisible': [('doc_type', '&lt;&gt;', 'bo')]}" string="Бухгалтерська довідка"/>
                             </h1>
                             <label class="oe_edit_only" for="date_vyp"/>
-                            <h3>
+                            <h3 class="mt0">
                                 Від
                                 <field class="oe_inline" name="date_vyp"/>
                                 номер
@@ -31,24 +31,20 @@
                                 /
                                 <field class="oe_inline" name="number2"/>
                             </h3>
+                            <field name="doc_type" invisible="1"/>
                         </div>
                         <group>
                             <group>
-                                <field name="company_seller"/>
-                                <field name="ipn_seller"/>
-                                <field name="adr_seller"/>
-                                <field name="tel_seller"/>
-                                <newline/>
-                                <field name="contract_type"/>
-                                <field name="payment_meth"/>
+                                <field name="partner_id"/>
+                                <field name="ipn_partner"/>
+                                <field name="adr_partner"/>
+                                <field name="tel_partner"/>
                             </group>
                             <group>
-                                <field name="company_buyer"/>
-                                <field name="ipn_buyer"/>
-                                <field name="adr_buyer"/>
-                                <field name="tel_buyer"/>
                                 <field name="contract_numb"/>
                                 <field name="contract_date"/>
+                                <field name="contract_type"/>
+                                <field name="payment_meth"/>
                             </group>
                         </group>
                         <notebook>
@@ -68,7 +64,6 @@
                                             groups="sale.group_discount_per_so_line"/>
                                         <field name="taxinvoice_line_tax_id"
                                             context="{'category':parent.category}"
-                                            domain="[('company_id', '=', parent.company_id)]"
                                             options="{'no_create': True}"/>
                                         <field name="account_id"
                                             groups="account.group_account_manager"
@@ -127,8 +122,7 @@
                                         <field name="doc_type"/>
                                         <field name="journal_id"
                                             groups="account.group_account_user"
-                                            options="{'no_create': True}"
-                                            domain="[('company_id', '=', company_id)]"/>
+                                            options="{'no_create': True}"/>
                                         <field name="move_id"
                                             groups="account.group_account_manager"
                                             attrs="{'invisible': [('move_id', '=', False)]}"/>
@@ -151,10 +145,9 @@
                 <tree string="Список ПН">
                     <field name="date_vyp"/>
                     <field name="number"/>
-                    <field name="company_seller"/>
-                    <field name="ipn_seller"/>
-                    <field name="company_buyer"/>
-                    <field name="ipn_buyer"/>
+                    <field name="partner_id"/>
+                    <field name="ipn_partner"/>
+                    <field name="company_id"/>
                     <field name="state"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="journal_id" invisible="1"/>
