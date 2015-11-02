@@ -90,13 +90,14 @@
                                         <field name="price_unit"/>
                                         <field name="discount"
                                             groups="sale.group_discount_per_so_line"/>
+                                        <field name="price_subtotal"/>
                                         <field name="taxinvoice_line_tax_id"
                                             context="{'category':parent.category}"
                                             options="{'no_create': True}"/>
-                                        <field name="account_id"
+                                        <!-- <field name="account_id"
                                             groups="account.group_account_manager"
-                                            domain="[('company_id', '=', parent.company_id)]"/>
-                                        <field name="price_subtotal"/>
+                                            domain="[('company_id', '=', parent.company_id)]"/> -->
+                                        <field name="tax_amount"/>
                                     </tree>
                                 </field>
                                 <group>
@@ -111,9 +112,9 @@
                                                     <field name="manual" invisible="1"/>
                                                     <field name="account_id"
                                                         groups="account.group_account_invoice"/>
-                                                    <field name="account_analytic_id"
+                                                    <field name="account_id"
                                                         domain="[('company_id', '=', parent.company_id)]"
-                                                        groups="analytic.group_analytic_accounting"/>
+                                                        groups="analytic.group_account_manager"/>
                                                     <field name="amount"/>
                                                     <field name="currency_id" invisible="1"/>
                                                 </tree>

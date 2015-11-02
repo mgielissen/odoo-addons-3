@@ -339,28 +339,35 @@ class TaxInvoice(models.Model):
         for line in self.taxinvoice_line_ids:
             price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             tl_id = line.taxinvoice_line_tax_id
-            taxes = tl_id.compute_all(price_unit,
-                                      self.currency_id,
-                                      line.quantity,
-                                      line.product_id,
-                                      partner=partner)['taxes']
-            for tax in taxes:
-                val = {
-                    'invoice_id': self.id,
-                    'name': tax['name'],
-                    'tax_id': tax['id'],
-                    'amount': tax['amount'],
-                    'manual': False,
-                    'sequence': tax['sequence'],
-                    'account_analytic_id': tax['analytic'],
-                    'account_id': (tax['account_id'] or line.account_id.id),
-                }
 
-                key = tax['id']
-                if key not in tax_grouped:
-                    tax_grouped[key] = val
-                else:
-                    tax_grouped[key]['amount'] += val['amount']
+            prec = self.currency_id.decimal_places
+            if self.company_id.tax_calculation_rounding_method == \
+               'round_globally':
+                    prec += 5
+            total_excluded = total_included = base = \
+                round(price_unit * line.quantity, prec)
+
+            tax_amount = base * tl_id.amount / 100
+            tax_amount = self.currency_id.round(tax_amount)
+
+            total_included += tax_amount
+
+            val = {  # TODO add tax base
+                'invoice_id': self.id,
+                'name': tl_id.name,
+                'tax_id': tl_id.id,
+                'amount': tax_amount,
+                'manual': False,
+                'sequence': tl_id.sequence,
+                'account_analytic_id': tl_id.analytic,
+                'account_id': (tl_id.account_id or line.account_id.id),
+            }
+
+            key = tl_id.id
+            if key not in tax_grouped:
+                tax_grouped[key] = val
+            else:
+                tax_grouped[key]['amount'] += val['amount']
         return tax_grouped
 
     @api.one
@@ -387,31 +394,16 @@ class TaxInvoiceLine(models.Model):
     def _compute_subtotal(self):
         if self.taxinvoice_id:
             currency = self.taxinvoice_id.currency_id
-            partner = self.taxinvoice_id.partner_id
-        else:
-            currency = None
-            partner = None
+        if not currency:
+            currency = self.company_id.currency_id
 
         tl_id = self.taxinvoice_line_tax_id
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
-        taxes = tl_id.compute_all(price,
-                                  currency,
-                                  self.quantity,
-                                  product=self.product_id,
-                                  partner=partner)
-        if taxes:
-            self.price_subtotal = taxes['total_excluded']
-        else:
-            self.price_subtotal = self.quantity * price
-
-        # if currency:
-        #     if currency != self.taxinvoice_id.company_id.currency_id:
-        #         price_subtotal_sign = \
-        #             currency.compute(price_subtotal_sign,
-        #                             self.taxinvoice_id.company_id.currency_id)
-        # sign= self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
-        # self.price_subtotal_signed = price_subtotal_signed * sign
-        # used to calculate signed subtotal for analytic line
+        self.price_subtotal = self.quantity * price
+        self.tax_amount = self.price_subtotal * tl_id.amount / 100
+        if currency:
+            self.price_subtotal = currency.round(self.price_subtotal)
+            self.tax_amount = currency.round(self.tax_amount)
 
     sequence = fields.Integer(string=u"Послідовність", default=10,
                               help=u"Перетягніть для зміни порядкового номеру")
@@ -425,8 +417,8 @@ class TaxInvoiceLine(models.Model):
                                  ondelete='restrict', index=True)
     uom_id = fields.Many2one('product.uom', string=u"Одиниця виміру",
                              ondelete='set null', index=True)
-    uom_code = fields.Char(string=u"Код КСПОВО",
-                           help=u"Код одниниць згідно КСПОВО",
+    uom_code = fields.Char(string=u"Код одиниць",
+                           help=u"Код одниниць виміру згідно КСПОВО",
                            size=4)
     price_unit = fields.Float(string=u"Ціна за одиницю", required=True,
                               digits=dp.get_precision('Product Price'),
@@ -449,8 +441,9 @@ class TaxInvoiceLine(models.Model):
                                                        ['purchase']}.get( \
                                                        parent.category, [])), \
                                                        ('company_id', '=', \
-                                                       parent.company_id)]"
-                                             )
+                                                       parent.company_id), \
+                                                       ('name', 'like', \
+                                                       u'ПДВ')]")
     price_subtotal = fields.Float(string=u"Сума",
                                   digits=dp.get_precision('Account'),
                                   store=True,
@@ -461,6 +454,10 @@ class TaxInvoiceLine(models.Model):
                                  required=True,
                                  domain=[('deprecated', '=', False)],
                                  help=u"Рахунок підтверженного ПДВ")
+    tax_amount = fields.Float(string=u"Сума податку",
+                              digits=dp.get_precision('Account'),
+                              store=True,
+                              compute='_compute_subtotal')
 
     @api.onchange('product_id')
     def onchange_product_id(self):

@@ -12,6 +12,7 @@
     'category': 'Localization/Account Charts',
     'version': '0.1',
     'depends': ['account',
+                'account_accountant',
                 'l10n_ua'
                 ],
     'data': [
