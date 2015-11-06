@@ -112,9 +112,7 @@
                                                     <field name="manual" invisible="1"/>
                                                     <field name="account_id"
                                                         groups="account.group_account_invoice"/>
-                                                    <field name="account_id"
-                                                        domain="[('company_id', '=', parent.company_id)]"
-                                                        groups="analytic.group_account_manager"/>
+                                                    <field name="base"/>
                                                     <field name="amount"/>
                                                     <field name="currency_id" invisible="1"/>
                                                 </tree>

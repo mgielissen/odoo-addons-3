@@ -356,6 +356,7 @@ class TaxInvoice(models.Model):
                 'invoice_id': self.id,
                 'name': tl_id.name,
                 'tax_id': tl_id.id,
+                'base': base,
                 'amount': tax_amount,
                 'manual': False,
                 'sequence': tl_id.sequence,
@@ -368,6 +369,7 @@ class TaxInvoice(models.Model):
                 tax_grouped[key] = val
             else:
                 tax_grouped[key]['amount'] += val['amount']
+                tax_grouped[key]['base'] += val['base']
         return tax_grouped
 
     @api.one
@@ -604,6 +606,7 @@ class TaxInvoiceTax(models.Model):
                                  required=True)
     account_analytic_id = fields.Many2one('account.analytic.account',
                                           string=u"Аналітичний рахунок")
+    base = fields.Monetary(string=u"База")
     amount = fields.Monetary(string=u"Сума")
     manual = fields.Boolean(string=u"Вручну", default=True)
     company_id = fields.Many2one('res.company',
