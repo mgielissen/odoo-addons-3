@@ -337,39 +337,43 @@ class TaxInvoice(models.Model):
         tax_grouped = {}
         partner = self.partner_id
         for line in self.taxinvoice_line_ids:
-            price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             tl_id = line.taxinvoice_line_tax_id
+            if tl_id.name.find(u"ПДВ") >= 0:
+                price_unit = line.price_unit * (1 -
+                                                (line.discount or 0.0) / 100.0)
 
-            prec = self.currency_id.decimal_places
-            if self.company_id.tax_calculation_rounding_method == \
-               'round_globally':
-                    prec += 5
-            total_excluded = total_included = base = \
-                round(price_unit * line.quantity, prec)
+                prec = self.currency_id.decimal_places
+                if self.company_id.tax_calculation_rounding_method == \
+                   'round_globally':
+                        prec += 5
+                total_excluded = total_included = base = \
+                    round(price_unit * line.quantity, prec)
 
-            tax_amount = base * tl_id.amount / 100
-            tax_amount = self.currency_id.round(tax_amount)
+                tax_amount = base * tl_id.amount / 100
+                tax_amount = self.currency_id.round(tax_amount)
 
-            total_included += tax_amount
+                total_included += tax_amount
 
-            val = {  # TODO add tax base
-                'invoice_id': self.id,
-                'name': tl_id.name,
-                'tax_id': tl_id.id,
-                'base': base,
-                'amount': tax_amount,
-                'manual': False,
-                'sequence': tl_id.sequence,
-                'account_analytic_id': tl_id.analytic,
-                'account_id': (tl_id.account_id or line.account_id.id),
-            }
+                val = {
+                    'invoice_id': self.id,
+                    'name': tl_id.name,
+                    'tax_id': tl_id.id,
+                    'base': base,
+                    'amount': tax_amount,
+                    'manual': False,
+                    'sequence': tl_id.sequence,
+                    'account_analytic_id': tl_id.analytic,
+                    'account_id': (tl_id.account_id or line.account_id.id),
+                }
 
-            key = tl_id.id
-            if key not in tax_grouped:
-                tax_grouped[key] = val
+                key = tl_id.id
+                if key not in tax_grouped:
+                    tax_grouped[key] = val
+                else:
+                    tax_grouped[key]['amount'] += val['amount']
+                    tax_grouped[key]['base'] += val['base']
             else:
-                tax_grouped[key]['amount'] += val['amount']
-                tax_grouped[key]['base'] += val['base']
+                continue
         return tax_grouped
 
     @api.one
@@ -507,7 +511,7 @@ class TaxInvoiceLine(models.Model):
                 for t in taxes:
                     if not found:
                         if t.company_id == company:
-                            if t.name.find(u"ПДВ"):
+                            if t.name.find(u"ПДВ") >= 0:
                                 self.taxinvoice_line_tax_id = t
                                 found = True
                     else:
