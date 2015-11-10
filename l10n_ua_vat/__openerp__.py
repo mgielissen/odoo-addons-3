@@ -18,6 +18,7 @@
     'data': [
         'templates/templates.xml',
         'views/account_tax_invoice_view.xml',
+        'views/account_tax_invoice_workflow.xml',
         'views/account_spr_sti_view.xml',
         'views/company_view.xml',
         'views/product_view.xml',

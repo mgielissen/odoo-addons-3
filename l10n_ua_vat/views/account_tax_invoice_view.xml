@@ -9,9 +9,34 @@
             <field name="arch" type="xml">
                 <form string="Форма податкової накладної">
                     <header>
+                        <button name="taxinvoice_ready"
+                            states="draft"
+                            string="Підтвердити"
+                            class="oe_highlight"
+                            groups="account.group_account_invoice"/>
+                        <button name="taxinvoice_sent"
+                            states="ready"
+                            string="Відправлено в ЄРПН"
+                            class="oe_highlight"
+                            groups="account.group_account_invoice"/>
+                        <button name="taxinvoice_export_xml"
+                            string="Вивантажити в xml"
+                            type="object"
+                            attrs="{'invisible': ['|',('state', '!=', 'ready'), ('category', '=', 'in_tax_invoice')]}"
+                            groups="base.group_user"/>
+                        <button name="taxinvoice_registered"
+                            states="sent"
+                            string="Зареєстровано в ЄРПН"
+                            class="oe_highlight"
+                            groups="account.group_account_invoice"/>
+                        <button name="taxinvoice_cancel"
+                            states="draft,ready"
+                            string="Скасувати"
+                            groups="account.group_account_invoice"/>
+
                         <field name="state" widget="statusbar"
-                            statusbar_visible="draft,open,paid"
-                            statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
+                            statusbar_visible="draft,ready,sent,registered"
+                            statusbar_colors='{"sent":"blue","registered":"red"}'/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -43,29 +68,13 @@
                         <group>
                             <group>
                                 <field name="partner_id"
-                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
-                                    string="Покупець"/>
-                                <field name="partner_id"
-                                    attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
-                                    string="Продавець"/>
+                                    string="Партнер"/>
                                 <field name="ipn_partner"
-                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
-                                    string="ІПН покупця"/>
-                                <field name="ipn_partner"
-                                        attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
-                                        string="ІПН продавця"/>
+                                    string="ІПН партнера"/>
                                 <field name="adr_partner"
-                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
-                                    string="Адреса покупця"/>
-                                <field name="adr_partner"
-                                        attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
-                                        string="Адреса продавця"/>
+                                    string="Адреса партнера"/>
                                 <field name="tel_partner"
-                                    attrs="{'invisible': [('category', '&lt;&gt;', 'out_tax_invoice')]}"
-                                    string="Телефон покупця"/>
-                                <field name="tel_partner"
-                                        attrs="{'invisible': [('category', '&lt;&gt;', 'in_tax_invoice')]}"
-                                        string="Телефон продавця"/>
+                                    string="Телефон партера"/>
                                 <field name="category" invisible="1"/>
                             </group>
                             <group>

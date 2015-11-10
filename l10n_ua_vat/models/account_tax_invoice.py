@@ -30,12 +30,11 @@ class TaxInvoice(models.Model):
     _description = 'Tax Invoice'
 
     state = fields.Selection([
-                             ('draft', 'Draft'),
-                             ('proforma', 'Pro-forma'),   # TODO edit states
-                             ('proforma2', 'Pro-forma'),
-                             ('open', 'Open'),
-                             ('paid', 'Paid'),
-                             ('cancel', 'Cancelled'),
+                             ('draft', u"Чорновий"),
+                             ('ready', u"Підготовлено"),
+                             ('sent', u"На реєстрації"),
+                             ('registered', u"Зареєстровано"),
+                             ('cancel', u"Скасовано"),
                              ],
                              string=u"Статус",
                              index=True,
@@ -337,41 +336,42 @@ class TaxInvoice(models.Model):
         tax_grouped = {}
         partner = self.partner_id
         for line in self.taxinvoice_line_ids:
-            tl_id = line.taxinvoice_line_tax_id
-            if tl_id.name.find(u"ПДВ") >= 0:
-                price_unit = line.price_unit * (1 -
-                                                (line.discount or 0.0) / 100.0)
+            if line.taxinvoice_line_tax_id:
+                tl_id = line.taxinvoice_line_tax_id
+                if tl_id.name.find(u"ПДВ") >= 0:
+                    price_unit = line.price_unit * \
+                     (1 - (line.discount or 0.0) / 100.0)
 
-                prec = self.currency_id.decimal_places
-                if self.company_id.tax_calculation_rounding_method == \
-                   'round_globally':
-                        prec += 5
-                total_excluded = total_included = base = \
-                    round(price_unit * line.quantity, prec)
+                    prec = self.currency_id.decimal_places
+                    if self.company_id.tax_calculation_rounding_method == \
+                       'round_globally':
+                            prec += 5
+                    total_excluded = total_included = base = \
+                        round(price_unit * line.quantity, prec)
 
-                tax_amount = base * tl_id.amount / 100
-                tax_amount = self.currency_id.round(tax_amount)
+                    tax_amount = base * tl_id.amount / 100
+                    tax_amount = self.currency_id.round(tax_amount)
 
-                total_included += tax_amount
+                    total_included += tax_amount
 
-                val = {
-                    'invoice_id': self.id,
-                    'name': tl_id.name,
-                    'tax_id': tl_id.id,
-                    'base': base,
-                    'amount': tax_amount,
-                    'manual': False,
-                    'sequence': tl_id.sequence,
-                    'account_analytic_id': tl_id.analytic,
-                    'account_id': (tl_id.account_id or line.account_id.id),
-                }
+                    val = {
+                        'invoice_id': self.id,
+                        'name': tl_id.name,
+                        'tax_id': tl_id.id,
+                        'base': base,
+                        'amount': tax_amount,
+                        'manual': False,
+                        'sequence': tl_id.sequence,
+                        'account_analytic_id': tl_id.analytic,
+                        'account_id': (tl_id.account_id or line.account_id.id),
+                    }
 
-                key = tl_id.id
-                if key not in tax_grouped:
-                    tax_grouped[key] = val
-                else:
-                    tax_grouped[key]['amount'] += val['amount']
-                    tax_grouped[key]['base'] += val['base']
+                    key = tl_id.id
+                    if key not in tax_grouped:
+                        tax_grouped[key] = val
+                    else:
+                        tax_grouped[key]['amount'] += val['amount']
+                        tax_grouped[key]['base'] += val['base']
             else:
                 continue
         return tax_grouped
@@ -388,6 +388,26 @@ class TaxInvoice(models.Model):
         self.amount_total = self.amount_untaxed + self.amount_tax
         amount_total_company_signed = self.amount_total
         amount_untaxed_signed = self.amount_untaxed
+
+    @api.multi
+    def action_ready(self):
+        return self.write({'state': 'ready'})
+
+    @api.multi
+    def action_sent(self):
+        return self.write({'state': 'sent'})
+
+    @api.multi
+    def action_registered(self):
+        return self.write({'state': 'registered'})
+
+    @api.multi
+    def action_cancel(self):
+        return self.write({'state': 'cancel'})
+
+    @api.multi
+    def taxinvoice_export_xml(self):
+        return
 
 
 class TaxInvoiceLine(models.Model):

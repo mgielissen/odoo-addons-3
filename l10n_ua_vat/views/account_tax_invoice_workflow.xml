@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="ti_wkf" model="workflow">
+            <field name="name">account.taxinvoice.basic</field>
+            <field name="osv">account.taxinvoice</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record id="act_draft" model="workflow.activity">
+            <field name="wkf_id" ref="ti_wkf"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+        <record id="act_ready" model="workflow.activity">
+            <field name="wkf_id" ref="ti_wkf"/>
+            <field name="name">ready</field>
+            <field name="action">
+                action_ready()
+            </field>
+            <field name="kind">function</field>
+        </record>
+        <record id="act_sent" model="workflow.activity">
+            <field name="wkf_id" ref="ti_wkf"/>
+            <field name="name">sent</field>
+            <field name="action">
+                action_sent()
+            </field>
+            <field name="kind">function</field>
+        </record>
+        <record id="act_registered" model="workflow.activity">
+            <field name="wkf_id" ref="ti_wkf"/>
+            <field name="name">registered</field>
+            <!-- <field name="flow_stop">True</field> -->
+            <field name="action">
+                action_registered()
+            </field>
+            <field name="kind">function</field>
+            <field name="signal_send">subflow.registered</field>
+        </record>
+        <record id="act_cancel" model="workflow.activity">
+            <field name="wkf_id" ref="ti_wkf"/>
+            <field name="name">cancel</field>
+            <field name="flow_stop">True</field>
+            <field name="action">
+                action_cancel()
+            </field>
+            <field name="kind">function</field>
+        </record>
+
+        <record id="ti_dr" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_ready"/>
+            <field name="signal">taxinvoice_ready</field>
+        </record>
+        <record id="ti_dc" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">taxinvoice_cancel</field>
+        </record>
+        <record id="ti_rc" model="workflow.transition">
+            <field name="act_from" ref="act_ready"/>
+            <field name="act_to" ref="act_cancel"/>
+            <field name="signal">taxinvoice_cancel</field>
+        </record>
+        <record id="ti_rs" model="workflow.transition">
+            <field name="act_from" ref="act_ready"/>
+            <field name="act_to" ref="act_sent"/>
+            <field name="signal">taxinvoice_sent</field>
+        </record>
+        <record id="ti_sr" model="workflow.transition">
+            <field name="act_from" ref="act_sent"/>
+            <field name="act_to" ref="act_registered"/>
+            <field name="signal">taxinvoice_registered</field>
+        </record>
+    </data>
+</openerp>
