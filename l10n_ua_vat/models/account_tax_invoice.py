@@ -109,12 +109,15 @@ class TaxInvoice(models.Model):
         change_default=True, default='00',
         track_visibility='always')
 
-    date_vyp = fields.Date(string=u"Дата документу", index=True,
-                           readonly=True,
-                           states={'draft': [('readonly', False)]},
-                           help=u"Дата першої події з ПДВ",
-                           copy=True,
-                           required=True)
+    date_vyp = fields.Date(
+        string=u"Дата документу",
+        index=True,
+        readonly=True,
+        states={'draft': [('readonly', False)]},
+        help=u"Дата першої події з ПДВ",
+        default=lambda self: fields.Date.context_today(self),
+        copy=True,
+        required=True)
 
     date_reg = fields.Date(string=u"Дата реєстрації", index=True,
                            readonly=True,
@@ -504,8 +507,9 @@ class TaxInvoiceLine(models.Model):
         category = self.taxinvoice_id.category
 
         if not self.product_id:
+            self.date_vynyk = self.taxinvoice_id.date_vyp
             self.price_unit = 0.0
-            self.quantity = 0.0
+            self.quantity = 1
             self.ukt_zed = ''
             if self.uom_id:
                 if self.uom_code != self.uom_id.uom_code:
