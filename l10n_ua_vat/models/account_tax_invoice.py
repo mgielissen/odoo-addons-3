@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, _
+from openerp.exceptions import RedirectWarning, UserError
 import openerp.addons.decimal_precision as dp
 
 
@@ -343,12 +344,12 @@ class TaxInvoice(models.Model):
                 tl_id = line.taxinvoice_line_tax_id
                 if tl_id.name.find(u"ПДВ") >= 0:
                     price_unit = line.price_unit * \
-                     (1 - (line.discount or 0.0) / 100.0)
+                        (1 - (line.discount or 0.0) / 100.0)
 
                     prec = self.currency_id.decimal_places
                     if self.company_id.tax_calculation_rounding_method == \
                        'round_globally':
-                            prec += 5
+                        prec += 5
                     total_excluded = total_included = base = \
                         round(price_unit * line.quantity, prec)
 
@@ -411,6 +412,94 @@ class TaxInvoice(models.Model):
     @api.multi
     def taxinvoice_export_xml(self):
         return
+
+    @api.multi
+    def action_move_create(self):
+        """ Creates tax invoice related financial move lines """
+        account_move = self.env['account.move']
+
+        for tinv in self:
+            if not tinv.journal_id.sequence_id:
+                raise UserError(
+                    _('Please define sequence on the journal related to this '
+                        'invoice.'))
+            if not tinv.taxinvoice_line_ids:
+                raise UserError(_('Please create some invoice lines.'))
+            if tinv.amount_tax == 0:
+                return True    # no moves if taxes amount == 0
+            if tinv.move_id:
+                continue
+
+            ctx = dict(self._context, lang=tinv.partner_id.lang)
+            date_taxinvoice = tinv.date_vyp
+            company_currency = tinv.company_id.currency_id
+            journal = tinv.journal_id.with_context(ctx)
+            date = tinv.date_vyp
+            move_vals = {
+                'name': "ПН/%s" % tinv.number,
+                'journal_id': journal.id,
+                'ref': "ПН %s" % tinv.number,
+                'date': date,
+            }
+            ctx['company_id'] = tinv.company_id.id
+            ctx['dont_create_taxes'] = True
+            ctx['check_move_validity'] = False
+            move = account_move.with_context(ctx).create(move_vals)
+            # one move per tax line and
+            # last move in counterpart for total tax amount
+            for t_line in tinv.tax_line_ids:
+                if t_line.amount > 0:
+                    deb = t_line.amount \
+                        if (tinv.category == 'out_tax_invoice') else 0.00
+                    cred = t_line.amount \
+                        if (tinv.category == 'in_tax_invoice') else 0.00
+                    self.env['account.move.line'].with_context(ctx).create({
+                        'date_maturity': tinv.date_vyp,
+                        'partner_id': tinv.partner_id.id,
+                        'name': t_line.name,
+                        'debit': deb,
+                        'credit': cred,
+                        'account_id': t_line.account_id.id,
+                        'currency_id': tinv.currency_id.id,
+                        'quantity': 1.00,
+                        'tax_line_id': t_line.tax_id.id,
+                        'analytic_line_ids': False,
+                        'product_id': False,
+                        'product_uom_id': False,
+                        'analytic_account_id': False,
+                        'invoice_id': False,
+                        'tax_ids': False,
+                        'move_id': move.id,
+                    })
+            deb = tinv.amount_tax \
+                if (tinv.category == 'in_tax_invoice') else 0.00
+            cred = tinv.amount_tax \
+                if (tinv.category == 'out_tax_invoice') else 0.00
+            self.env['account.move.line'].with_context(ctx).create({
+                'date_maturity': tinv.date_vyp,
+                'partner_id': tinv.partner_id.id,
+                'name': "ПН %s" % tinv.number,
+                'debit': deb,
+                'credit': cred,
+                'account_id': tinv.account_id.id,
+                'currency_id': tinv.currency_id.id,
+                'quantity': 1.00,
+                'analytic_line_ids': False,
+                'product_id': False,
+                'product_uom_id': False,
+                'analytic_account_id': False,
+                'invoice_id': False,
+                'tax_ids': False,
+                'tax_line_id': False,
+                'move_id': move.id,
+            })
+            move.post()
+            # make the taxinvoice point to that move
+            vals = {
+                'move_id': move.id,
+            }
+            tinv.with_context(ctx).write(vals)
+        return True
 
 
 class TaxInvoiceLine(models.Model):

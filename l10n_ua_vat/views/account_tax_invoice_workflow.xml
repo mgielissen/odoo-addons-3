@@ -35,6 +35,7 @@
             <!-- <field name="flow_stop">True</field> -->
             <field name="action">
                 action_registered()
+                action_move_create()
             </field>
             <field name="kind">function</field>
             <field name="signal_send">subflow.registered</field>
