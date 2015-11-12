@@ -126,7 +126,7 @@ class TaxInvoice(models.Model):
         required=True)
 
     date_reg = fields.Date(string=u"Дата реєстрації", index=True,
-                           readonly=True,
+                           readonly=False,
                            states={'registered': [('readonly', True)]},
                            help=u"Дата реєстрації в ЄРПН",
                            copy=False)
@@ -441,6 +441,9 @@ class TaxInvoice(models.Model):
 
     @api.multi
     def action_registered(self):
+        for tinv in self:
+            if not tinv.date_reg:
+                raise UserError(_(u"Спочатку вкажіть дату реєстрації."))
         return self.write({'state': 'registered'})
 
     @api.multi
