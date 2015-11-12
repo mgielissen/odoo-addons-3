@@ -5,17 +5,34 @@
             <field name="name">account.taxinvoice.export.form</field>
             <field name="model">account.taxinvoice.export</field>
             <field name="arch" type="xml">
-                <form string="Export Tax Invoices">
-                    <p class="oe_grey">
-                        Once draft invoices are confirmed, you will not be able
-                        to modify them. The invoices will receive a unique
-                        number and journal items will be created in your chart
-                        of accounts.
-                    </p>
+                <form string="Експорт податкових накладних">
+                    <field name="fname" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <div states="draft">
+                        <h2>Вивантаження в xml</h2>
+                        <p>Обрані податкові накладні будуть вивантажені </p>
+                    </div>
+                    <div states="download">
+                        <h2>Вивантаження в xml</h2>
+                        <p>Ось ваші накладні: <field name="fdata" readonly="1" filename="fname"/></p>
+                        <p>Їх можна завантажити у програму здачі звітності</p>
+                    </div>
                     <footer>
-                        <button string="Export Tax Invoices" name="taxinvoice_export" type="object" default_focus="1" class="oe_highlight"/>
-                        or
-                        <button string="Cancel" class="oe_link" special="cancel"/>
+                        <group states="draft">
+                            <button name="taxinvoice_export"
+                                string="Create XML"
+                                type="object"
+                                default_focus="1"
+                                class="btn-primary"/>
+                            <button string="Cancel"
+                                class="btn-default"
+                                special="cancel" />
+                        </group>
+                        <group states="download">
+                            <button string="Close"
+                                special="cancel"
+                                class="btn-default"/>
+                        </group>
                     </footer>
                 </form>
             </field>
@@ -24,9 +41,9 @@
         <act_window id="action_account_tax_invoice_export"
             multi="True"
             key2="client_action_multi" name="Export Tax Invoices"
-            res_model="account.taxinvoice.export" src_model="account.taxinvoice"
+            res_model="account.taxinvoice.export"
+            src_model="account.taxinvoice"
             view_mode="form" target="new" view_type="form" />
 
     </data>
 </openerp>
- 

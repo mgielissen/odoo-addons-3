@@ -612,7 +612,6 @@ class TaxInvoiceLine(models.Model):
                                   compute='_compute_subtotal'
                                   )
     account_id = fields.Many2one('account.account', string=u"Рахунок",
-                                 required=True,
                                  domain=[('deprecated', '=', False)],
                                  help=u"Рахунок підтверженного ПДВ")
     tax_amount = fields.Float(string=u"Сума податку",
