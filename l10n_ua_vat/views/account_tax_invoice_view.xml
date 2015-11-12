@@ -159,6 +159,7 @@
                                         <field name="move_id"
                                             groups="account.group_account_manager"
                                             attrs="{'invisible': [('move_id', '=', False)]}"/>
+                                        <field name="invoice_id"/>
                                     </group>
                                 </group>
                             </page>

@@ -56,8 +56,12 @@ class TaxInvoice(models.Model):
                              " * The 'Cancelled' status is used when user "
                              "cancel invoice.")
 
-    h01 = fields.Boolean(string=u"Складається інвестором", default=False)
-    horig1 = fields.Boolean(string=u"Не видається покупцю", default=False)
+    h01 = fields.Boolean(string=u"Складається інвестором",
+                         default=False,
+                         states={'draft': [('readonly', False)]})
+    horig1 = fields.Boolean(string=u"Не видається покупцю",
+                            states={'draft': [('readonly', False)]},
+                            default=False)
     htypr = fields.Selection([
         ('00', u"Немає"),
         ('01', u"01 - "
@@ -108,6 +112,7 @@ class TaxInvoice(models.Model):
          u"товарів/послуг над фактичною ціною їх постачання"),
     ], string=u"Тип причини", index=True,
         change_default=True, default='00',
+        states={'draft': [('readonly', False)]},
         track_visibility='always')
 
     date_vyp = fields.Date(
@@ -122,14 +127,20 @@ class TaxInvoice(models.Model):
 
     date_reg = fields.Date(string=u"Дата реєстрації", index=True,
                            readonly=True,
-                           states={'draft': [('readonly', False)]},
+                           states={'registered': [('readonly', True)]},
                            help=u"Дата реєстрації в ЄРПН",
                            copy=False)
 
     # TODO change to char
-    number = fields.Integer(string=u"Номер ПН", size=7)
-    number1 = fields.Integer(string=u"Ознака спеціальної ПН", size=1)
-    number2 = fields.Integer(string=u"Код філії", size=4)
+    number = fields.Integer(string=u"Номер ПН", size=7,
+                            states={'draft': [('readonly', False)]},
+                            required=True)
+    number1 = fields.Integer(string=u"Ознака спеціальної ПН",
+                             states={'draft': [('readonly', False)]},
+                             size=1)
+    number2 = fields.Integer(string=u"Код філії",
+                             states={'draft': [('readonly', False)]},
+                             size=4)
 
     category = fields.Selection([
         ('out_tax_invoice', u"Видані ПН"),
@@ -146,13 +157,15 @@ class TaxInvoice(models.Model):
         ('tk', u"Транспортний квиток"),
         ('bo', u"Бухгалтерська довідка"),
     ], string=u"Тип документу", index=True,
+        states={'draft': [('readonly', False)]},
         change_default=True, default='pn',
         track_visibility='always')
 
     partner_id = fields.Many2one(
         'res.partner',
         string=u"Партнер", ondelete='set null',
-        help=u"Компанія-партнер", index=True,
+        help=u"Компанія-партнер", index=True, required=True,
+        states={'draft': [('readonly', False)]},
         domain="[ \
                   ('supplier', \
                    { \
@@ -169,19 +182,28 @@ class TaxInvoice(models.Model):
                 ]"  # Show only customers or suppliers
     )
 
-    ipn_partner = fields.Char(string=u"ІПН партнера")
-    adr_partner = fields.Char(string=u"Адреса партнера")
-    tel_partner = fields.Char(string=u"Телефон партнера")
+    ipn_partner = fields.Char(string=u"ІПН партнера",
+                              states={'draft': [('readonly', False)]},
+                              required=True)
+    adr_partner = fields.Char(string=u"Адреса партнера",
+                              states={'draft': [('readonly', False)]},
+                              required=True)
+    tel_partner = fields.Char(string=u"Телефон партнера",
+                              states={'draft': [('readonly', False)]})
 
     contract_type = fields.Many2one('account.taxinvoice.contrtype',
                                     string=u"Тип договору",
                                     ondelete='set null',
+                                    states={'draft': [('readonly', False)]},
                                     help=u"Тип договору згідно ЦКУ",
                                     index=True)
-    contract_date = fields.Date(string=u"Дата договору")
-    contract_numb = fields.Char(string=u"Номер договору")
+    contract_date = fields.Date(string=u"Дата договору",
+                                states={'draft': [('readonly', False)]})
+    contract_numb = fields.Char(string=u"Номер договору",
+                                states={'draft': [('readonly', False)]},)
     payment_meth = fields.Many2one('account.taxinvoice.paymeth',
                                    string=u"Спосіб оплати",
+                                   states={'draft': [('readonly', False)]},
                                    ondelete='set null',
                                    help=u"Спосіб оплати за постачання",
                                    index=True)
@@ -319,6 +341,19 @@ class TaxInvoice(models.Model):
                                    store=True,
                                    readonly=True,
                                    compute='_compute_amount')
+    invoice_id = fields.Many2one('account.invoice',
+                                 states={'draft': [('readonly', False)]},
+                                 string=u"Рахунок-фактура",
+                                 copy=False,
+                                 help=u"Пов’язаний рахунок",
+                                 domain="[('type', 'in', \
+                                          {'out_tax_invoice': \
+                                           ['out_invoice'], \
+                                           'in_tax_invoice': \
+                                           ['in_invoice']}.get( \
+                                           category, [])), \
+                                           ('company_id', '=', \
+                                           company_id)]")
 
     @api.onchange('journal_id')
     def _onchange_journal_id(self):
@@ -395,6 +430,9 @@ class TaxInvoice(models.Model):
 
     @api.multi
     def action_ready(self):
+        for tinv in self:
+            if not tinv.taxinvoice_line_ids:
+                raise UserError(_(u"Немає жодного рядка в документі!"))
         return self.write({'state': 'ready'})
 
     @api.multi
@@ -419,17 +457,17 @@ class TaxInvoice(models.Model):
         account_move = self.env['account.move']
 
         for tinv in self:
-            if not tinv.journal_id.sequence_id:
-                raise UserError(
-                    _('Please define sequence on the journal related to this '
-                        'invoice.'))
-            if not tinv.taxinvoice_line_ids:
-                raise UserError(_('Please create some invoice lines.'))
             if tinv.amount_tax == 0:
                 return True    # no moves if taxes amount == 0
             if tinv.move_id:
                 continue
-
+            if tinv.invoice_id:
+                if tinv.invoice_id.number:
+                    reference = tinv.invoice_id.number
+                else:
+                    reference = '/'
+            else:
+                reference = '/'
             ctx = dict(self._context, lang=tinv.partner_id.lang)
             date_taxinvoice = tinv.date_vyp
             company_currency = tinv.company_id.currency_id
@@ -438,7 +476,7 @@ class TaxInvoice(models.Model):
             move_vals = {
                 'name': "ПН/%s" % tinv.number,
                 'journal_id': journal.id,
-                'ref': "ПН %s" % tinv.number,
+                'ref': reference,
                 'date': date,
             }
             ctx['company_id'] = tinv.company_id.id
@@ -478,7 +516,7 @@ class TaxInvoice(models.Model):
             self.env['account.move.line'].with_context(ctx).create({
                 'date_maturity': tinv.date_vyp,
                 'partner_id': tinv.partner_id.id,
-                'name': "ПН %s" % tinv.number,
+                'name': "ПН/%s" % tinv.number,
                 'debit': deb,
                 'credit': cred,
                 'account_id': tinv.account_id.id,
@@ -532,15 +570,16 @@ class TaxInvoiceLine(models.Model):
                              help=u"Дата першої події з ПДВ",
                              copy=True, required=True)
     product_id = fields.Many2one('product.product', string='Product',
-                                 ondelete='restrict', index=True)
+                                 ondelete='restrict',
+                                 index=True, required=True)
     uom_id = fields.Many2one('product.uom', string=u"Одиниця виміру",
-                             ondelete='set null', index=True)
+                             ondelete='set null', index=True, required=True)
     uom_code = fields.Char(string=u"Код одиниць",
                            help=u"Код одниниць виміру згідно КСПОВО",
                            size=4)
-    price_unit = fields.Float(string=u"Ціна за одиницю", required=True,
+    price_unit = fields.Float(string=u"Ціна за одиницю",
                               digits=dp.get_precision('Product Price'),
-                              default=0)
+                              default=0, required=True)
     discount = fields.Float(string=u"Скидка (%)",
                             digits=dp.get_precision('Discount'),
                             default=0.0)
@@ -552,6 +591,7 @@ class TaxInvoiceLine(models.Model):
                           size=10)
     taxinvoice_line_tax_id = fields.Many2one('account.tax',
                                              string=u"Ставка податку",
+                                             required=True,
                                              domain="[('type_tax_use', 'in', \
                                                       {'out_tax_invoice': \
                                                        ['sale'], \
@@ -723,7 +763,7 @@ class TaxInvoiceTax(models.Model):
                                  required=True)
     account_analytic_id = fields.Many2one('account.analytic.account',
                                           string=u"Аналітичний рахунок")
-    base = fields.Monetary(string=u"База")
+    base = fields.Monetary(string=u"База", readonly=True)
     amount = fields.Monetary(string=u"Сума")
     manual = fields.Boolean(string=u"Вручну", default=True)
     company_id = fields.Many2one('res.company',
