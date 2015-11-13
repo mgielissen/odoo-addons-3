@@ -13,8 +13,7 @@ class TaxInvoiceExport(models.TransientModel):
                         readonly=True,
                         default='default.txt')
     fdata = fields.Binary(string=u"File data",
-                          readonly=True,
-                          )
+                          readonly=True)
     state = fields.Selection([('draft', 'Draft'),
                               ('download', 'Download')],
                              string="State",
@@ -22,7 +21,8 @@ class TaxInvoiceExport(models.TransientModel):
 
     @api.multi
     def taxinvoice_export(self):
-        context = dict(self._context or {})
+        self.ensure_one()
+        context = dict(self.env.context or {})
         active_ids = context.get('active_ids', []) or []
         buf = ''
         for record in self.env['account.taxinvoice'].browse(active_ids):
@@ -32,14 +32,12 @@ class TaxInvoiceExport(models.TransientModel):
         #     record.signal_workflow('invoice_open')
         data = base64.encodestring(buf)
         name = "123.txt"
-        for w in self:
-            w.write({'state': 'download', 'fdata': data, 'fname': name})
-            return {
-                'res_id': w.id,
-                'type': 'ir.actions.act_window',
-                'res_model': 'account.taxinvoice.export',
-                'view_mode': 'form',
-                'view_type': 'form',
-                'target': 'new',
-            }
-        return {'type': 'ir.actions.act_window_close'}
+        self.write({'state': 'download', 'fdata': data, 'fname': name})
+        return {
+            'res_id': self.id,
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.taxinvoice.export',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'target': 'new',
+        }
