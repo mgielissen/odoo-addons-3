@@ -58,9 +58,11 @@ class TaxInvoice(models.Model):
 
     h01 = fields.Boolean(string=u"Складається інвестором",
                          default=False,
+                         readonly=True,
                          states={'draft': [('readonly', False)]})
     horig1 = fields.Boolean(string=u"Не видається покупцю",
                             states={'draft': [('readonly', False)]},
+                            readonly=True,
                             default=False)
     htypr = fields.Selection([
         ('00', u"Немає"),
@@ -113,10 +115,11 @@ class TaxInvoice(models.Model):
     ], string=u"Тип причини", index=True,
         change_default=True, default='00',
         states={'draft': [('readonly', False)]},
+        readonly=True,
         track_visibility='always')
 
     date_vyp = fields.Date(
-        string=u"Дата документу",
+        string=u"Дата складання",
         index=True,
         readonly=True,
         states={'draft': [('readonly', False)]},
@@ -131,16 +134,20 @@ class TaxInvoice(models.Model):
                            help=u"Дата реєстрації в ЄРПН",
                            copy=False)
 
-    # TODO change to char
-    number = fields.Integer(string=u"Номер ПН", size=7,
-                            states={'draft': [('readonly', False)]},
-                            required=True)
-    number1 = fields.Integer(string=u"Ознака спеціальної ПН",
-                             states={'draft': [('readonly', False)]},
-                             size=1)
-    number2 = fields.Integer(string=u"Код філії",
-                             states={'draft': [('readonly', False)]},
-                             size=4)
+    # TODO make number readonly after ready state
+    number = fields.Char(string=u"Номер", size=7,
+                         readonly=True,
+                         states={'draft': [('readonly', False)],
+                                 'ready': [('readonly', False)]},
+                         required=False)
+    number1 = fields.Char(string=u"Ознака спеціальної ПН",
+                          states={'draft': [('readonly', False)]},
+                          readonly=True,
+                          size=1)
+    number2 = fields.Char(string=u"Код філії",
+                          states={'draft': [('readonly', False)]},
+                          readonly=True,
+                          size=4)
 
     category = fields.Selection([
         ('out_tax_invoice', u"Видані ПН"),
@@ -158,13 +165,16 @@ class TaxInvoice(models.Model):
         ('bo', u"Бухгалтерська довідка"),
     ], string=u"Тип документу", index=True,
         states={'draft': [('readonly', False)]},
+        readonly=True,
         change_default=True, default='pn',
         track_visibility='always')
 
     partner_id = fields.Many2one(
         'res.partner',
         string=u"Партнер", ondelete='set null',
-        help=u"Компанія-партнер", index=True, required=True,
+        help=u"Компанія-партнер",
+        index=True, required=True,
+        readonly=True,
         states={'draft': [('readonly', False)]},
         domain="[ \
                   ('supplier', \
@@ -184,26 +194,33 @@ class TaxInvoice(models.Model):
 
     ipn_partner = fields.Char(string=u"ІПН партнера",
                               states={'draft': [('readonly', False)]},
+                              readonly=True,
                               required=True)
     adr_partner = fields.Char(string=u"Адреса партнера",
                               states={'draft': [('readonly', False)]},
+                              readonly=True,
                               required=True)
     tel_partner = fields.Char(string=u"Телефон партнера",
+                              readonly=True,
                               states={'draft': [('readonly', False)]})
 
     contract_type = fields.Many2one('account.taxinvoice.contrtype',
                                     string=u"Тип договору",
                                     ondelete='set null',
                                     states={'draft': [('readonly', False)]},
+                                    readonly=True,
                                     help=u"Тип договору згідно ЦКУ",
                                     index=True)
     contract_date = fields.Date(string=u"Дата договору",
+                                readonly=True,
                                 states={'draft': [('readonly', False)]})
     contract_numb = fields.Char(string=u"Номер договору",
+                                readonly=True,
                                 states={'draft': [('readonly', False)]},)
     payment_meth = fields.Many2one('account.taxinvoice.paymeth',
                                    string=u"Спосіб оплати",
                                    states={'draft': [('readonly', False)]},
+                                   readonly=True,
                                    ondelete='set null',
                                    help=u"Спосіб оплати за постачання",
                                    index=True)
@@ -342,6 +359,7 @@ class TaxInvoice(models.Model):
                                    readonly=True,
                                    compute='_compute_amount')
     invoice_id = fields.Many2one('account.invoice',
+                                 readonly=True,
                                  states={'draft': [('readonly', False)]},
                                  string=u"Рахунок-фактура",
                                  copy=False,
@@ -427,6 +445,18 @@ class TaxInvoice(models.Model):
         self.amount_total = self.amount_untaxed + self.amount_tax
         amount_total_company_signed = self.amount_total
         amount_untaxed_signed = self.amount_untaxed
+
+    @api.multi
+    def get_number(self):
+        for tinv in self:
+            if tinv.category == 'out_tax_invoice':
+                if not tinv.number:
+                    tinv.number = \
+                        self.env['ir.sequence'].next_by_code('out.taxinvoice')
+            if tinv.category == 'in_tax_invoice':
+                if not tinv.number:
+                    raise UserError(_(u"Вкажіть номер податкової накладної"))
+        return
 
     @api.multi
     def action_ready(self):

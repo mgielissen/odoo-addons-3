@@ -17,6 +17,7 @@
             <field name="wkf_id" ref="ti_wkf"/>
             <field name="name">ready</field>
             <field name="action">
+                get_number()
                 action_ready()
             </field>
             <field name="kind">function</field>
