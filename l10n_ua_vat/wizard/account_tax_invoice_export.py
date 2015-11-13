@@ -7,7 +7,7 @@ from openerp.exceptions import RedirectWarning, UserError
 
 class TaxInvoiceExport(models.TransientModel):
     _name = 'account.taxinvoice.export'
-    _description = "Confirm the selected invoices"
+    _description = "Export the selected tax invoices"
 
     fname = fields.Char(string=u"File Name",
                         readonly=True,
@@ -27,6 +27,7 @@ class TaxInvoiceExport(models.TransientModel):
         buf = ''
         for record in self.env['account.taxinvoice'].browse(active_ids):
             buf = str(record.number) + ' ' + buf
+            buf = buf + "\n" + record._export_xml_data() + " "
         #     if record.state not in ('ready'):
         #         raise UserError(_(u"Обрані ПН не готові до вивантаження"))
         #     record.signal_workflow('invoice_open')

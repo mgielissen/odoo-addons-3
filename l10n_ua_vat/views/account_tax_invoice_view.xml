@@ -19,9 +19,9 @@
                             string="Відправлено в ЄРПН"
                             class="oe_highlight"
                             groups="account.group_account_invoice"/>
-                        <button name="taxinvoice_export_xml"
+                        <button name="%(action_account_single_tax_invoice_export)d"
                             string="Вивантажити в xml"
-                            type="object"
+                            type="action"
                             attrs="{'invisible': ['|',('state', '!=', 'ready'), ('category', '=', 'in_tax_invoice')]}"
                             groups="base.group_user"/>
                         <button name="taxinvoice_registered"

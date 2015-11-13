@@ -451,10 +451,6 @@ class TaxInvoice(models.Model):
         return self.write({'state': 'cancel'})
 
     @api.multi
-    def taxinvoice_export_xml(self):
-        return
-
-    @api.multi
     def action_move_create(self):
         """ Creates tax invoice related financial move lines """
         account_move = self.env['account.move']
@@ -541,6 +537,12 @@ class TaxInvoice(models.Model):
             }
             tinv.with_context(ctx).write(vals)
         return True
+
+    @api.multi
+    def _export_xml_data(self):
+        self.ensure_one()
+        data = 'Number: %s, Partner: %s' % (self.number, self.partner_id.name)
+        return data
 
 
 class TaxInvoiceLine(models.Model):
