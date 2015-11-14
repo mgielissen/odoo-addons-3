@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import cStringIO
+import zipfile
 from openerp import models, fields, api, _
 from openerp.exceptions import RedirectWarning, UserError
 
@@ -24,15 +26,20 @@ class TaxInvoiceExport(models.TransientModel):
         self.ensure_one()
         context = dict(self.env.context or {})
         active_ids = context.get('active_ids', []) or []
-        buf = ''
-        for record in self.env['account.taxinvoice'].browse(active_ids):
-            buf = str(record.number) + ' ' + buf
-            buf = buf + "\n" + record._export_xml_data() + " "
+        mf = cStringIO.StringIO()
+        with zipfile.ZipFile(mf, mode='w') as zf:
+            for record in self.env['account.taxinvoice'].browse(active_ids):
+                buf = ''
+                filename = 'PN_' + str(record.number) + '.txt'
+                buf = str(record.number) + ' ' + buf
+                buf = buf + "\n" + record._export_xml_data() + " "
+                zf.writestr(filename, buf)
         #     if record.state not in ('ready'):
         #         raise UserError(_(u"Обрані ПН не готові до вивантаження"))
         #     record.signal_workflow('invoice_open')
-        data = base64.encodestring(buf)
-        name = "123.txt"
+        data = base64.encodestring(mf.getvalue())
+        mf.close()
+        name = "your_PNs.zip"
         self.write({'state': 'download', 'fdata': data, 'fname': name})
         return {
             'res_id': self.id,
