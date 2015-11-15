@@ -17,6 +17,7 @@
                 ],
     'data': [
         'templates/templates.xml',
+        'security/ir.model.access.csv',
         'wizard/account_single_tax_invoice_export_wizard.xml',
         'views/account_tax_invoice_view.xml',
         'views/account_tax_invoice_workflow.xml',

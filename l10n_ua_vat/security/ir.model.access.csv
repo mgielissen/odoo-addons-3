@@ -1,2 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_l10n_ua_vat_l10n_ua_vat,l10n_ua_vat.l10n_ua_vat,model_l10n_ua_vat_l10n_ua_vat,,1,0,0,0
+access_account_taxinvoice_contrtype,access_account_taxinvoice_contrtype,model_account_taxinvoice_contrtype,,1,0,0,0
+access_account_taxinvoice_paymeth,access_account_taxinvoice_paymeth,model_account_taxinvoice_paymeth,,1,0,0,0
+access_account_taxinvoice,access_account_taxinvoice,model_account_taxinvoice,,1,0,0,0
+access_account_taxinvoice_line,access_account_taxinvoice_line,model_account_taxinvoice_line,,1,0,0,0
+access_account_taxinvoice_tax,access_account_taxinvoice_tax,model_account_taxinvoice_tax,,1,0,0,0
+access_account_sprsti,access_account_sprsti,model_account_sprsti,,1,0,0,0

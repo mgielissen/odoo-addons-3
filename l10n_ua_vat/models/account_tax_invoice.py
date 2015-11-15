@@ -503,7 +503,7 @@ class TaxInvoice(models.Model):
             journal = tinv.journal_id.with_context(ctx)
             date = tinv.date_vyp
             move_vals = {
-                'name': "ПН/%s" % tinv.number,
+                'name': u"ПН/%s" % tinv.number,
                 'journal_id': journal.id,
                 'ref': reference,
                 'date': date,
@@ -545,7 +545,7 @@ class TaxInvoice(models.Model):
             self.env['account.move.line'].with_context(ctx).create({
                 'date_maturity': tinv.date_vyp,
                 'partner_id': tinv.partner_id.id,
-                'name': "ПН/%s" % tinv.number,
+                'name': u"ПН/%s" % tinv.number,
                 'debit': deb,
                 'credit': cred,
                 'account_id': tinv.account_id.id,
