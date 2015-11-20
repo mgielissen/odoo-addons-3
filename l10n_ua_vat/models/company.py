@@ -11,4 +11,5 @@ class CompanySti(models.Model):
                                string=u"Податковий орган", ondelete='set null',
                                help=u"Виберіть ДПІ в якій взято на облік "
                                u"ваше підприємство",
-                               index=True)
+                               index=True,
+                               required=True)

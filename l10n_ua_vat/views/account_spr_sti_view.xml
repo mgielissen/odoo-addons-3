@@ -10,9 +10,9 @@
                 <form string="Форма довідника ДПІ">
                     <sheet>
                         <group string="Детальна інформація про податковий орган">
-                            <field name="c_sti"/>
-                            <field name="c_raj"/>
-                            <field name="t_sti"/>
+                            <field name="c_sti" placeholder="4 значне число"/>
+                            <field name="c_raj" placeholder="2 значне число"/>
+                            <field name="t_sti" placeholder="1 значне число"/>
                             <field name="name"/>
                             <field name="name_raj"/>
                         </group>

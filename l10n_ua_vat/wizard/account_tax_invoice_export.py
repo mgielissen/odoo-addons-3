@@ -29,10 +29,7 @@ class TaxInvoiceExport(models.TransientModel):
         mf = cStringIO.StringIO()
         with zipfile.ZipFile(mf, mode='w') as zf:
             for record in self.env['account.taxinvoice'].browse(active_ids):
-                buf = ''
-                filename = 'PN_' + str(record.number) + '.txt'
-                buf = str(record.number) + ' ' + buf
-                buf = buf + "\n" + record._export_xml_data() + " "
+                buf, filename = record._export_xml_data()
                 zf.writestr(filename, buf)
         #     if record.state not in ('ready'):
         #         raise UserError(_(u"Обрані ПН не готові до вивантаження"))

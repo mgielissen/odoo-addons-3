@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import xml.etree.ElementTree as ET
 from openerp import models, fields, api, _
 from openerp.exceptions import RedirectWarning, UserError
 import openerp.addons.decimal_precision as dp
@@ -570,9 +570,292 @@ class TaxInvoice(models.Model):
 
     @api.multi
     def _export_xml_data(self):
+        """Prepare xml data for export.
+        This function returns name of xml file
+        and data to be put inside."""
         self.ensure_one()
-        data = 'Number: %s, Partner: %s' % (self.number, self.partner_id.name)
-        return data
+        if not self.company_id.comp_sti:
+            raise UserError(_(u"Вкажіть вашу ДПІ у налаштуваннях компанії."))
+
+        date = fields.Date.from_string(self.date_vyp)
+        # compose file name
+        fname = ''
+        fname = self.company_id.comp_sti.c_sti
+        fname += self.company_id.company_registry.zfill(10)
+        fname += 'J12'
+        fname += '010'
+        fname += '07'
+        fname += '1'
+        fname += '00'
+        fname += self.number.zfill(7)
+        fname += '1'
+        fname += date.strftime('%m')
+        fname += date.strftime('%Y')
+        fname += self.company_id.comp_sti.c_sti
+        fname += '.xml'
+        declar = ET.Element('DECLAR')
+        declar.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+        declar.set('xsi:noNamespaceSchemaLocation', 'J1201007.xsd')
+        declarhead = ET.SubElement(declar, 'DECLARHEAD')
+        # declarhead part
+        ET.SubElement(declarhead, 'TIN').text = \
+            self.company_id.company_registry
+        ET.SubElement(declarhead, 'C_DOC').text = 'J12'
+        ET.SubElement(declarhead, 'C_DOC_SUB').text = '010'
+        ET.SubElement(declarhead, 'C_DOC_VER').text = '7'
+        ET.SubElement(declarhead, 'C_DOC_TYPE').text = '0'
+        ET.SubElement(declarhead, 'C_DOC_CNT').text = self.number
+        ET.SubElement(declarhead, 'C_REG').text = \
+            self.company_id.comp_sti.c_sti[0:2]
+        ET.SubElement(declarhead, 'C_RAJ').text = \
+            self.company_id.comp_sti.c_raj
+        ET.SubElement(declarhead, 'PERIOD_MONTH').text = date.strftime('%m')
+        ET.SubElement(declarhead, 'PERIOD_TYPE').text = '1'
+        ET.SubElement(declarhead, 'PERIOD_YEAR').text = date.strftime('%Y')
+        ET.SubElement(declarhead, 'C_STI_ORIG').text = \
+            self.company_id.comp_sti.c_sti
+        ET.SubElement(declarhead, 'C_DOC_STAN').text = '1'
+        ET.SubElement(declarhead, 'LINKED_DOCS').set('xsi:nil', 'true')
+        ET.SubElement(declarhead, 'D_FILL').text = date.strftime('%d%m%Y')
+        ET.SubElement(declarhead, 'SOFTWARE').text = 'Odoo 9'
+        # declarbody part
+        declarbody = ET.SubElement(declar, 'DECLARBODY')
+        if self.h01:
+            ET.SubElement(declarbody, 'H01').text = '1'
+        else:
+            ET.SubElement(declarbody, 'H01').set('xsi:nil', 'true')
+        if self.horig1:
+            ET.SubElement(declarbody, 'HORIG1').text = '1'
+            ET.SubElement(declarbody, 'HTYPR').text = self.htypr
+        else:
+            ET.SubElement(declarbody, 'HORIG1').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'HTYPR').set('xsi:nil', 'true')
+        ET.SubElement(declarbody, 'HFILL').text = date.strftime('%d%m%Y')
+        ET.SubElement(declarbody, 'HNUM').text = self.number
+        if self.number1 is not False:
+            ET.SubElement(declarbody, 'HNUM1').text = self.number1
+        else:
+            ET.SubElement(declarbody, 'HNUM1').set('xsi:nil', 'true')
+        if self.number2 is not False:
+            ET.SubElement(declarbody, 'HNUM2').text = self.number2
+        else:
+            ET.SubElement(declarbody, 'HNUM2').set('xsi:nil', 'true')
+        if self.category == 'out_tax_invoice':
+            ET.SubElement(declarbody, 'HNAMESEL').text = self.company_id.name
+            ET.SubElement(declarbody, 'HNAMEBUY').text = \
+                self.partner_id.parent_name or self.partner_id.name
+            ET.SubElement(declarbody, 'HKSEL').text = self.company_id.vat
+            ET.SubElement(declarbody, 'HKBUY').text = self.ipn_partner
+            comp_adr = ''
+            if self.company_id.zip:
+                comp_adr += self.company_id.zip
+            if self.company_id.state_id:
+                if self.company_id.state_id.name:
+                    comp_adr += ', ' + self.company_id.state_id.name
+            if self.company_id.city:
+                comp_adr += ', ' + self.company_id.city
+            if self.company_id.street:
+                comp_adr += ', ' + self.company_id.street
+            if self.company_id.street2:
+                comp_adr += ', ' + self.company_id.street2
+            ET.SubElement(declarbody, 'HLOCSEL').text = comp_adr
+            ET.SubElement(declarbody, 'HLOCBUY').text = self.adr_partner
+            ET.SubElement(declarbody, 'HTELSEL').text = self.company_id.phone
+            ET.SubElement(declarbody, 'HTELBUY').text = self.tel_partner
+        else:   # in tax invoice
+            ET.SubElement(declarbody, 'HNAMEBUY').text = self.company_id.name
+            ET.SubElement(declarbody, 'HNAMESEL').text = \
+                self.partner_id.parent_name or self.partner_id.name
+            ET.SubElement(declarbody, 'HKBUY').text = self.company_id.vat
+            ET.SubElement(declarbody, 'HKSEL').text = self.ipn_partner
+            comp_adr = ''
+            if self.company_id.zip:
+                comp_adr += self.company_id.zip
+            if self.company_id.state_id:
+                if self.company_id.state_id.name:
+                    comp_adr += ', ' + self.company_id.state_id.name
+            if self.company_id.city:
+                comp_adr += ', ' + self.company_id.city
+            if self.company_id.street:
+                comp_adr += ', ' + self.company_id.street
+            if self.company_id.street2:
+                comp_adr += ', ' + self.company_id.street2
+            ET.SubElement(declarbody, 'HLOCBUY').text = comp_adr
+            ET.SubElement(declarbody, 'HLOCSEL').text = self.adr_partner
+            ET.SubElement(declarbody, 'HTELBUY').text = self.company_id.phone
+            ET.SubElement(declarbody, 'HTELSEL').text = self.tel_partner
+
+        if self.contract_type:
+            ET.SubElement(declarbody, 'H01G1S').text = \
+                self.contract_type.name
+        else:
+            ET.SubElement(declarbody, 'H01G1S').set('xsi:nil', 'true')
+        if self.contract_date is not False:
+            contr_date = fields.Date.from_string(self.contract_date)
+            ET.SubElement(declarbody, 'H01G2D').text = \
+                contr_date.strftime('%d%m%Y')
+        else:
+            ET.SubElement(declarbody, 'H01G2D').set('xsi:nil', 'true')
+        if self.contract_numb is not False:
+            ET.SubElement(declarbody, 'H01G3S').text = self.contract_numb
+        else:
+            ET.SubElement(declarbody, 'H01G3S').set('xsi:nil', 'true')
+        if self.payment_meth:
+            ET.SubElement(declarbody, 'H02G1S').text = self.payment_meth.name
+        else:
+            ET.SubElement(declarbody, 'H02G1S').set('xsi:nil', 'true')
+        # for tax lines loop
+        row_num = 0
+        for tl in self.taxinvoice_line_ids:
+            row_num += 1
+            tl_date = fields.Date.from_string(tl.date_vynyk)
+            el = ET.SubElement(declarbody, 'RXXXXG2D')
+            el.text = tl_date.strftime('%d%m%Y')
+            el.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG3S')
+            el.text = tl.product_id.name
+            el.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG4')
+            if tl.ukt_zed:
+                el.text = tl.ukt_zed
+            else:
+                el.set('xsi:nil', 'true')
+            el.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG4S')
+            el.text = tl.uom_id.name
+            el.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG105_2S')
+            if tl.uom_id.uom_code:
+                el.text = tl.uom_id.uom_code
+            else:
+                el.set('xsi:nil', 'true')
+            el.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG5')
+            el.text = str(tl.quantity)
+            el.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG6')
+            el.text = str(tl.price_unit)
+            el.set('ROWNUM', str(row_num))
+
+            tax_id = tl.taxinvoice_line_tax_id
+            el = ET.SubElement(declarbody, 'RXXXXG7')
+            if tax_id.name.find(u"ПДВ 20%") >= 0:
+                el.text = str(tl.price_subtotal)
+            else:
+                el.set('xsi:nil', 'true')
+            el.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG109')
+            if tax_id.name.find(u"ПДВ 7%") >= 0:
+                el.text = str(tl.price_subtotal)
+            else:
+                el.set('xsi:nil', 'true')
+            el.set('ROWNUM', str(row_num))
+
+            el8 = ET.SubElement(declarbody, 'RXXXXG8')
+            el9 = ET.SubElement(declarbody, 'RXXXXG9')
+            if tax_id.name.find(u"ПДВ 0%") >= 0:
+                if self.htypr == '07':  # if export
+                    el9.text = str(tl.price_subtotal)
+                    el8.set('xsi:nil', 'true')
+                else:
+                    el8.text = str(tl.price_subtotal)
+                    el9.set('xsi:nil', 'true')
+            else:
+                el8.set('xsi:nil', 'true')
+                el9.set('xsi:nil', 'true')
+            el8.set('ROWNUM', str(row_num))
+            el9.set('ROWNUM', str(row_num))
+
+            el = ET.SubElement(declarbody, 'RXXXXG10')
+            if tax_id.name.find(u"від ПДВ") >= 0:
+                el.text = str(tl.price_subtotal)
+            else:
+                el.set('xsi:nil', 'true')
+            el.set('ROWNUM', str(row_num))
+        # subtotal
+        found_20 = found_7 = found_0 = found_zv = False
+        for tx in self.tax_line_ids:
+            if tx.name.find(u"ПДВ 20%") >= 0 and not found_20:
+                found_20 = True
+                ET.SubElement(declarbody, 'R01G7').text = str(tx.base)
+                ET.SubElement(declarbody, 'R03G7').text = str(tx.amount)
+                ET.SubElement(declarbody, 'R04G7').text = \
+                    str(tx.base + tx.amount)
+                continue
+            if tx.name.find(u"ПДВ 7%") >= 0 and not found_7:
+                found_7 = True
+                ET.SubElement(declarbody, 'R01G109').text = str(tx.base)
+                ET.SubElement(declarbody, 'R03G109').text = str(tx.amount)
+                ET.SubElement(declarbody, 'R04G109').text = \
+                    str(tx.base + tx.amount)
+                continue
+            if tx.name.find(u"ПДВ 0%") >= 0 and not found_0:
+                found_0 = True
+                if self.htypr == '07':  # if export
+                    ET.SubElement(declarbody, 'R01G9').text = str(tx.base)
+                    ET.SubElement(declarbody, 'R04G9').text = str(tx.base)
+                    ET.SubElement(declarbody, 'R01G8').set('xsi:nil', 'true')
+                    ET.SubElement(declarbody, 'R04G8').set('xsi:nil', 'true')
+                else:
+                    ET.SubElement(declarbody, 'R01G8').text = str(tx.base)
+                    ET.SubElement(declarbody, 'R04G8').text = str(tx.base)
+                    ET.SubElement(declarbody, 'R01G9').set('xsi:nil', 'true')
+                    ET.SubElement(declarbody, 'R04G9').set('xsi:nil', 'true')
+                continue
+            if tx.name.find(u"від ПДВ") >= 0 and not found_zv:
+                found_zv = True
+                ET.SubElement(declarbody, 'R01G10').text = str(tx.base)
+                ET.SubElement(declarbody, 'R04G10').text = str(tx.base)
+                ET.SubElement(declarbody, 'R003G10S').text = "Prychna"  # TODO
+                continue
+        if not found_20:
+            ET.SubElement(declarbody, 'R01G7').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R03G7').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R04G7').set('xsi:nil', 'true')
+        if not found_7:
+            ET.SubElement(declarbody, 'R01G109').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R03G109').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R04G109').set('xsi:nil', 'true')
+        if not found_0:
+            ET.SubElement(declarbody, 'R01G8').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R04G8').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R01G9').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R04G9').set('xsi:nil', 'true')
+        if not found_zv:
+            ET.SubElement(declarbody, 'R01G10').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R04G10').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R003G10S').set('xsi:nil', 'true')
+        # total
+        if self.amount_untaxed:
+            ET.SubElement(declarbody, 'R01G11').text = str(self.amount_untaxed)
+        else:
+            ET.SubElement(declarbody, 'R01G11').set('xsi:nil', 'true')
+        # if self.tara:     # TODO: implement tara
+        #     ET.SubElement(declarbody, 'R02G11').text = str(self.tara)
+        # else:
+        #     ET.SubElement(declarbody, 'R02G11').set('xsi:nil', 'true')
+        if self.amount_tax:
+            ET.SubElement(declarbody, 'R03G11').text = str(self.amount_tax)
+        else:
+            ET.SubElement(declarbody, 'R03G11').set('xsi:nil', 'true')
+        if self.amount_total:
+            ET.SubElement(declarbody, 'R04G11').text = str(self.amount_total)
+        else:
+            ET.SubElement(declarbody, 'R04G11').set('xsi:nil', 'true')
+        # TODO: add employee
+        ET.SubElement(declarbody, 'H10G1S').text = u"Валєра"
+
+        xmldata = ET.tostring(declar,
+                              encoding='windows-1251',
+                              method='xml')
+        return xmldata, fname
 
 
 class TaxInvoiceLine(models.Model):

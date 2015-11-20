@@ -60,13 +60,11 @@ class TaxInvoiceExportSingle(models.TransientModel):
         active_id = context.get('active_id', []) or []
         buf = ''
         tinv = self.env['account.taxinvoice'].browse(active_id)
-        buf = str(tinv.number) + ' asdsad'
         #     if record.state not in ('ready'):
         #         raise UserError(_(u"Обрані ПН не готові до вивантаження"))
         #     record.signal_workflow('invoice_open')
-        buf = buf + "\n" + tinv._export_xml_data()
+        buf, name = tinv._export_xml_data()
         data = base64.encodestring(buf)
-        name = "123_%s.txt" % self.pn_numb
         self.write({'state': 'download', 'fdata': data, 'fname': name})
         return {
             'res_id': self.id,
