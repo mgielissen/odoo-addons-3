@@ -224,6 +224,19 @@ class TaxInvoice(models.Model):
                                    ondelete='set null',
                                    help=u"Спосіб оплати за постачання",
                                    index=True)
+    prych_zv = fields.Char(string=u"Причина звільнення від ПДВ",
+                           states={'draft': [('readonly', False)]},
+                           readonly=True,
+                           required=False)
+    signer_id = fields.Many2one('hr.employee',
+                                string=u"Відповідальна особа",
+                                states={'draft': [('readonly', False)]},
+                                readonly=True,
+                                required=True,
+                                ondelete='set null',
+                                help=u"Особа, яка склала і підписала ПН",
+                                index=True,
+                                domain="[('company_id', '=', company_id)]")
 
     # Modified record name on form view
     @api.multi
@@ -813,7 +826,7 @@ class TaxInvoice(models.Model):
                 found_zv = True
                 ET.SubElement(declarbody, 'R01G10').text = str(tx.base)
                 ET.SubElement(declarbody, 'R04G10').text = str(tx.base)
-                ET.SubElement(declarbody, 'R003G10S').text = "Prychna"  # TODO
+                ET.SubElement(declarbody, 'R03G10S').text = u"Звільнено"
                 continue
         if not found_20:
             ET.SubElement(declarbody, 'R01G7').set('xsi:nil', 'true')
@@ -831,7 +844,7 @@ class TaxInvoice(models.Model):
         if not found_zv:
             ET.SubElement(declarbody, 'R01G10').set('xsi:nil', 'true')
             ET.SubElement(declarbody, 'R04G10').set('xsi:nil', 'true')
-            ET.SubElement(declarbody, 'R003G10S').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'R03G10S').set('xsi:nil', 'true')
         # total
         if self.amount_untaxed:
             ET.SubElement(declarbody, 'R01G11').text = str(self.amount_untaxed)
@@ -849,8 +862,9 @@ class TaxInvoice(models.Model):
             ET.SubElement(declarbody, 'R04G11').text = str(self.amount_total)
         else:
             ET.SubElement(declarbody, 'R04G11').set('xsi:nil', 'true')
-        # TODO: add employee
-        ET.SubElement(declarbody, 'H10G1S').text = u"Валєра"
+        # footer
+        ET.SubElement(declarbody, 'H10G1S').text = self.signer_id.name_related
+        ET.SubElement(declarbody, 'R003G10S').text = self.prych_zv
 
         xmldata = ET.tostring(declar,
                               encoding='windows-1251',

@@ -48,6 +48,7 @@
                         <group>
                             <group>
                                 <field name="date_vyp"/>
+                                <field name="signer_id"/>
                                 <field name="partner_id"
                                     string="Партнер"/>
                                 <field name="ipn_partner"
@@ -60,6 +61,7 @@
                             </group>
                             <group>
                                 <field name="number" placeholder="Генерується автоматично"/>
+                                <field name="date_reg"/>
                                 <field name="contract_type"/>
                                 <field name="contract_numb"/>
                                 <field name="contract_date"/>
@@ -124,7 +126,6 @@
                                     <group>
                                         <field name="h01"/>
                                         <field name="category"/>
-                                        <field name="date_reg"/>
                                         <field name="number1" placeholder="2, 3, 4 або 7"/>
                                         <field name="number2"/>
                                         <field name="currency_id"/>
@@ -144,6 +145,7 @@
                                             groups="account.group_account_manager"
                                             attrs="{'invisible': [('move_id', '=', False)]}"/>
                                         <field name="invoice_id"/>
+                                        <field name="prych_zv"/>
                                     </group>
                                 </group>
                             </page>

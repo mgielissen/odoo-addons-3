@@ -13,7 +13,8 @@
     'version': '0.1',
     'depends': ['account',
                 'account_accountant',
-                'l10n_ua'
+                'l10n_ua',
+                'hr'
                 ],
     'data': [
         'templates/templates.xml',

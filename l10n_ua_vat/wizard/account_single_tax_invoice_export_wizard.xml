@@ -11,14 +11,13 @@
                     <field name="state" invisible="1"/>
                     <div states="draft">
                         <h2>Вивантаження в xml</h2>
-                        <p>Інвормація, що буде включена в xml файл.</p>
-                        Номер ПН: <field name="pn_numb"/>
-                        <p>Ось ваша накладна: <field name="fdata2" readonly="1" filename="fname"/></p>
+                        <p>Інформація, що буде включена в xml файл.</p>
+                        Номер ПН: <field name="pn_numb" readonly="1" class="oe_inline"/>
                     </div>
                     <div states="download">
                         <h2>Вивантаження в xml</h2>
                         <p>Ось ваші накладні: <field name="fdata" readonly="1" filename="fname"/></p>
-                        <p>Їх можна імпортувати у програму здачі звітності</p>
+                        <p>Їх можна імпортувати у програму здачі звітності.</p>
                     </div>
                     <footer>
                         <group states="draft">
