@@ -228,7 +228,7 @@ class TaxInvoice(models.Model):
                            states={'draft': [('readonly', False)]},
                            readonly=True,
                            required=False)
-    signer_id = fields.Many2one('hr.employee',
+    signer_id = fields.Many2one('res.users',
                                 string=u"Відповідальна особа",
                                 states={'draft': [('readonly', False)]},
                                 readonly=True,
@@ -863,7 +863,7 @@ class TaxInvoice(models.Model):
         else:
             ET.SubElement(declarbody, 'R04G11').set('xsi:nil', 'true')
         # footer
-        ET.SubElement(declarbody, 'H10G1S').text = self.signer_id.name_related
+        ET.SubElement(declarbody, 'H10G1S').text = self.signer_id.name
         ET.SubElement(declarbody, 'R003G10S').text = self.prych_zv
 
         xmldata = ET.tostring(declar,
