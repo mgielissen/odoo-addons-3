@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data noupdate="0">
+        <!-- account tags -->
+        <record id="acc_tag_vat" model="account.account.tag">
+            <field name="name">ПДВ</field>
+            <field name="applicability">accounts</field>
+        </record>
+        <record id="ua_ias_1203" model="account.account.template">
+            <field name="tag_ids" eval="[(6,0,[ref('acc_tag_vat')])]"/>
+        </record>
+        <!-- tax tags -->
+        <record id="tax_tag_vat20" model="account.account.tag">
+            <field name="name">ПДВ 20%</field>
+            <field name="applicability">taxes</field>
+        </record>
+        <record id="tax_tag_vat7" model="account.account.tag">
+            <field name="name">ПДВ 7%</field>
+            <field name="applicability">taxes</field>
+        </record>
+        <record id="tax_tag_vat0" model="account.account.tag">
+            <field name="name">ПДВ 0%</field>
+            <field name="applicability">taxes</field>
+        </record>
+        <record id="tax_tag_vat_free" model="account.account.tag">
+            <field name="name">Звільнено від ПДВ</field>
+            <field name="applicability">taxes</field>
+        </record>
+        <record id="tax_tag_vat_not" model="account.account.tag">
+            <field name="name">Не є ПДВ</field>
+            <field name="applicability">taxes</field>
+        </record>
+
         <!-- Tax template for VAT -->
         <record id="sale_tax_template_vat20" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -11,6 +41,7 @@
             <field name="type_tax_use">sale</field>
             <field name="account_id" ref="ua_ias_1204"/>
             <field name="refund_account_id" ref="ua_ias_1204"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat20')])]"/>
         </record>
         <record id="sale_tax_template_vat7" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -21,6 +52,7 @@
             <field name="type_tax_use">sale</field>
             <field name="account_id" ref="ua_ias_1204"/>
             <field name="refund_account_id" ref="ua_ias_1204"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat7')])]"/>
         </record>
         <record id="sale_tax_template_vat0" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -31,6 +63,7 @@
             <field name="type_tax_use">sale</field>
             <field name="account_id" ref="ua_ias_1204"/>
             <field name="refund_account_id" ref="ua_ias_1204"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat0')])]"/>
         </record>
         <record id="sale_tax_template_vat_free" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -41,6 +74,7 @@
             <field name="type_tax_use">sale</field>
             <field name="account_id" ref="ua_ias_1204"/>
             <field name="refund_account_id" ref="ua_ias_1204"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat_free')])]"/>
         </record>
         <record id="sale_tax_template_vat_not" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -51,6 +85,7 @@
             <field name="type_tax_use">sale</field>
             <field name="account_id" ref="ua_ias_1204"/>
             <field name="refund_account_id" ref="ua_ias_1204"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat_not')])]"/>
         </record>
 
         <record id="purchase_tax_template_vat20" model="account.tax.template">
@@ -62,6 +97,7 @@
             <field name="type_tax_use">purchase</field>
             <field name="account_id" ref="ua_ias_1140"/>
             <field name="refund_account_id" ref="ua_ias_1140"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat20')])]"/>
         </record>
         <record id="purchase_tax_template_vat7" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -72,6 +108,7 @@
             <field name="type_tax_use">purchase</field>
             <field name="account_id" ref="ua_ias_1140"/>
             <field name="refund_account_id" ref="ua_ias_1140"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat7')])]"/>
         </record>
         <record id="purchase_tax_template_vat0" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -82,6 +119,7 @@
             <field name="type_tax_use">purchase</field>
             <field name="account_id" ref="ua_ias_1140"/>
             <field name="refund_account_id" ref="ua_ias_1140"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat0')])]"/>
         </record>
         <record id="purchase_tax_template_vat_free" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -92,6 +130,7 @@
             <field name="type_tax_use">purchase</field>
             <field name="account_id" ref="ua_ias_1140"/>
             <field name="refund_account_id" ref="ua_ias_1140"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat_free')])]"/>
         </record>
         <record id="purchase_tax_template_vat_not" model="account.tax.template">
             <field name="chart_template_id" ref="l10n_ua_ias_chart_template"/>
@@ -102,6 +141,7 @@
             <field name="type_tax_use">purchase</field>
             <field name="account_id" ref="ua_ias_1140"/>
             <field name="refund_account_id" ref="ua_ias_1140"/>
+            <field name="tag_ids" eval="[(6,0,[ref('tax_tag_vat_not')])]"/>
         </record>
         <!-- Simplified tax system -->
         <!-- Sale taxes -->
