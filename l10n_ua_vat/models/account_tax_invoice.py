@@ -134,7 +134,6 @@ class TaxInvoice(models.Model):
                            help=u"Дата реєстрації в ЄРПН",
                            copy=False)
 
-    # TODO make number readonly after ready state
     number = fields.Char(string=u"Номер", size=7,
                          readonly=True,
                          states={'draft': [('readonly', False)],
@@ -296,6 +295,21 @@ class TaxInvoice(models.Model):
         return self.env['account.journal'].search(domain, limit=1)
 
     @api.model
+    def _default_account(self):
+        # TODO: create res_config field and check it first
+        # if not set do search on all accounts for tag
+        # and store result in res_config field to avoid
+        # massive search on all accounts each time
+        company_id = self._context.get('company_id',
+                                       self.env.user.company_id.id)
+        domain = [('company_id', '=', company_id)]
+        for acc in self.env['account.account'].search(domain):
+            for tag in acc.tag_ids:
+                if tag.name.find(u"ПДВ") >= 0:
+                    return acc
+        return False
+
+    @api.model
     def _default_currency(self):
         journal = self._default_journal()
         return journal.currency_id or journal.company_id.currency_id
@@ -355,6 +369,7 @@ class TaxInvoice(models.Model):
                                  string=u"Рахунок",
                                  required=True,
                                  readonly=True,
+                                 default=_default_account,
                                  states={'draft': [('readonly', False)]},
                                  domain=[('deprecated', '=', False)],
                                  help=u"Рахунок розрахунків по ПДВ")
