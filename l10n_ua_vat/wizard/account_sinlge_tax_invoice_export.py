@@ -18,33 +18,20 @@ class TaxInvoiceExportSingle(models.TransientModel):
             return str(tinv.number)
         return 'nema'
 
-    @api.model
-    def _get_fdata2(self):
-        context = dict(self.env.context or {})
-        active_id = context.get('active_id', False)
-        if active_id:
-            tinv = self.env['account.taxinvoice'].browse(active_id)
-            buf = str(tinv.number) + ' zxczxc'
-            return buf    # base64.encodestring(buf)
-        return 'nema'
-
-    @api.model
-    def _get_name(self):
-        context = dict(self.env.context or {})
-        active_id = context.get('active_id', False)
-        if active_id:
-            tinv = self.env['account.taxinvoice'].browse(active_id)
-            return "100%s.xml" % tinv.number
-        return 'nema.txt'
+    # @api.model
+    # def _get_name(self):
+    #     context = dict(self.env.context or {})
+    #     active_id = context.get('active_id', False)
+    #     if active_id:
+    #         tinv = self.env['account.taxinvoice'].browse(active_id)
+    #         return "%s.xml" % tinv.number
+    #     return 'PN.txt'
 
     fname = fields.Char(string=u"File Name",
                         readonly=True,
-                        default=_get_name)
+                        default='PN.xml')
     fdata = fields.Binary(string=u"File data",
                           readonly=True)
-    fdata2 = fields.Binary(string=u"File data",
-                           readonly=True,
-                           default=_get_fdata2)
     state = fields.Selection([('draft', 'Draft'),
                               ('download', 'Download')],
                              string="State",

@@ -25,6 +25,7 @@
         'views/company_view.xml',
         'views/product_view.xml',
         'wizard/account_tax_invoice_export_wizard.xml',
+        'wizard/account_tax_invoice_import_wizard.xml',
         'data/account.sprsti.csv',
         'data/taxinvoice_paymeth_data.xml',
         'data/account.taxinvoice.contrtype.csv',

@@ -198,7 +198,7 @@ class TaxInvoice(models.Model):
     adr_partner = fields.Char(string=u"Адреса партнера",
                               states={'draft': [('readonly', False)]},
                               readonly=True,
-                              required=True)
+                              required=False)
     tel_partner = fields.Char(string=u"Телефон партнера",
                               readonly=True,
                               states={'draft': [('readonly', False)]})
@@ -231,7 +231,7 @@ class TaxInvoice(models.Model):
                                 string=u"Відповідальна особа",
                                 states={'draft': [('readonly', False)]},
                                 readonly=True,
-                                required=True,
+                                required=False,
                                 ondelete='set null',
                                 help=u"Особа, яка склала і підписала ПН",
                                 index=True,
