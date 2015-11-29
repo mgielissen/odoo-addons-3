@@ -146,6 +146,7 @@
                                             attrs="{'invisible': [('move_id', '=', False)]}"/>
                                         <field name="invoice_id"/>
                                         <field name="prych_zv"/>
+                                        <field name="amount_tara"/>
                                     </group>
                                 </group>
                             </page>

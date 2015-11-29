@@ -386,6 +386,10 @@ class TaxInvoice(models.Model):
                                    store=True,
                                    readonly=True,
                                    compute='_compute_amount')
+    amount_tara = fields.Monetary(string=u"Зворотна тара",
+                                  readonly=True,
+                                  states={'draft': [('readonly', False)]},
+                                  default=0.00)
     invoice_id = fields.Many2one('account.invoice',
                                  readonly=True,
                                  states={'draft': [('readonly', False)]},
@@ -465,14 +469,14 @@ class TaxInvoice(models.Model):
     @api.depends('taxinvoice_line_ids.price_subtotal',
                  'tax_line_ids.amount',
                  'currency_id',
-                 'company_id')
+                 'company_id',
+                 'amount_tara')
     def _compute_amount(self):
         self.amount_untaxed = sum(
             line.price_subtotal for line in self.taxinvoice_line_ids)
         self.amount_tax = sum(line.amount for line in self.tax_line_ids)
         self.amount_total = self.amount_untaxed + self.amount_tax
-        amount_total_company_signed = self.amount_total
-        amount_untaxed_signed = self.amount_untaxed
+        self.amount_total += self.amount_tara
 
     @api.multi
     def get_number(self):
@@ -604,6 +608,8 @@ class TaxInvoice(models.Model):
         self.ensure_one()
         if not self.company_id.comp_sti:
             raise UserError(_(u"Вкажіть вашу ДПІ у налаштуваннях компанії."))
+        if not self.company_id.company_registry:
+            raise UserError(_(u"Вкажіть ІПН у налаштуваннях компанії."))
 
         date = fields.Date.from_string(self.date_vyp)
         # compose file name
@@ -865,10 +871,10 @@ class TaxInvoice(models.Model):
             ET.SubElement(declarbody, 'R01G11').text = str(self.amount_untaxed)
         else:
             ET.SubElement(declarbody, 'R01G11').set('xsi:nil', 'true')
-        # if self.tara:     # TODO: implement tara
-        #     ET.SubElement(declarbody, 'R02G11').text = str(self.tara)
-        # else:
-        #     ET.SubElement(declarbody, 'R02G11').set('xsi:nil', 'true')
+        if self.amount_tara > 0:
+            ET.SubElement(declarbody, 'R02G11').text = str(self.amount_tara)
+        else:
+            ET.SubElement(declarbody, 'R02G11').set('xsi:nil', 'true')
         if self.amount_tax:
             ET.SubElement(declarbody, 'R03G11').text = str(self.amount_tax)
         else:
