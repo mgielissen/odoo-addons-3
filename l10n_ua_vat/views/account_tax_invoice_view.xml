@@ -216,10 +216,14 @@
         </record>
 
 <!-- Menu entry Customer Tax Invoices -->
-        <menuitem action="customer_tax_invoice_list_action" id="menu_customer_vat_invoices" name="Видані ПН" parent="account.menu_finance_receivables" sequence="51"/>
+        <menuitem action="customer_tax_invoice_list_action"
+            id="menu_customer_vat_invoices" name="Видані ПН"
+            parent="account.menu_finance_receivables" sequence="51"/>
 
 <!-- Menu entry Supplier Tax Invoices -->
-        <menuitem action="supplier_tax_invoice_list_action" id="menu_supplier_vat_invoices" name="Отримані ПН" parent="account.menu_finance_payables" sequence="51"/>
+        <menuitem action="supplier_tax_invoice_list_action"
+            id="menu_supplier_vat_invoices" name="Отримані ПН"
+            parent="account.menu_finance_payables" sequence="51"/>
 
 <!--Add search by Category  -->
         <record id="tax_invoice_view_filter" model="ir.ui.view">
@@ -232,15 +236,5 @@
             </field>
         </record>
 
-        <!-- out tax invoice sequence data -->
-        <!-- move it out here -->
-        <record id="out_tax_invoice" model="ir.sequence">
-            <field name="name">Видані ПН</field>
-            <field name="code">out.taxinvoice</field>
-            <field name="padding">1</field>
-            <field eval="1" name="number_next"/>
-            <field eval="1" name="number_increment"/>
-            <field eval="True" name="use_date_range"/>
-        </record>
     </data>
 </openerp>

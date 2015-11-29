@@ -28,6 +28,7 @@
         'data/account.sprsti.csv',
         'data/taxinvoice_paymeth_data.xml',
         'data/account.taxinvoice.contrtype.csv',
+        'data/out_taxinvoice_sequence.xml'
     ],
     'installable': True,
 }
