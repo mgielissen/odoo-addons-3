@@ -444,14 +444,14 @@ class TaxInvoice(models.Model):
                     total_included += tax_amount
 
                     val = {
-                        'invoice_id': self.id,
+                        'taxinvoice_id': self.id,
                         'name': tl_id.name,
                         'tax_id': tl_id.id,
                         'base': base,
                         'amount': tax_amount,
                         'manual': False,
                         'sequence': tl_id.sequence,
-                        'account_analytic_id': tl_id.analytic,
+                        'account_analytic_id': tl_id.analytic or False,
                         'account_id': (tl_id.account_id or line.account_id.id),
                     }
 
@@ -472,8 +472,7 @@ class TaxInvoice(models.Model):
                  'company_id',
                  'amount_tara')
     def _compute_amount(self):
-        self.amount_untaxed = sum(
-            line.price_subtotal for line in self.taxinvoice_line_ids)
+        self.amount_untaxed = sum(line.base for line in self.tax_line_ids)
         self.amount_tax = sum(line.amount for line in self.tax_line_ids)
         self.amount_total = self.amount_untaxed + self.amount_tax
         self.amount_total += self.amount_tara
@@ -493,8 +492,9 @@ class TaxInvoice(models.Model):
     @api.multi
     def action_ready(self):
         for tinv in self:
-            if not tinv.taxinvoice_line_ids:
-                raise UserError(_(u"Немає жодного рядка в документі!"))
+            if tinv.category == 'out_tax_invoice':
+                if not tinv.taxinvoice_line_ids:
+                    raise UserError(_(u"Немає жодного рядка в документі!"))
         return self.write({'state': 'ready'})
 
     @api.multi
@@ -519,8 +519,10 @@ class TaxInvoice(models.Model):
 
         for tinv in self:
             if tinv.amount_tax == 0:
+                raise UserError(_(u"0 tax"))
                 return True    # no moves if taxes amount == 0
             if tinv.move_id:
+                raise UserError(_(u"1"))
                 continue
             if tinv.invoice_id:
                 if tinv.invoice_id.number:
