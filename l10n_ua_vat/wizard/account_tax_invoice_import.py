@@ -25,11 +25,30 @@ class TaxInvoiceImport(models.TransientModel):
         self.ensure_one()
         company_id = self._context.get('company_id',
                                        self.env.user.company_id)
+        if not company_id.vat:
+            raise UserError(_(u"Вкажіть ІПН у налаштуваннях компанії."))
 
         try:
             root = ET.fromstring(base64.b64decode(self.fdata))
         except ET.ParseError:
             raise UserError(_(u"Невірний формат xml файлу!"))
+        # check document format and version
+        declarhead = root.find('DECLARHEAD')
+        if declarhead is None:
+            raise UserError(_(u"Невірний формат файлу"))
+            return True
+        c_doc = declarhead.find('C_DOC')
+        if c_doc is None or c_doc.text != 'J12':
+            raise UserError(_(u"Невірна версія формату xml"))
+            return True
+        c_doc_sub = declarhead.find('C_DOC_SUB')
+        if c_doc_sub is None or c_doc_sub.text != '010':
+            raise UserError(_(u"Невірна версія формату xml"))
+            return True
+        c_doc_ver = declarhead.find('C_DOC_VER')
+        if c_doc_ver is None or c_doc_ver.text != '7':
+            raise UserError(_(u"Невірна версія формату xml"))
+            return True
 
         declarbody = root.find('DECLARBODY')
         if declarbody is None:
@@ -54,6 +73,9 @@ class TaxInvoiceImport(models.TransientModel):
         partner_id = self.env['res.partner'].search(domain, limit=1)
         if len(partner_id) == 0:
             raise UserError(_(u"Немає продавця з таким ІПН %s" % hksel.text))
+            return True
+        if partner_id.id == company_id.partner_id.id:
+            raise UserError(_(u"ІПН продавця співпадає з вашим ІПН"))
             return True
         # Ok let's write taxinvoice
         ctx = dict(self._context)

@@ -25,7 +25,6 @@
         <record id="act_sent" model="workflow.activity">
             <field name="wkf_id" ref="ti_wkf"/>
             <field name="name">sent</field>
-            <field name="flow_start">True</field>
             <field name="action">
                 action_sent()
             </field>
