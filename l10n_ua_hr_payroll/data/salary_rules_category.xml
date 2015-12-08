@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_payroll_ua_cat_zp" model="hr.salary.rule.category">
+            <field name="name">Заробітна плата</field>
+            <field name="code">ZP</field>
+        </record>
+        <record id="hr_payroll_ua_cat_comp" model="hr.salary.rule.category">
+            <field name="name">Компенсації</field>
+            <field name="code">COMPNS</field>
+        </record>
+        <record id="hr_payroll_ua_cat_fop" model="hr.salary.rule.category">
+            <field name="name">Всього нараховано</field>
+            <field name="code">FOP</field>
+        </record>
+        <record id="hr_payroll_ua_cat_utr" model="hr.salary.rule.category">
+            <field name="name">Утримання</field>
+            <field name="code">UTR</field>
+        </record>
+        <record id="hr_payroll_ua_cat_nar" model="hr.salary.rule.category">
+            <field name="name">Нарахування</field>
+            <field name="code">NAR</field>
+        </record>
+        <record id="hr_payroll_ua_cat_const" model="hr.salary.rule.category">
+            <field name="name">Константи</field>
+            <field name="code">CONST</field>
+        </record>
+        <record id="hr_payroll_ua_cat_bonus" model="hr.salary.rule.category">
+            <field name="name">Надбавки та премії</field>
+            <field name="code">BONUS</field>
+        </record>
+    </data>
+</odoo>

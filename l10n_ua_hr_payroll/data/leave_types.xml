@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- державні свята -->
+        <record model="hr.holidays.status" id="holiday_status_sv">
+            <field name="name" eval="SV"/>
+            <field name="limit" eval="False"/>
+            <field name="color_name">black</field>
+        </record>
+
+        <!-- лікарняний за рахунок підприємства -->
+        <record model="hr.holidays.status" id="holiday_status_sc">
+            <field name="name">SC</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">red</field>
+        </record>
+
+        <!-- лікарняний за рахунок фонду -->
+        <record model="hr.holidays.status" id="holiday_status_si">
+            <field name="name">SI</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">lavender</field>
+        </record>
+
+        <!--відпустка -->
+        <record model="hr.holidays.status" id="holiday_status_vp">
+            <field name="name">VP</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">brown</field>
+        </record>
+    </data>
+</odoo>

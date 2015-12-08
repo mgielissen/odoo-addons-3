@@ -13,8 +13,8 @@ Accounting Data for Belgian Payroll Rules.
     'website': 'https://www.odoo.com/page/accounting',
     'demo': [],
     'data': [
-        'l10n_ua_hr_payroll_account_data.xml',
+        # 'l10n_ua_hr_payroll_account_data.xml',
     ],
-    'post_init_hook': '_set_accounts',
+    # 'post_init_hook': '_set_accounts',
     'installable': True
 }

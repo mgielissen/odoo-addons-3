@@ -2,7 +2,7 @@
 {
     'name': 'Ukraine - Payroll',
     'category': 'Localization',
-    'depends': ['hr_payroll'],
+    'depends': ['hr_payroll', 'hr_holidays'],
     'version': '1.0',
     'description': """
 Ukrainian Payroll Rules.
@@ -23,6 +23,7 @@ Ukrainian Payroll Rules.
     # 'demo': ['l10n_be_hr_payroll_demo.xml'],
     # 'website': 'https://www.odoo.com/page/accounting',
     'data': [
+        'data/leave_types.xml'
         # 'l10n_be_hr_payroll_view.xml',
         # 'l10n_be_hr_payroll_data.xml',
         # 'data/hr.salary.rule.csv',
