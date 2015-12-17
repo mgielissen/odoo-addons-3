@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="hr_payroll_salary_structure_all" model="hr.payroll.structure">
+        <field name="code">ALL</field>
+        <field name="name">Повна структура</field>
+        <field eval="[(6, 0, [
+            ref('hr_payroll_rules_ua_mzp1'),
+            ref('hr_payroll_rules_ua_okl_dn'),
+            ref('hr_payroll_rules_ua_zp_hr'),
+            ref('hr_payroll_rules_ua_zp_d'),
+            ref('hr_payroll_rules_ua_zp_bonus_fix'),
+            ref('hr_payroll_rules_ua_zp_bonus_perc'),
+            ])]"
+            name="rule_ids"/>
+        <field name="company_id" ref="base.main_company"/>
+        <!-- <field name="parent_id" ref="hr_payroll.structure_base"/> -->
+    </record>
+    </data>
+</odoo>

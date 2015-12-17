@@ -23,7 +23,12 @@ Ukrainian Payroll Rules.
     # 'demo': ['l10n_be_hr_payroll_demo.xml'],
     # 'website': 'https://www.odoo.com/page/accounting',
     'data': [
-        'data/leave_types.xml'
+        'data/leave_types.xml',
+        'data/salary_rules_category.xml',
+        'data/salary_rules.xml',
+        'data/payroll_structure.xml',
+        'views/hr_employee_view.xml',
+        'views/hr_contract_view.xml',
         # 'l10n_be_hr_payroll_view.xml',
         # 'l10n_be_hr_payroll_data.xml',
         # 'data/hr.salary.rule.csv',

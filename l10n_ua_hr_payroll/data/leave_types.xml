@@ -3,7 +3,7 @@
     <data>
         <!-- державні свята -->
         <record model="hr.holidays.status" id="holiday_status_sv">
-            <field name="name" eval="SV"/>
+            <field name="name">SV</field>
             <field name="limit" eval="False"/>
             <field name="color_name">black</field>
         </record>

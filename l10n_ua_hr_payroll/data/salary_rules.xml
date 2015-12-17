@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="hr_payroll_rules_ua_mzp" model="hr.salary.rule">
+        <record id="hr_payroll_rules_ua_mzp1" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_const"/>
             <field name="sequence">1</field>
-            <field name="appears_on_payslip">false</field>
+            <field name="appears_on_payslip" eval="False"/>
             <field name="name">Мінімальна ЗП на початок року</field>
-            <field name="code">MZP</field>
+            <field name="code">MZP1</field>
             <field name="condition_select">none</field>
             <field name="amount_select">fix</field>
-            <field name="amount_fix">0</field>
+            <field name="amount_fix">1378.00</field>
         </record>
         <record id="hr_payroll_rules_ua_okl_dn" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -27,7 +27,7 @@
             <field name="code">ZP_HR</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = contract.wage * (worked_days.WORK100.number_of_hours + worked_days.SV.number_of_hours)</field>
+            <field name="amount_python_compute">result = contract.wage * (worked_days.WORK100.number_of_hours + (worked_days.SV and worked_days.SV.number_of_hours or 0))</field>
         </record>
         <record id="hr_payroll_rules_ua_zp_d" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -36,16 +36,27 @@
             <field name="code">ZP_D</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = contract.wage * (worked_days.WORK100.number_of_days + worked_days.SV.number_of_days)</field>
+            <field name="amount_python_compute">result = contract.wage * (worked_days.WORK100.number_of_days + (worked_days.SV and worked_days.SV.number_of_days or 0))</field>
         </record>
         <record id="hr_payroll_rules_ua_zp_bonus_fix" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
-            <field name="sequence">30</field>
+            <field name="category_id" ref="hr_payroll_ua_cat_bonus"/>
+            <field name="sequence">40</field>
             <field name="name">Надбавка фіксованою сумою</field>
             <field name="code">BONUS_FIX</field>
-            <field name="condition_select">none</field>
-            <field name="amount_select">fix</field>
-            <field name="amount_fix">0</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = contract.bonus_fix > 0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.bonus_fix</field>
+        </record>
+        <record id="hr_payroll_rules_ua_zp_bonus_perc" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_bonus"/>
+            <field name="sequence">41</field>
+            <field name="name">Надбавка відсотком</field>
+            <field name="code">BONUS_PERC</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = contract.bonus_perc > 0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.ZP * contract.bonus_perc</field>
         </record>
     </data>
 </odoo>
