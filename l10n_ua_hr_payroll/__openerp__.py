@@ -6,7 +6,7 @@
     'version': '1.0',
     'description': """
 Ukrainian Payroll Rules.
-======================
+========================
 
     * Employee Details
     * Employee Contracts
@@ -29,6 +29,7 @@ Ukrainian Payroll Rules.
         'data/payroll_structure.xml',
         'views/hr_employee_view.xml',
         'views/hr_contract_view.xml',
+        'views/hr_payslip_vew.xml',
         # 'l10n_be_hr_payroll_view.xml',
         # 'l10n_be_hr_payroll_data.xml',
         # 'data/hr.salary.rule.csv',

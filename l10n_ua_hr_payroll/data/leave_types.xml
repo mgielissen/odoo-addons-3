@@ -11,7 +11,7 @@
         <!-- лікарняний за рахунок підприємства -->
         <record model="hr.holidays.status" id="holiday_status_sc">
             <field name="name">SC</field>
-            <field name="limit" eval="True"/>
+            <field name="limit" eval="False"/>
             <field name="color_name">red</field>
         </record>
 
@@ -27,6 +27,12 @@
             <field name="name">VP</field>
             <field name="limit" eval="True"/>
             <field name="color_name">brown</field>
+        </record>
+        <!--прогул -->
+        <record model="hr.holidays.status" id="holiday_status_sk">
+            <field name="name">SK</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">violet</field>
         </record>
     </data>
 </odoo>

@@ -11,6 +11,7 @@
             ref('hr_payroll_rules_ua_zp_d'),
             ref('hr_payroll_rules_ua_zp_bonus_fix'),
             ref('hr_payroll_rules_ua_zp_bonus_perc'),
+            ref('hr_payroll_rules_ua_zp_test'),
             ])]"
             name="rule_ids"/>
         <field name="company_id" ref="base.main_company"/>

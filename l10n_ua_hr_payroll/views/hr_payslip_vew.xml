@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_payslip_form_l10n_ua_view_form" model="ir.ui.view">
+            <field name="name">hr.payslip.form.inherit.form.ua</field>
+            <field name="model">hr.payslip</field>
+            <field name="priority">20</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+            <field name="arch" type="xml">
+            <data>
+                 <xpath expr="//field[@name='credit_note']" position="after">
+                    <field name="last_day"/>
+                    <field name="monthly_days"/>
+                    <field name="monthly_hours"/>
+                 </xpath>
+                 <xpath expr="//field[@name='date_to']" position="attributes">
+                    <attribute name="on_change">onchange_employee_id(date_from, date_to, employee_id, contract_id)</attribute>
+                 </xpath>
+            </data>
+            </field>
+        </record>
+    </data>
+</odoo>
