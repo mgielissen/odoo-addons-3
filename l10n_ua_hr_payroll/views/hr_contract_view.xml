@@ -9,8 +9,10 @@
             <field name="arch" type="xml">
             <data>
                  <xpath expr="//field[@name='struct_id']" position="after">
+                    <field name="base_period"/>
                     <field name="bonus_fix"/>
                     <field name="bonus_perc"/>
+                    <field name="use_psp"/>
                  </xpath>
             </data>
             </field>

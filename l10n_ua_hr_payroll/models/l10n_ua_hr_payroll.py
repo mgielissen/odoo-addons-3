@@ -10,12 +10,12 @@ from datetime import timedelta
 from dateutil import relativedelta
 
 
-class HrEmployeeL10nUa(models.Model):
-    _inherit = 'hr.employee'
-
-    use_psp = fields.Boolean(string=u"Використовувати ПСП",
-                             help=u"Податкова соціальна пільга",
-                             default=False)
+# class HrEmployeeL10nUa(models.Model):
+#     _inherit = 'hr.employee'
+#
+#     use_psp = fields.Boolean(string=u"Використовувати ПСП",
+#                              help=u"Податкова соціальна пільга",
+#                              default=False)
 
 
 class HrContractL10nUa(models.Model):
@@ -28,9 +28,11 @@ class HrContractL10nUa(models.Model):
     bonus_perc = fields.Float(
         string=u"Надбавка відсотком",
         default=0.0)
-# TODO: move use_psp to contract
-#       create index class (date, percent_amount)
-#       create indexation computation function in contract
+    use_psp = fields.Boolean(string=u"Використовувати ПСП",
+                             help=u"Податкова соціальна пільга",
+                             default=False)
+    base_period = fields.Date(string=u"Базовий період",
+                              required=True)
 
 
 class HrPayslipL10nUa(models.Model):
@@ -49,6 +51,11 @@ class HrPayslipL10nUa(models.Model):
     monthly_hours = fields.Integer(string=u"Місячна норма робочих годин",
                                    compute='_compute_monthly_due',
                                    default=0,
+                                   store=True)
+    indexation_coef = fields.Float(string=u"Коефіцієнт індексації ЗП",
+                                   compute='_compute_indexation_coef',
+                                   default=0.00,
+                                   digits=(5, 2),
                                    store=True)
 
     @api.depends('date_from')
@@ -89,3 +96,59 @@ class HrPayslipL10nUa(models.Model):
                         sk_h = l['number_of_hours']
                 rec.monthly_days = w100_d + sc_d + si_d + vp_d + sk_d
                 rec.monthly_hours = w100_h + sc_h + si_h + vp_h + sk_h
+
+    @api.depends('date_from', 'contract_id')
+    def _compute_indexation_coef(self):
+        def _diff_month(d1, d2):
+            return (d1.year - d2.year)*12 + d1.month - d2.month
+
+        for rec in self:
+            if not rec.date_from or not rec.contract_id.base_period:
+                rec.indexation_coef = 0.0
+                continue
+
+            base_p = fields.Date.from_string(rec.contract_id.base_period)
+            base_p = datetime.strptime(
+                base_p.strftime('%Y-%m-01'), '%Y-%m-%d')
+            payslip_date = fields.Date.from_string(rec.date_from)
+            payslip_date = datetime.strptime(
+                payslip_date.strftime('%Y-%m-01'), '%Y-%m-%d')
+
+            if _diff_month(base_p, payslip_date) > -2:
+                # індексація нараховується починаючи з 4-го місяця
+                rec.indexation_coef = 0.0
+                continue
+
+            ind_date_for_payslip = payslip_date + \
+                relativedelta.relativedelta(months=-2)
+            domain = [('date', '>', base_p),
+                      ('date', '<=', ind_date_for_payslip)]
+            priceindexes = self.env['hr.l10n_ua_payroll.priceindex'].search(
+                domain)
+            coef = 100.0
+            base = 100.0
+            for p_ind in priceindexes:
+                base = (base * p_ind.index)/100
+                base = round(base, 1)
+                if base > 101.0:
+                    coef = (coef * base)/100
+                    coef = round(coef, 1)
+                    base = 100.0
+            rec.indexation_coef = coef - 100.0
+
+
+class HrPriceIndexL10nUa(models.Model):
+    _name = 'hr.l10n_ua_payroll.priceindex'
+    _description = 'Index of consumer prices'
+
+    name = fields.Char(string=u"Індекс споживчих цін",
+                       readonly=True,
+                       required=False,
+                       default=u"Індекс споживчих цін")
+    date = fields.Date(string=u"Дата",
+                       required=True,
+                       default=lambda *a: time.strftime('%Y-%m-01'),)
+    index = fields.Float(string=u"Індекс споживчих цін",
+                         default=100.0,
+                         digits=(4, 1),
+                         required=True)
