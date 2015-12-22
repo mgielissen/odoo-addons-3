@@ -58,6 +58,7 @@
                             </group>
                             <group>
                                 <field name="mzp"/>
+                                <field name="mzp_hourly"/>
                             </group>
                         </group>
                     </sheet>

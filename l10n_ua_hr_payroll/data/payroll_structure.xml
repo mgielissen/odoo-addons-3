@@ -12,7 +12,9 @@
             ref('hr_payroll_rules_ua_zp_bonus_fix'),
             ref('hr_payroll_rules_ua_zp_bonus_perc'),
             ref('hr_payroll_rules_ua_comp_index_cur'),
+            ref('hr_payroll_rules_ua_comp_index_cur_hr'),
             ref('hr_payroll_rules_ua_comp_index_fix'),
+            ref('hr_payroll_rules_ua_fop'),
             ref('hr_payroll_rules_ua_zp_test'),
             ])]"
             name="rule_ids"/>

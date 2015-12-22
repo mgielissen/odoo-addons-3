@@ -10,6 +10,7 @@
             <data>
                  <xpath expr="//field[@name='struct_id']" position="after">
                     <field name="base_period"/>
+                    <field name="index_fix"/>
                     <field name="bonus_fix"/>
                     <field name="bonus_perc"/>
                     <field name="use_psp"/>

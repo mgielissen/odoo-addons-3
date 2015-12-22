@@ -33,6 +33,10 @@ class HrContractL10nUa(models.Model):
                              default=False)
     base_period = fields.Date(string=u"Базовий період",
                               required=True)
+    index_fix = fields.Float(
+        string=u"Індексація фіксована",
+        default=0.0,
+        digits_compute=dp.get_precision('Payroll'))
 
 
 class HrPayslipL10nUa(models.Model):
@@ -62,11 +66,23 @@ class HrPayslipL10nUa(models.Model):
                                default=0.00,
                                digits=(7, 2),
                                store=True)
+    january_mzp_hr = fields.Float(
+        string=u"МЗП погодинна на 1 січня поточного року",
+        compute='_compute_january_mzp',
+        default=0.00,
+        digits=(7, 2),
+        store=True)
     current_mzp = fields.Float(string=u"МЗП для поточного розрахунку ЗП",
                                compute='_compute_current_mzp',
                                default=0.00,
                                digits=(7, 2),
                                store=True)
+    current_mzp_hr = fields.Float(
+        string=u"МЗП погодинна для поточного розрахунку ЗП",
+        compute='_compute_current_mzp',
+        default=0.00,
+        digits=(7, 2),
+        store=True)
 
     @api.depends('date_from')
     def _compute_last_day(self):
@@ -158,8 +174,10 @@ class HrPayslipL10nUa(models.Model):
                                                                 limit=1)
                 if len(mzp) > 0:
                     record.january_mzp = mzp.mzp
+                    record.january_mzp_hr = mzp.mzp_hourly
                 else:
-                    record.january_mzp = 0
+                    record.january_mzp = 0.0
+                    record.january_mzp_hr = 0.0
 
     @api.depends('date_from')
     def _compute_current_mzp(self):
@@ -174,8 +192,10 @@ class HrPayslipL10nUa(models.Model):
                     mzps = mzps.sorted(key=lambda r: r.date, reverse=True)
                     mzp_last = mzps[0]
                     record.current_mzp = mzp_last.mzp
+                    record.current_mzp_hr = mzp_last.mzp_hourly
                 else:
-                    record.current_mzp = 0
+                    record.current_mzp = 0.0
+                    record.current_mzp_hr = 0.0
 
 
 class HrPriceIndexL10nUa(models.Model):
@@ -220,10 +240,14 @@ class HrMzpL10nUa(models.Model):
     date = fields.Date(string=u"Дата",
                        required=True,
                        default=lambda *a: time.strftime('%Y-%m-01'),)
-    mzp = fields.Float(string=u"Мінімальна заробітна плата",
+    mzp = fields.Float(string=u"Мінімальна місячна заробітна плата",
                        default=0.0,
                        digits=(7, 2),
                        required=True)
+    mzp_hourly = fields.Float(string=u"Мінімальна погодинна заробітна плата",
+                              default=0.0,
+                              digits=(7, 2),
+                              required=True)
 
     @api.multi
     def write(self, vals):

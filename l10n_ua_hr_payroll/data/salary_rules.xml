@@ -65,26 +65,47 @@
         <record id="hr_payroll_rules_ua_comp_index_cur" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
             <field name="sequence">60</field>
-            <field name="name">Індексація окладу поточна</field>
+            <field name="name">Індексація окладу</field>
             <field name="code">INDEX_CUR</field>
             <field name="condition_select">python</field>
             <field name="condition_python">result = payslip.indexation_coef > 0.0</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = payslip.current_mzp * payslip.indexation_coef / 100.0</field>
         </record>
-        <record id="hr_payroll_rules_ua_comp_index_fix" model="hr.salary.rule">
+        <record id="hr_payroll_rules_ua_comp_index_cur_hr" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
             <field name="sequence">61</field>
-            <field name="name">Індексація окладу фіксована</field>
-            <field name="code">INDEX_FIX</field>
-            <field name="condition_select">none</field>
-            <field name="amount_select">fix</field>
-            <field name="amount_fix">0.00</field>
+            <field name="name">Індексація погодинного тарифу</field>
+            <field name="code">INDEX_CUR_HR</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = payslip.indexation_coef > 0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = payslip.current_mzp_hr * payslip.indexation_coef / 100.0</field>
         </record>
-        <!-- test,     seq 39 -->
+        <record id="hr_payroll_rules_ua_comp_index_fix" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
+            <field name="sequence">62</field>
+            <field name="name">Індексація фіксована</field>
+            <field name="code">INDEX_FIX</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = contract.index_fix > 0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.index_fix</field>
+        </record>
+        <!-- fop,    seq 80 - 99 -->
+        <record id="hr_payroll_rules_ua_fop" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
+            <field name="sequence">80</field>
+            <field name="name">Всього нараховано</field>
+            <field name="code">FOP</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.ZP + categories.BONUS + categories.COMPNS</field>
+        </record>
+        <!-- test,     seq 139 -->
         <record id="hr_payroll_rules_ua_zp_test" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
-            <field name="sequence">39</field>
+            <field name="sequence">139</field>
             <field name="name">Тest days</field>
             <field name="code">ZP_test</field>
             <field name="condition_select">none</field>
