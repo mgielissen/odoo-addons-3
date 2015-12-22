@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- constants,  seq 1 - 19 -->
-        <record id="hr_payroll_rules_ua_mzp1" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_const"/>
-            <field name="sequence">1</field>
-            <field name="appears_on_payslip" eval="False"/>
-            <field name="name">Мінімальна ЗП на початок року</field>
-            <field name="code">MZP1</field>
-            <field name="condition_select">none</field>
-            <field name="amount_select">fix</field>
-            <field name="amount_fix">1378.00</field>
+        <!-- регістри накопичення -->
+        <record id="ua_contrib_register_fop" model="hr.contribution.register">
+            <field name="name">Всього нараховано</field>
+            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
         </record>
+        <record id="ua_contrib_register_pdfo" model="hr.contribution.register">
+            <field name="name">ПДФО</field>
+            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+        </record>
+        <record id="ua_contrib_register_pdfo_psp" model="hr.contribution.register">
+            <field name="name">ПДФО з ПСП</field>
+            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+        </record>
+        <record id="ua_contrib_register_vz" model="hr.contribution.register">
+            <field name="name">Військовий збір</field>
+            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+        </record>
+        <record id="ua_contrib_register_esv" model="hr.contribution.register">
+            <field name="name">Нараховано ЄСВ</field>
+            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+        </record>
+        <record id="ua_contrib_register_esv_disable" model="hr.contribution.register">
+            <field name="name">Нараховано ЄСВ інвалідам</field>
+            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+        </record>
+        <record id="ua_contrib_register_esv_delta" model="hr.contribution.register">
+            <field name="name">Нараховано ЄСВ на різницю між МЗП і ЗП</field>
+            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+        </record>
+        <!-- constants,  seq 1 - 19 -->
+
         <!-- zp,  seq 20 - 39 -->
         <record id="hr_payroll_rules_ua_okl_dn" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -20,7 +40,7 @@
             <field name="code">OKLAD_D</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = (worked_days.WORK100.number_of_days * contract.wage) / (payslip.monthly_days)</field>
+            <field name="amount_python_compute">result = round((worked_days.WORK100.number_of_days * contract.wage) / (payslip.monthly_days), 2)</field>
         </record>
         <record id="hr_payroll_rules_ua_zp_hr" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -29,7 +49,7 @@
             <field name="code">ZP_HR</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = contract.wage * (worked_days.WORK100.number_of_hours + (worked_days.SV and worked_days.SV.number_of_hours or 0))</field>
+            <field name="amount_python_compute">result = round(contract.wage * (worked_days.WORK100.number_of_hours + (worked_days.SV and worked_days.SV.number_of_hours or 0)), 2)</field>
         </record>
         <record id="hr_payroll_rules_ua_zp_d" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -38,7 +58,7 @@
             <field name="code">ZP_D</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = contract.wage * (worked_days.WORK100.number_of_days + (worked_days.SV and worked_days.SV.number_of_days or 0))</field>
+            <field name="amount_python_compute">result = round(contract.wage * (worked_days.WORK100.number_of_days + (worked_days.SV and worked_days.SV.number_of_days or 0)), 2)</field>
         </record>
         <!-- bonus,    seq 40 - 59 -->
         <record id="hr_payroll_rules_ua_zp_bonus_fix" model="hr.salary.rule">
@@ -59,7 +79,7 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = contract.bonus_perc > 0.0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = categories.ZP * contract.bonus_perc</field>
+            <field name="amount_python_compute">result = round(categories.ZP * contract.bonus_perc, 2)</field>
         </record>
         <!-- compns,    seq 60 - 79 -->
         <record id="hr_payroll_rules_ua_comp_index_cur" model="hr.salary.rule">
@@ -70,7 +90,7 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = payslip.indexation_coef > 0.0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = payslip.current_mzp * payslip.indexation_coef / 100.0</field>
+            <field name="amount_python_compute">result = round(payslip.current_mzp * payslip.indexation_coef / 100.0, 2)</field>
         </record>
         <record id="hr_payroll_rules_ua_comp_index_cur_hr" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
@@ -80,7 +100,7 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = payslip.indexation_coef > 0.0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = payslip.current_mzp_hr * payslip.indexation_coef / 100.0</field>
+            <field name="amount_python_compute">result = round(payslip.current_mzp_hr * payslip.indexation_coef / 100.0, 2)</field>
         </record>
         <record id="hr_payroll_rules_ua_comp_index_fix" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
@@ -101,16 +121,96 @@
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = categories.ZP + categories.BONUS + categories.COMPNS</field>
+            <field name="register_id" ref="ua_contrib_register_fop"/>
+        </record>
+        <!-- utr,    seq 100 - 119 -->
+        <record id="hr_payroll_rules_ua_utr_pdfo" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_utr"/>
+            <field name="sequence">100</field>
+            <field name="name">ПДФО</field>
+            <field name="code">PDFO</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = (not contract.use_psp) or (categories.FOP >= (round(1.4*payslip.january_mzp/10)*10))</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(-0.18 * categories.FOP, 2)</field>
+            <field name="register_id" ref="ua_contrib_register_pdfo"/>
+        </record>
+        <record id="hr_payroll_rules_ua_utr_pdfo_psp" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_utr"/>
+            <field name="sequence">101</field>
+            <field name="name">ПДФО з ПСП</field>
+            <field name="code">PDFOPSP</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = contract.use_psp and ((round(1.4*payslip.january_mzp/10)*10) >= categories.FOP)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(-0.18 * (categories.FOP - 0.5*payslip.january_mzp), 2)</field>
+            <field name="register_id" ref="ua_contrib_register_pdfo_psp"/>
+        </record>
+        <record id="hr_payroll_rules_ua_utr_vz" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_utr"/>
+            <field name="sequence">102</field>
+            <field name="name">Військовий збір</field>
+            <field name="code">VZ</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(-0.015 * categories.FOP, 2)</field>
+            <field name="register_id" ref="ua_contrib_register_vz"/>
+        </record>
+        <!-- vypl,   seq 120 - 139 -->
+        <record id="hr_payroll_rules_ua_vypl" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_vypl"/>
+            <field name="sequence">120</field>
+            <field name="name">До виплати</field>
+            <field name="code">VYPL</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.FOP + categories.UTR</field>
+        </record>
+        <!-- nar,    seq 140 - 159 -->
+        <record id="hr_payroll_rules_ua_nar_esv" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
+            <field name="sequence">140</field>
+            <field name="name">Нарахування ЄСВ</field>
+            <field name="code">ESV</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = not employee.disable</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(0.22 * (categories.FOP if 25*payslip.current_mzp > categories.FOP else 25*payslip.current_mzp), 2)</field>
+            <field name="register_id" ref="ua_contrib_register_esv"/>
+        </record>
+        <record id="hr_payroll_rules_ua_nar_esv_inv" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
+            <field name="sequence">141</field>
+            <field name="name">Нарахування ЄСВ інвалідам</field>
+            <field name="code">ESVINV</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = employee.disable</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(0.0841 * (categories.FOP if 25*payslip.current_mzp > categories.FOP else 25*payslip.current_mzp), 2)</field>
+            <field name="register_id" ref="ua_contrib_register_esv_disable"/>
+        </record>
+        <record id="hr_payroll_rules_ua_nar_esv_delta" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
+            <field name="sequence">142</field>
+            <field name="name">Нарахування ЄСВ на різницю від МЗП</field>
+            <field name="code">ESVDELTA</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = payslip.current_mzp > categories.FOP</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = round(0.22 * (payslip.current_mzp - categories.FOP), 2)</field>
+            <field name="register_id" ref="ua_contrib_register_esv_delta"/>
         </record>
         <!-- test,     seq 139 -->
         <record id="hr_payroll_rules_ua_zp_test" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">139</field>
-            <field name="name">Тest days</field>
+            <field name="name">Тest</field>
             <field name="code">ZP_test</field>
             <field name="condition_select">none</field>
-            <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = payslip.monthly_days</field>
+            <field name="amount_select">percentage</field>
+            <field name="amount_percentage">-100.0</field>
+            <field name="amount_percentage_base">contract.wage</field>
+            <field name="quantity">worked_days.WORK100.number_of_days / payslip.monthly_days</field>
         </record>
     </data>
 </odoo>

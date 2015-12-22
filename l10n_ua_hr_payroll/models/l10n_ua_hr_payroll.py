@@ -10,12 +10,12 @@ from datetime import timedelta
 from dateutil import relativedelta
 
 
-# class HrEmployeeL10nUa(models.Model):
-#     _inherit = 'hr.employee'
-#
-#     use_psp = fields.Boolean(string=u"Використовувати ПСП",
-#                              help=u"Податкова соціальна пільга",
-#                              default=False)
+class HrEmployeeL10nUa(models.Model):
+    _inherit = 'hr.employee'
+
+    disable = fields.Boolean(string=u"Інвалід",
+                             help=u"Податкова соціальна пільга",
+                             default=False)
 
 
 class HrContractL10nUa(models.Model):
