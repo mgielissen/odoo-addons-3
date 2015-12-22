@@ -55,8 +55,18 @@ class HrPayslipL10nUa(models.Model):
     indexation_coef = fields.Float(string=u"Коефіцієнт індексації ЗП",
                                    compute='_compute_indexation_coef',
                                    default=0.00,
-                                   digits=(5, 2),
+                                   digits=(4, 1),
                                    store=True)
+    january_mzp = fields.Float(string=u"МЗП на 1 січня поточного року",
+                               compute='_compute_january_mzp',
+                               default=0.00,
+                               digits=(7, 2),
+                               store=True)
+    current_mzp = fields.Float(string=u"МЗП для поточного розрахунку ЗП",
+                               compute='_compute_current_mzp',
+                               default=0.00,
+                               digits=(7, 2),
+                               store=True)
 
     @api.depends('date_from')
     def _compute_last_day(self):
@@ -100,7 +110,7 @@ class HrPayslipL10nUa(models.Model):
     @api.depends('date_from', 'contract_id')
     def _compute_indexation_coef(self):
         def _diff_month(d1, d2):
-            return (d1.year - d2.year)*12 + d1.month - d2.month
+            return (d1.year - d2.year) * 12 + d1.month - d2.month
 
         for rec in self:
             if not rec.date_from or not rec.contract_id.base_period:
@@ -128,13 +138,44 @@ class HrPayslipL10nUa(models.Model):
             coef = 100.0
             base = 100.0
             for p_ind in priceindexes:
-                base = (base * p_ind.index)/100
+                base = (base * p_ind.index) / 100.0
                 base = round(base, 1)
                 if base > 101.0:
-                    coef = (coef * base)/100
+                    coef = (coef * base) / 100
                     coef = round(coef, 1)
                     base = 100.0
             rec.indexation_coef = coef - 100.0
+
+    @api.depends('date_from')
+    def _compute_january_mzp(self):
+        for record in self:
+            if record.date_from:
+                payslip_date = fields.Date.from_string(record.date_from)
+                payslip_date = datetime.strptime(
+                    payslip_date.strftime('%Y-01-01'), '%Y-%m-%d')
+                domain = [('date', '=', payslip_date)]
+                mzp = self.env['hr.l10n_ua_payroll.mzp'].search(domain,
+                                                                limit=1)
+                if len(mzp) > 0:
+                    record.january_mzp = mzp.mzp
+                else:
+                    record.january_mzp = 0
+
+    @api.depends('date_from')
+    def _compute_current_mzp(self):
+        for record in self:
+            if record.date_from:
+                payslip_date = fields.Date.from_string(record.date_from)
+                payslip_date = datetime.strptime(
+                    payslip_date.strftime('%Y-%m-01'), '%Y-%m-%d')
+                domain = [('date', '<=', payslip_date)]
+                mzps = self.env['hr.l10n_ua_payroll.mzp'].search(domain)
+                if len(mzps) > 0:
+                    mzps = mzps.sorted(key=lambda r: r.date, reverse=True)
+                    mzp_last = mzps[0]
+                    record.current_mzp = mzp_last.mzp
+                else:
+                    record.current_mzp = 0
 
 
 class HrPriceIndexL10nUa(models.Model):
@@ -152,3 +193,48 @@ class HrPriceIndexL10nUa(models.Model):
                          default=100.0,
                          digits=(4, 1),
                          required=True)
+
+    @api.multi
+    def write(self, vals):
+        if 'date' in vals:
+            # ensure date is set to first day of a month
+            vals['date'] = vals['date'][:7] + '-01'
+        return super(HrPriceIndexL10nUa, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        if 'date' in vals:
+            # ensure date is set to first day of a month
+            vals['date'] = vals['date'][:7] + '-01'
+        return super(HrPriceIndexL10nUa, self).create(vals)
+
+
+class HrMzpL10nUa(models.Model):
+    _name = 'hr.l10n_ua_payroll.mzp'
+    _description = 'Minimal wage'
+
+    name = fields.Char(string=u"Мінімальна заробітна плата",
+                       readonly=True,
+                       required=False,
+                       default=u"Мінімальна заробітна плата")
+    date = fields.Date(string=u"Дата",
+                       required=True,
+                       default=lambda *a: time.strftime('%Y-%m-01'),)
+    mzp = fields.Float(string=u"Мінімальна заробітна плата",
+                       default=0.0,
+                       digits=(7, 2),
+                       required=True)
+
+    @api.multi
+    def write(self, vals):
+        if 'date' in vals:
+            # ensure date is set to first day of a month
+            vals['date'] = vals['date'][:7] + '-01'
+        return super(HrMzpL10nUa, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        if 'date' in vals:
+            # ensure date is set to first day of a month
+            vals['date'] = vals['date'][:7] + '-01'
+        return super(HrMzpL10nUa, self).create(vals)

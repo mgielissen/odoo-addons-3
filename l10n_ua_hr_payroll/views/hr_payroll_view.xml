@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    <record model="ir.ui.view" id="ua_payroll_priceindex_form_view">
+        <!-- індекс споживчих цін -->
+        <record model="ir.ui.view" id="ua_payroll_priceindex_form_view">
             <field name="name">ua_priceindex.form</field>
             <field name="model">hr.l10n_ua_payroll.priceindex</field>
             <field name="arch" type="xml">
@@ -18,18 +19,18 @@
                     </sheet>
                 </form>
             </field>
-    </record>
-    <record model="ir.ui.view" id="ua_payroll_priceindex_tree_view">
-        <field name="name">ua_priceindex.tree</field>
-        <field name="model">hr.l10n_ua_payroll.priceindex</field>
-        <field name="arch" type="xml">
-            <tree string="Список індексів споживчих цін">
-                <field name="date"/>
-                <field name="index"/>
-            </tree>
-        </field>
-    </record>
-	<record model="ir.actions.act_window" id="ua_payroll_priceindex_list_action">
+        </record>
+        <record model="ir.ui.view" id="ua_payroll_priceindex_tree_view">
+            <field name="name">ua_priceindex.tree</field>
+            <field name="model">hr.l10n_ua_payroll.priceindex</field>
+            <field name="arch" type="xml">
+                <tree string="Список індексів споживчих цін">
+                    <field name="date"/>
+                    <field name="index"/>
+                </tree>
+            </field>
+        </record>
+    	<record model="ir.actions.act_window" id="ua_payroll_priceindex_list_action">
             <field name="name">Індекс споживчих цін</field>
             <field name="res_model">hr.l10n_ua_payroll.priceindex</field>
             <field name="view_type">form</field>
@@ -39,10 +40,54 @@
                 </p>
             </field>
         </record>
-    <menuitem id="menu_ua_payroll_priceindex"
-            name="Індекс споживчих цін"
-            parent="hr_payroll.menu_hr_payroll_configuration"
-            action="ua_payroll_priceindex_list_action"
-            sequence="15"/>
+        <menuitem id="menu_ua_payroll_priceindex"
+                name="Індекс споживчих цін"
+                parent="hr_payroll.menu_hr_payroll_configuration"
+                action="ua_payroll_priceindex_list_action"
+                sequence="16"/>
+        <!-- мінімальна заробітна плата -->
+        <record model="ir.ui.view" id="ua_payroll_mzp_form_view">
+            <field name="name">ua_mzp.form</field>
+            <field name="model">hr.l10n_ua_payroll.mzp</field>
+            <field name="arch" type="xml">
+                <form string="Форма мінімальної заробітної плати">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date"/>
+                            </group>
+                            <group>
+                                <field name="mzp"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ua_payroll_mzp_tree_view">
+            <field name="name">ua_mzp.tree</field>
+            <field name="model">hr.l10n_ua_payroll.mzp</field>
+            <field name="arch" type="xml">
+                <tree string="Список мінімальної заробітної плати">
+                    <field name="date"/>
+                    <field name="mzp"/>
+                </tree>
+            </field>
+        </record>
+    	<record model="ir.actions.act_window" id="ua_payroll_mzp_list_action">
+            <field name="name">Мінімальна заробітна плата</field>
+            <field name="res_model">hr.l10n_ua_payroll.mzp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Додайте інформацію про мінімальну заробітну плату.
+                </p>
+            </field>
+        </record>
+        <menuitem id="menu_ua_payroll_mzp"
+                name="Мінімальна заробітна плата"
+                parent="hr_payroll.menu_hr_payroll_configuration"
+                action="ua_payroll_mzp_list_action"
+                sequence="15"/>
     </data>
 </odoo>

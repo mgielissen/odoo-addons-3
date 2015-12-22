@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- constants,  seq 1 - 19 -->
         <record id="hr_payroll_rules_ua_mzp1" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_const"/>
             <field name="sequence">1</field>
@@ -11,6 +12,7 @@
             <field name="amount_select">fix</field>
             <field name="amount_fix">1378.00</field>
         </record>
+        <!-- zp,  seq 20 - 39 -->
         <record id="hr_payroll_rules_ua_okl_dn" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">20</field>
@@ -38,6 +40,7 @@
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = contract.wage * (worked_days.WORK100.number_of_days + (worked_days.SV and worked_days.SV.number_of_days or 0))</field>
         </record>
+        <!-- bonus,    seq 40 - 59 -->
         <record id="hr_payroll_rules_ua_zp_bonus_fix" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_bonus"/>
             <field name="sequence">40</field>
@@ -58,6 +61,27 @@
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = categories.ZP * contract.bonus_perc</field>
         </record>
+        <!-- compns,    seq 60 - 79 -->
+        <record id="hr_payroll_rules_ua_comp_index_cur" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
+            <field name="sequence">60</field>
+            <field name="name">Індексація окладу поточна</field>
+            <field name="code">INDEX_CUR</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = payslip.indexation_coef > 0.0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = payslip.current_mzp * payslip.indexation_coef / 100.0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_comp_index_fix" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
+            <field name="sequence">61</field>
+            <field name="name">Індексація окладу фіксована</field>
+            <field name="code">INDEX_FIX</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">fix</field>
+            <field name="amount_fix">0.00</field>
+        </record>
+        <!-- test,     seq 39 -->
         <record id="hr_payroll_rules_ua_zp_test" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">39</field>
