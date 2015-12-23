@@ -5,6 +5,9 @@
         <field name="code">OKLAD</field>
         <field name="name">Оклад по днях для співробітників</field>
         <field eval="[(6, 0, [
+            ref('hr_payroll_rules_ua_temp_oklad'),
+            ref('hr_payroll_rules_ua_temp_monthly_days'),
+            ref('hr_payroll_rules_ua_temp_worked_days'),
             ref('hr_payroll_rules_ua_okl_dn'),
             ref('hr_payroll_rules_ua_zp_bonus_fix'),
             ref('hr_payroll_rules_ua_zp_bonus_perc'),

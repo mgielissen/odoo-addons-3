@@ -30,17 +30,45 @@
             <field name="name">Нараховано ЄСВ на різницю між МЗП і ЗП</field>
             <!-- <field name="partner_id" ref="res_partner_pp"/> -->
         </record>
-        <!-- constants,  seq 1 - 19 -->
-
+        <!-- info,  seq 1 - 19 -->
+        <record id="hr_payroll_rules_ua_temp_oklad" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
+            <field name="sequence">1</field>
+            <field name="name">Місячний оклад</field>
+            <field name="code">T_OKLAD</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.wage</field>
+        </record>
+        <record id="hr_payroll_rules_ua_temp_monthly_days" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
+            <field name="sequence">2</field>
+            <field name="name">Норма робочих днів</field>
+            <field name="code">T_M_DAYS</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = payslip.monthly_days</field>
+        </record>
+        <record id="hr_payroll_rules_ua_temp_worked_days" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
+            <field name="sequence">3</field>
+            <field name="name">Відпрацьовано днів</field>
+            <field name="code">T_W_DAYS</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = worked_days.WORK100.number_of_days</field>
+        </record>
         <!-- zp,  seq 20 - 39 -->
         <record id="hr_payroll_rules_ua_okl_dn" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">20</field>
-            <field name="name">Місячний оклад по днях</field>
+            <field name="name">Оклад за відпрацьовані дні</field>
             <field name="code">OKLAD_D</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round((worked_days.WORK100.number_of_days * contract.wage) / (payslip.monthly_days), 2)</field>
+            <field name="amount_python_compute">result_qty = 1
+result = contract.wage
+result_rate = 100 * worked_days.WORK100.number_of_days / payslip.monthly_days</field>
         </record>
         <record id="hr_payroll_rules_ua_zp_hr" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -49,7 +77,8 @@
             <field name="code">ZP_HR</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(contract.wage * (worked_days.WORK100.number_of_hours + (worked_days.SV and worked_days.SV.number_of_hours or 0)), 2)</field>
+            <field name="amount_python_compute">result_qty = worked_days.WORK100.number_of_hours + (worked_days.SV and worked_days.SV.number_of_hours or 0)
+result = contract.wage</field>
         </record>
         <record id="hr_payroll_rules_ua_zp_d" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -58,7 +87,8 @@
             <field name="code">ZP_D</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(contract.wage * (worked_days.WORK100.number_of_days + (worked_days.SV and worked_days.SV.number_of_days or 0)), 2)</field>
+            <field name="amount_python_compute">result_qty = worked_days.WORK100.number_of_days + (worked_days.SV and worked_days.SV.number_of_days or 0)
+result = contract.wage</field>
         </record>
         <!-- bonus,    seq 40 - 59 -->
         <record id="hr_payroll_rules_ua_zp_bonus_fix" model="hr.salary.rule">
@@ -79,7 +109,8 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = contract.bonus_perc > 0.0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.ZP * contract.bonus_perc, 2)</field>
+            <field name="amount_python_compute">result = categories.ZP
+result_rate =contract.bonus_perc</field>
         </record>
         <!-- compns,    seq 60 - 79 -->
         <record id="hr_payroll_rules_ua_comp_index_cur" model="hr.salary.rule">
@@ -90,7 +121,8 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = payslip.indexation_coef > 0.0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(payslip.current_mzp * payslip.indexation_coef / 100.0, 2)</field>
+            <field name="amount_python_compute">result = payslip.current_mzp
+result_rate = payslip.indexation_coef</field>
         </record>
         <record id="hr_payroll_rules_ua_comp_index_cur_hr" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
@@ -100,7 +132,8 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = payslip.indexation_coef > 0.0</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(payslip.current_mzp_hr * payslip.indexation_coef / 100.0, 2)</field>
+            <field name="amount_python_compute">result = payslip.current_mzp_hr
+result_rate = payslip.indexation_coef</field>
         </record>
         <record id="hr_payroll_rules_ua_comp_index_fix" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
@@ -132,7 +165,9 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = (not contract.use_psp) or (categories.FOP >= (round(1.4*payslip.january_mzp/10)*10))</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(-0.18 * categories.FOP, 2)</field>
+            <field name="amount_python_compute">result = categories.FOP
+result_rate = 18.0
+result_qty=  -1.0</field>
             <field name="register_id" ref="ua_contrib_register_pdfo"/>
         </record>
         <record id="hr_payroll_rules_ua_utr_pdfo_psp" model="hr.salary.rule">
@@ -143,7 +178,9 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = contract.use_psp and ((round(1.4*payslip.january_mzp/10)*10) >= categories.FOP)</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(-0.18 * (categories.FOP - 0.5*payslip.january_mzp), 2)</field>
+            <field name="amount_python_compute">result = categories.FOP - 0.5*payslip.january_mzp
+result_rate = 18.0
+result_qty=  -1.0</field>
             <field name="register_id" ref="ua_contrib_register_pdfo_psp"/>
         </record>
         <record id="hr_payroll_rules_ua_utr_vz" model="hr.salary.rule">
@@ -153,7 +190,9 @@
             <field name="code">VZ</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(-0.015 * categories.FOP, 2)</field>
+            <field name="amount_python_compute">result = categories.FOP
+result_rate = 1.5
+result_qty=  -1.0</field>
             <field name="register_id" ref="ua_contrib_register_vz"/>
         </record>
         <!-- vypl,   seq 120 - 139 -->
@@ -175,7 +214,8 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = not employee.disable</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(0.22 * (categories.FOP if 25*payslip.current_mzp > categories.FOP else 25*payslip.current_mzp), 2)</field>
+            <field name="amount_python_compute">result = categories.FOP if (25 * payslip.current_mzp) > categories.FOP else (25 * payslip.current_mzp)
+result_rate = 22.0</field>
             <field name="register_id" ref="ua_contrib_register_esv"/>
         </record>
         <record id="hr_payroll_rules_ua_nar_esv_inv" model="hr.salary.rule">
@@ -186,7 +226,8 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = employee.disable</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(0.0841 * (categories.FOP if 25*payslip.current_mzp > categories.FOP else 25*payslip.current_mzp), 2)</field>
+            <field name="amount_python_compute">result = categories.FOP if (25 * payslip.current_mzp) > categories.FOP else (25 * payslip.current_mzp)
+result_rate = 8.41</field>
             <field name="register_id" ref="ua_contrib_register_esv_disable"/>
         </record>
         <record id="hr_payroll_rules_ua_nar_esv_delta" model="hr.salary.rule">
@@ -197,7 +238,8 @@
             <field name="condition_select">python</field>
             <field name="condition_python">result = payslip.current_mzp > categories.FOP</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(0.22 * (payslip.current_mzp - categories.FOP), 2)</field>
+            <field name="amount_python_compute">result = payslip.current_mzp - categories.FOP
+result_rate = 22.0</field>
             <field name="register_id" ref="ua_contrib_register_esv_delta"/>
         </record>
         <!-- test,     seq 139 -->

@@ -29,5 +29,9 @@
             <field name="name">Нарахування</field>
             <field name="code">NAR</field>
         </record>
+        <record id="hr_payroll_ua_cat_temp" model="hr.salary.rule.category">
+            <field name="name">Додаткові розрахунки</field>
+            <field name="code">TEMP</field>
+        </record>
     </data>
 </odoo>
