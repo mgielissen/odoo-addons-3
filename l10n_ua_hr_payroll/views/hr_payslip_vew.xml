@@ -8,7 +8,8 @@
             <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
             <field name="arch" type="xml">
             <data>
-                 <xpath expr="//field[@name='credit_note']" position="after">
+                <!-- make fields visible on payslip for debugging -->
+                 <!-- <xpath expr="//field[@name='credit_note']" position="after">
                     <field name="last_day"/>
                     <field name="monthly_days"/>
                     <field name="monthly_hours"/>
@@ -17,7 +18,7 @@
                     <field name="january_mzp_hr"/>
                     <field name="current_mzp"/>
                     <field name="current_mzp_hr"/>
-                 </xpath>
+                 </xpath> -->
                  <xpath expr="//field[@name='date_to']" position="attributes">
                     <attribute name="on_change">onchange_employee_id(date_from, date_to, employee_id, contract_id)</attribute>
                  </xpath>

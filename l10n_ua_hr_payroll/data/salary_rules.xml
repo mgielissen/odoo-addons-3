@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- TODO: правила для ЦПХ, лікарняних, відпусток, ПДФО кондагентам? -->
         <!-- регістри накопичення -->
         <record id="ua_contrib_register_fop" model="hr.contribution.register">
             <field name="name">Всього нараховано</field>

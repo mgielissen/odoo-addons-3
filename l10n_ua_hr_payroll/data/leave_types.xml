@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- TODO: додати різні види відпусток та вкличти іх в правила ЗП -->
         <!-- державні свята -->
         <record model="hr.holidays.status" id="holiday_status_sv">
             <field name="name">Державне свято</field>
