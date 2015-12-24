@@ -61,28 +61,54 @@ class HrPayslipL10nUa(models.Model):
                                    default=0.00,
                                    digits=(4, 1),
                                    store=True)
-    january_mzp = fields.Float(string=u"МЗП на 1 січня поточного року",
+    january_mzp = fields.Float(string=u"МЗП на 1 січня",
                                compute='_compute_january_mzp',
                                default=0.00,
                                digits=(7, 2),
                                store=True)
     january_mzp_hr = fields.Float(
-        string=u"МЗП погодинна на 1 січня поточного року",
+        string=u"МЗП год. на 1 січня",
         compute='_compute_january_mzp',
         default=0.00,
         digits=(7, 2),
         store=True)
-    current_mzp = fields.Float(string=u"МЗП для поточного розрахунку ЗП",
+    current_mzp = fields.Float(string=u"МЗП поточна",
                                compute='_compute_current_mzp',
                                default=0.00,
                                digits=(7, 2),
                                store=True)
     current_mzp_hr = fields.Float(
-        string=u"МЗП погодинна для поточного розрахунку ЗП",
+        string=u"МЗП год. поточна",
         compute='_compute_current_mzp',
         default=0.00,
         digits=(7, 2),
         store=True)
+
+    @api.model
+    def get_worked_day_lines(self,
+                             contract_ids,
+                             date_from,
+                             date_to):
+        '''Temporary fix. Currently original function
+        returns leaves['code'] == leaves['name']
+        so we travel though leaves list and modifiy
+        leaves['code'] to corrsponding code.
+        Otherwise python parser will not be able
+        to execute python code of salary rule.
+        (code field would contain spaces from name field)'''
+        res = super(HrPayslipL10nUa, self).get_worked_day_lines(contract_ids,
+                                                                date_from,
+                                                                date_to)
+        for l in res:
+            if l['code'] == 'WORK100':
+                l['name'] = u"Відпрацьовано днів"
+            else:
+                domain = [('name', '=', l['name'])]
+                leave = self.env['hr.holidays.status'].search(domain,
+                                                              limit=1)
+                if len(leave) > 0:
+                    l['code'] = leave.code
+        return res
 
     @api.depends('date_from')
     def _compute_last_day(self):
@@ -262,3 +288,9 @@ class HrMzpL10nUa(models.Model):
             # ensure date is set to first day of a month
             vals['date'] = vals['date'][:7] + '-01'
         return super(HrMzpL10nUa, self).create(vals)
+
+
+class HrMzpL10nUa(models.Model):
+    _inherit = 'hr.holidays.status'
+
+    code = fields.Char(string=u"Код")

@@ -3,36 +3,54 @@
     <data>
         <!-- державні свята -->
         <record model="hr.holidays.status" id="holiday_status_sv">
-            <field name="name">SV</field>
+            <field name="name">Державне свято</field>
+            <field name="code">SV</field>
             <field name="limit" eval="False"/>
             <field name="color_name">black</field>
         </record>
 
         <!-- лікарняний за рахунок підприємства -->
         <record model="hr.holidays.status" id="holiday_status_sc">
-            <field name="name">SC</field>
+            <field name="name">Лікарняний за рахунок підприємства</field>
+            <field name="code">SC</field>
             <field name="limit" eval="False"/>
             <field name="color_name">red</field>
         </record>
 
         <!-- лікарняний за рахунок фонду -->
         <record model="hr.holidays.status" id="holiday_status_si">
-            <field name="name">SI</field>
+            <field name="name">Лікарняний за рахунок фонду</field>
+            <field name="code">SI</field>
             <field name="limit" eval="True"/>
             <field name="color_name">lavender</field>
         </record>
 
         <!--відпустка -->
         <record model="hr.holidays.status" id="holiday_status_vp">
-            <field name="name">VP</field>
+            <field name="name">Відпустка</field>
+            <field name="code">VP</field>
             <field name="limit" eval="True"/>
             <field name="color_name">brown</field>
         </record>
         <!--прогул -->
         <record model="hr.holidays.status" id="holiday_status_sk">
-            <field name="name">SK</field>
+            <field name="name">Прогул</field>
+            <field name="code">SK</field>
             <field name="limit" eval="True"/>
             <field name="color_name">violet</field>
+        </record>
+
+        <record id="holiday_status_form_l10n_ua_view_form" model="ir.ui.view">
+            <field name="name">holiday_status.form.inherit.form.ua</field>
+            <field name="model">hr.holidays.status</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+            <field name="arch" type="xml">
+            <data>
+                 <xpath expr="//field[@name='name']" position="after">
+                    <field name="code"/>
+                 </xpath>
+            </data>
+            </field>
         </record>
     </data>
 </odoo>
