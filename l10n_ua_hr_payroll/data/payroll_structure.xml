@@ -3,7 +3,7 @@
     <data>
     <record id="hr_payroll_salary_structure_oklad" model="hr.payroll.structure">
         <field name="code">OKLAD</field>
-        <field name="name">Оклад по днях для співробітників</field>
+        <field name="name">Оклад по днях адміністративні витрати</field>
         <field eval="[(6, 0, [
             ref('hr_payroll_rules_ua_temp_oklad'),
             ref('hr_payroll_rules_ua_temp_monthly_days'),
@@ -24,11 +24,58 @@
             ])]"
             name="rule_ids"/>
         <field name="company_id" ref="base.main_company"/>
-        <!-- <field name="parent_id" ref="hr_payroll.structure_base"/> -->
+    </record>
+    <record id="hr_payroll_salary_structure_oklad_zvv" model="hr.payroll.structure">
+        <field name="code">OKLADZVV</field>
+        <field name="name">Оклад по днях загальновиробничі витрати</field>
+        <field eval="[(6, 0, [
+            ref('hr_payroll_rules_ua_temp_oklad'),
+            ref('hr_payroll_rules_ua_temp_monthly_days'),
+            ref('hr_payroll_rules_ua_temp_worked_days'),
+            ref('hr_payroll_rules_ua_okl_dn'),
+            ref('hr_payroll_rules_ua_zp_bonus_fix'),
+            ref('hr_payroll_rules_ua_zp_bonus_perc'),
+            ref('hr_payroll_rules_ua_comp_index_cur'),
+            ref('hr_payroll_rules_ua_comp_index_fix'),
+            ref('hr_payroll_rules_ua_fop_zvv'),
+            ref('hr_payroll_rules_ua_utr_pdfo'),
+            ref('hr_payroll_rules_ua_utr_pdfo_psp'),
+            ref('hr_payroll_rules_ua_utr_vz'),
+            ref('hr_payroll_rules_ua_vypl'),
+            ref('hr_payroll_rules_ua_nar_esv_zvv'),
+            ref('hr_payroll_rules_ua_nar_esv_inv_zvv'),
+            ref('hr_payroll_rules_ua_nar_esv_delta_zvv'),
+            ])]"
+            name="rule_ids"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="hr_payroll_salary_structure_oklad_pvv" model="hr.payroll.structure">
+        <field name="code">OKLADPVV</field>
+        <field name="name">Оклад по днях прямі виробничі витрати</field>
+        <field eval="[(6, 0, [
+            ref('hr_payroll_rules_ua_temp_oklad'),
+            ref('hr_payroll_rules_ua_temp_monthly_days'),
+            ref('hr_payroll_rules_ua_temp_worked_days'),
+            ref('hr_payroll_rules_ua_okl_dn'),
+            ref('hr_payroll_rules_ua_zp_bonus_fix'),
+            ref('hr_payroll_rules_ua_zp_bonus_perc'),
+            ref('hr_payroll_rules_ua_comp_index_cur'),
+            ref('hr_payroll_rules_ua_comp_index_fix'),
+            ref('hr_payroll_rules_ua_fop_pvv'),
+            ref('hr_payroll_rules_ua_utr_pdfo'),
+            ref('hr_payroll_rules_ua_utr_pdfo_psp'),
+            ref('hr_payroll_rules_ua_utr_vz'),
+            ref('hr_payroll_rules_ua_vypl'),
+            ref('hr_payroll_rules_ua_nar_esv_pvv'),
+            ref('hr_payroll_rules_ua_nar_esv_inv_pvv'),
+            ref('hr_payroll_rules_ua_nar_esv_delta_pvv'),
+            ])]"
+            name="rule_ids"/>
+        <field name="company_id" ref="base.main_company"/>
     </record>
     <record id="hr_payroll_salary_structure_taryf" model="hr.payroll.structure">
         <field name="code">TARYF</field>
-        <field name="name">Тариф по годинах для співробітників</field>
+        <field name="name">Тариф по годинах адміністративні витрати</field>
         <field eval="[(6, 0, [
             ref('hr_payroll_rules_ua_zp_hr'),
             ref('hr_payroll_rules_ua_zp_bonus_fix'),
@@ -46,7 +93,48 @@
             ])]"
             name="rule_ids"/>
         <field name="company_id" ref="base.main_company"/>
-        <!-- <field name="parent_id" ref="hr_payroll.structure_base"/> -->
+    </record>
+    <record id="hr_payroll_salary_structure_taryf_zvv" model="hr.payroll.structure">
+        <field name="code">TARYFZVV</field>
+        <field name="name">Тариф по годинах загальновиробничі витрати</field>
+        <field eval="[(6, 0, [
+            ref('hr_payroll_rules_ua_zp_hr'),
+            ref('hr_payroll_rules_ua_zp_bonus_fix'),
+            ref('hr_payroll_rules_ua_zp_bonus_perc'),
+            ref('hr_payroll_rules_ua_comp_index_cur_hr'),
+            ref('hr_payroll_rules_ua_comp_index_fix'),
+            ref('hr_payroll_rules_ua_fop_zvv'),
+            ref('hr_payroll_rules_ua_utr_pdfo'),
+            ref('hr_payroll_rules_ua_utr_pdfo_psp'),
+            ref('hr_payroll_rules_ua_utr_vz'),
+            ref('hr_payroll_rules_ua_vypl'),
+            ref('hr_payroll_rules_ua_nar_esv_zvv'),
+            ref('hr_payroll_rules_ua_nar_esv_inv_zvv'),
+            ref('hr_payroll_rules_ua_nar_esv_delta_zvv'),
+            ])]"
+            name="rule_ids"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="hr_payroll_salary_structure_taryf_pvv" model="hr.payroll.structure">
+        <field name="code">TARYFPVV</field>
+        <field name="name">Тариф по годинах прямі виробничі витрати</field>
+        <field eval="[(6, 0, [
+            ref('hr_payroll_rules_ua_zp_hr'),
+            ref('hr_payroll_rules_ua_zp_bonus_fix'),
+            ref('hr_payroll_rules_ua_zp_bonus_perc'),
+            ref('hr_payroll_rules_ua_comp_index_cur_hr'),
+            ref('hr_payroll_rules_ua_comp_index_fix'),
+            ref('hr_payroll_rules_ua_fop_pvv'),
+            ref('hr_payroll_rules_ua_utr_pdfo'),
+            ref('hr_payroll_rules_ua_utr_pdfo_psp'),
+            ref('hr_payroll_rules_ua_utr_vz'),
+            ref('hr_payroll_rules_ua_vypl'),
+            ref('hr_payroll_rules_ua_nar_esv_pvv'),
+            ref('hr_payroll_rules_ua_nar_esv_inv_pvv'),
+            ref('hr_payroll_rules_ua_nar_esv_delta_pvv'),
+            ])]"
+            name="rule_ids"/>
+        <field name="company_id" ref="base.main_company"/>
     </record>
     </data>
 </odoo>
