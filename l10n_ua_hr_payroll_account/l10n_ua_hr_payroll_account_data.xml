@@ -1,25 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
-
 <!-- HR SALARY RULES-->
-    <record id="l10n_be_hr_payroll.hr_payroll_rules_onss_rule" model="hr.salary.rule">
-        <field name="account_debit" search="[('code', 'like', '4540%')]"/>
-   </record>
-    <record id="hr_payroll.hr_rule_basic" model="hr.salary.rule">
-        <field name="account_debit" search="[('code', 'like', '6202%')]"/>
-   </record>
-    <record id="hr_payroll.hr_rule_net" model="hr.salary.rule">
-        <field name="account_credit" search="[('code', 'like', '4552%')]"/>
-   </record>
-    <record id="l10n_be_hr_payroll.hr_payroll_rules_ch_worker" model="hr.salary.rule">
-        <field name="account_debit" search="[('code', 'like', '4597%')]"/>
-    </record>
-    <record id="l10n_be_hr_payroll.hr_payroll_rules_suppl_net" model="hr.salary.rule">
-        <field name="account_debit" search="[('code', 'like', '4552%')]"/>
-    </record>
-    <record id="l10n_be_hr_payroll.hr_payroll_rules_retained_net" model="hr.salary.rule">
-        <field name="account_debit" search="[('code', 'like', '4552%')]"/>
-    </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_fop" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '230000%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120800%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_fop_zvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120800%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_fop_pvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '110100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120800%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_utr_pdfo" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '120800%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120500%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_utr_pdfo_psp" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '120800%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120500%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_utr_vz" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '120800%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120700%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '230000%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_zvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_pvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '110100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_inv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '230000%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_inv_zvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_inv_pvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '110100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_delta" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '230000%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_delta_zvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_delta_pvv" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '110100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120600%')]"/>
+        </record>
     </data>
-</openerp>
+</odoo>

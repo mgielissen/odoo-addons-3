@@ -161,7 +161,7 @@ result_qty = worked_days.WORK100.number_of_days + (worked_days.SV and worked_day
         <record id="hr_payroll_rules_ua_fop_zvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
             <field name="sequence">80</field>
-            <field name="name">Всього нараховано</field>
+            <field name="name">Всього нараховано ЗВВ</field>
             <field name="note">Враховується в загальновиробничих витратах</field>
             <field name="code">FOPZVV</field>
             <field name="condition_select">none</field>
@@ -171,7 +171,7 @@ result_qty = worked_days.WORK100.number_of_days + (worked_days.SV and worked_day
         </record><record id="hr_payroll_rules_ua_fop_pvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
             <field name="sequence">80</field>
-            <field name="name">Всього нараховано</field>
+            <field name="name">Всього нараховано ПВВ</field>
             <field name="note">Враховується в прямих виробничих витратах</field>
             <field name="code">FOPPVV</field>
             <field name="condition_select">none</field>
@@ -183,39 +183,39 @@ result_qty = worked_days.WORK100.number_of_days + (worked_days.SV and worked_day
         <record id="hr_payroll_rules_ua_utr_pdfo" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_utr"/>
             <field name="sequence">100</field>
-            <field name="name">ПДФО</field>
+            <field name="name">Утримано ПДФО</field>
             <field name="code">PDFO</field>
             <field name="condition_select">python</field>
             <field name="condition_python">result = (not contract.use_psp) or (categories.FOP >= (round(1.4*payslip.january_mzp/10)*10))</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = categories.FOP
 result_rate = 18.0
-result_qty=  -1.0</field>
+result_qty=  1.0</field>
             <field name="register_id" ref="ua_contrib_register_pdfo"/>
         </record>
         <record id="hr_payroll_rules_ua_utr_pdfo_psp" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_utr"/>
             <field name="sequence">101</field>
-            <field name="name">ПДФО з ПСП</field>
+            <field name="name">Утримано ПДФО з ПСП</field>
             <field name="code">PDFOPSP</field>
             <field name="condition_select">python</field>
             <field name="condition_python">result = contract.use_psp and ((round(1.4*payslip.january_mzp/10)*10) >= categories.FOP)</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = categories.FOP - 0.5*payslip.january_mzp
 result_rate = 18.0
-result_qty=  -1.0</field>
+result_qty=  1.0</field>
             <field name="register_id" ref="ua_contrib_register_pdfo_psp"/>
         </record>
         <record id="hr_payroll_rules_ua_utr_vz" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_utr"/>
             <field name="sequence">102</field>
-            <field name="name">Військовий збір</field>
+            <field name="name">Утримано військовий збір</field>
             <field name="code">VZ</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = categories.FOP
 result_rate = 1.5
-result_qty=  -1.0</field>
+result_qty=  1.0</field>
             <field name="register_id" ref="ua_contrib_register_vz"/>
         </record>
         <!-- vypl,   seq 120 - 139 -->
@@ -226,7 +226,7 @@ result_qty=  -1.0</field>
             <field name="code">VYPL</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = categories.FOP + round(categories.UTR, 2)</field>
+            <field name="amount_python_compute">result = round(categories.FOP, 2) - round(categories.UTR, 2)</field>
         </record>
         <!-- nar,    seq 140 - 159 -->
         <record id="hr_payroll_rules_ua_nar_esv" model="hr.salary.rule">
@@ -245,7 +245,7 @@ result_rate = 22.0</field>
         <record id="hr_payroll_rules_ua_nar_esv_zvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
             <field name="sequence">140</field>
-            <field name="name">Нарахування ЄСВ</field>
+            <field name="name">Нарахування ЄСВ ЗВВ</field>
             <field name="note">Враховується в загальновиробничих витратах</field>
             <field name="code">ESVZVV</field>
             <field name="condition_select">python</field>
@@ -258,7 +258,7 @@ result_rate = 22.0</field>
         <record id="hr_payroll_rules_ua_nar_esv_pvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
             <field name="sequence">140</field>
-            <field name="name">Нарахування ЄСВ</field>
+            <field name="name">Нарахування ЄСВ ПВВ</field>
             <field name="note">Враховується в прямих виробничих витратах</field>
             <field name="code">ESVPVV</field>
             <field name="condition_select">python</field>
@@ -284,7 +284,7 @@ result_rate = 8.41</field>
         <record id="hr_payroll_rules_ua_nar_esv_inv_zvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
             <field name="sequence">141</field>
-            <field name="name">Нарахування ЄСВ інвалідам</field>
+            <field name="name">Нарахування ЄСВ інвалідам ЗВВ</field>
             <field name="note">Враховується в загальновиробничих витратах</field>
             <field name="code">ESVINVZVV</field>
             <field name="condition_select">python</field>
@@ -297,7 +297,7 @@ result_rate = 8.41</field>
         <record id="hr_payroll_rules_ua_nar_esv_inv_pvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
             <field name="sequence">141</field>
-            <field name="name">Нарахування ЄСВ інвалідам</field>
+            <field name="name">Нарахування ЄСВ інвалідам ПВВ</field>
             <field name="note">Враховується в прямих виробничих витратах</field>
             <field name="code">ESVINVPVV</field>
             <field name="condition_select">python</field>
@@ -323,7 +323,7 @@ result_rate = 22.0</field>
         <record id="hr_payroll_rules_ua_nar_esv_delta_zvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
             <field name="sequence">142</field>
-            <field name="name">Нарахування ЄСВ на різницю від МЗП</field>
+            <field name="name">Нарахування ЄСВ на різницю від МЗП ЗВВ</field>
             <field name="note">Враховується в загальновиробничих витратах</field>
             <field name="code">ESVDELTAZVV</field>
             <field name="condition_select">python</field>
@@ -336,7 +336,7 @@ result_rate = 22.0</field>
         <record id="hr_payroll_rules_ua_nar_esv_delta_pvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_nar"/>
             <field name="sequence">142</field>
-            <field name="name">Нарахування ЄСВ на різницю від МЗП</field>
+            <field name="name">Нарахування ЄСВ на різницю від МЗП ПВВ</field>
             <field name="note">Враховується в прямих виробничих витратах</field>
             <field name="code">ESVDELTAPVV</field>
             <field name="condition_select">python</field>
@@ -345,18 +345,6 @@ result_rate = 22.0</field>
             <field name="amount_python_compute">result = payslip.current_mzp - categories.FOP
 result_rate = 22.0</field>
             <field name="register_id" ref="ua_contrib_register_esv_delta"/>
-        </record>
-        <!-- test,     seq 139 -->
-        <record id="hr_payroll_rules_ua_zp_test" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
-            <field name="sequence">139</field>
-            <field name="name">Тest</field>
-            <field name="code">ZP_test</field>
-            <field name="condition_select">none</field>
-            <field name="amount_select">percentage</field>
-            <field name="amount_percentage">-100.0</field>
-            <field name="amount_percentage_base">contract.wage</field>
-            <field name="quantity">worked_days.WORK100.number_of_days / payslip.monthly_days</field>
         </record>
     </data>
 </odoo>
