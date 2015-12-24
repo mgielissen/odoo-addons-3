@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_l10n_ua_payroll_priceindex,access_hr_l10n_ua_payroll_priceindex,model_hr_l10n_ua_payroll_priceindex,,1,0,0,0
+access_hr_l10n_ua_payroll_mzp,access_hr_l10n_ua_payroll_mzp,model_hr_l10n_ua_payroll_mzp,,1,0,0,0

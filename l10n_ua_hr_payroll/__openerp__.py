@@ -5,24 +5,25 @@
     'depends': ['hr_payroll', 'hr_holidays'],
     'version': '1.0',
     'description': """
-Ukrainian Payroll Rules.
-========================
+Заробітна плата для України.
+=============================
 
-    * Employee Details
-    * Employee Contracts
-    * Passport based Contract
-    * Allowances/Deductions
-    * Allow to configure Basic/Gross/Net Salary
-    * Employee Payslip
-    * Monthly Payroll Register
-    * Integrated with Holiday Management
-    * Salary Maj, ONSS, Withholding Tax, Child Allowance, ...
+    * Оклад по днях
+    * Тариф по годинах
+    * Розрахунок індексації
+    * Надбавки фіксовані та відсотком
+    * Розрахунок утримань
+    * Податкова соціальна пільга
+    * ЕСВ на різницю між окладом та МЗП
+    * Облік робочого часу: свята, відпустки, лікарняні, прогули.
+    * Та багато іншого
     """,
 
     'auto_install': False,
     # 'demo': ['l10n_be_hr_payroll_demo.xml'],
     # 'website': 'https://www.odoo.com/page/accounting',
     'data': [
+        'security/ir.model.access.csv',
         'data/leave_types.xml',
         'data/salary_rules_category.xml',
         'data/salary_rules.xml',
