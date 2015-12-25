@@ -118,36 +118,28 @@ class HrPayslipL10nUa(models.Model):
                     record.date_from) + relativedelta.relativedelta(
                     months=+1, day=1, days=-1))[:10]
 
-    @api.depends('worked_days_line_ids')
+    @api.depends('date_from', 'contract_id', 'last_day')
     def _compute_monthly_due(self):
-        w100_d = sc_d = si_d = vp_d = sk_d = 0
-        w100_h = sc_h = si_h = vp_h = sk_h = 0
+        """@returns number of scheduled days
+        and hours to work for this month.
+        Should be equal to calendar days - holidays"""
+        scheduled_days = scheduled_hours = 0
         for rec in self:
-            if rec.contract_id:
+            if rec.date_from:
+                first_day = fields.Date.from_string(rec.date_from)
+                first_day = first_day.strftime('%Y-%m-01')
+            else:
+                first_day = None
+            if rec.contract_id and first_day and rec.last_day:
                 lines = rec.get_worked_day_lines(rec.contract_id.id,
-                                                 rec.date_from,
+                                                 first_day,
                                                  rec.last_day)
                 for l in lines:
-                    if l['code'] == 'WORK100':
-                        w100_d = l['number_of_days']
-                        w100_h = l['number_of_hours']
-                    if l['code'] == 'SV':
-                        sv_d = l['number_of_days']
-                        sv_h = l['number_of_hours']
-                    if l['code'] == 'SC':
-                        sc_d = l['number_of_days']
-                        sc_h = l['number_of_hours']
-                    if l['code'] == 'SI':
-                        si_d = l['number_of_days']
-                        si_h = l['number_of_hours']
-                    if l['code'] == 'VP':
-                        vp_d = l['number_of_days']
-                        vp_h = l['number_of_hours']
-                    if l['code'] == 'SK':
-                        sk_d = l['number_of_days']
-                        sk_h = l['number_of_hours']
-                rec.monthly_days = w100_d + sc_d + si_d + vp_d + sk_d
-                rec.monthly_hours = w100_h + sc_h + si_h + vp_h + sk_h
+                    if l['code'] != 'SV':   # skip approved holidays
+                        scheduled_days += l['number_of_days']
+                        scheduled_hours += l['number_of_hours']
+                rec.monthly_days = scheduled_days
+                rec.monthly_hours = scheduled_hours
 
     @api.depends('date_from', 'contract_id')
     def _compute_indexation_coef(self):
@@ -222,6 +214,13 @@ class HrPayslipL10nUa(models.Model):
                 else:
                     record.current_mzp = 0.0
                     record.current_mzp_hr = 0.0
+
+    @api.onchange('date_to')
+    def _onchange_dates(self):
+        return self.onchange_employee_id(self.date_from,
+                                         self.date_to,
+                                         self.employee_id.id,
+                                         self.contract_id.id)
 
 
 class HrPriceIndexL10nUa(models.Model):

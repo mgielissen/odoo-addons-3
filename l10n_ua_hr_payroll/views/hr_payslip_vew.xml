@@ -18,10 +18,10 @@
                     <field name="january_mzp_hr"/>
                     <field name="current_mzp"/>
                     <field name="current_mzp_hr"/>
-                 </xpath> -->
+                 </xpath>
                  <xpath expr="//field[@name='date_to']" position="attributes">
                     <attribute name="on_change">onchange_employee_id(date_from, date_to, employee_id, contract_id)</attribute>
-                 </xpath>
+                 </xpath> -->
             </data>
             </field>
         </record>
