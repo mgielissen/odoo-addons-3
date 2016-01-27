@@ -3,6 +3,7 @@
     <data>
         <!-- TODO: правила для ЦПХ, лікарняних, відпусток, ПДФО кондагентам? -->
         <!-- регістри накопичення -->
+        <!-- перегрупувати розрахунки, щоб було зручно рахувати лікарняні та відпускні -->
         <record id="ua_contrib_register_fop" model="hr.contribution.register">
             <field name="name">Всього нараховано</field>
             <!-- <field name="partner_id" ref="res_partner_pp"/> -->

@@ -110,7 +110,7 @@ class HrPayslipL10nUa(models.Model):
                     l['code'] = leave.code
         return res
 
-    @api.depends('date_from')
+    @api.depends('date_from', 'date_to')
     def _compute_last_day(self):
         for record in self:
             if record.date_from:
@@ -118,7 +118,7 @@ class HrPayslipL10nUa(models.Model):
                     record.date_from) + relativedelta.relativedelta(
                     months=+1, day=1, days=-1))[:10]
 
-    @api.depends('date_from', 'contract_id', 'last_day')
+    @api.depends('date_from', 'date_to', 'contract_id', 'last_day')
     def _compute_monthly_due(self):
         """@returns number of scheduled days
         and hours to work for this month.
@@ -141,8 +141,10 @@ class HrPayslipL10nUa(models.Model):
                 rec.monthly_days = scheduled_days
                 rec.monthly_hours = scheduled_hours
 
-    @api.depends('date_from', 'contract_id')
+    @api.depends('date_from', 'date_to', 'contract_id')
     def _compute_indexation_coef(self):
+        INDEXATION_THRESHOLD = 103.0    # поріг індексації 103% з 2016 року
+
         def _diff_month(d1, d2):
             return (d1.year - d2.year) * 12 + d1.month - d2.month
 
@@ -174,13 +176,13 @@ class HrPayslipL10nUa(models.Model):
             for p_ind in priceindexes:
                 base = (base * p_ind.index) / 100.0
                 base = round(base, 1)
-                if base > 101.0:
+                if base > INDEXATION_THRESHOLD:
                     coef = (coef * base) / 100
                     coef = round(coef, 1)
                     base = 100.0
             rec.indexation_coef = coef - 100.0
 
-    @api.depends('date_from')
+    @api.depends('date_from', 'date_to')
     def _compute_january_mzp(self):
         for record in self:
             if record.date_from:
@@ -197,7 +199,7 @@ class HrPayslipL10nUa(models.Model):
                     record.january_mzp = 0.0
                     record.january_mzp_hr = 0.0
 
-    @api.depends('date_from')
+    @api.depends('date_from', 'date_to')
     def _compute_current_mzp(self):
         for record in self:
             if record.date_from:
