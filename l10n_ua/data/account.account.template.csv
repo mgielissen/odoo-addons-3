@@ -25,8 +25,8 @@ ua_ias_1130,1130,Аванси партнерам,account.data_account_type_prepa
 ua_ias_1131,1131,Інші оборотні активи,account.data_account_type_current_assets,False,l10n_ua_ias_chart_template
 ua_ias_1140,1140,Податковий кредит по ПДВ,account.data_account_type_current_assets,True,l10n_ua_ias_chart_template
 ua_ias_1141,1141,Аванс по податку на прибуток,account.data_account_type_prepayments,True,l10n_ua_ias_chart_template
-ua_ias_1142,1142,Кошти на електронному рахунку з ПДВ,account.data_account_type_current_assets,True,l10n_ua_ias_chart_template
-ua_ias_1143,1143,Кошти на лицьовому рахунку з ПДВ,account.data_account_type_prepayments,True,l10n_ua_ias_chart_template
+ua_ias_1142,1142,Кошти на СЕА ПДВ,account.data_account_type_current_assets,True,l10n_ua_ias_chart_template
+ua_ias_1143,1143,Переплата по лицьовому рахунку з ПДВ,account.data_account_type_prepayments,True,l10n_ua_ias_chart_template
 ua_ias_1144,1144,Аванс по ЕСВ,account.data_account_type_prepayments,True,l10n_ua_ias_chart_template
 ua_ias_1150,1150,Короткострокові фінансові інвестиції,account.data_account_type_current_assets,False,l10n_ua_ias_chart_template
 ua_ias_1160,1160,Довгострокові інвестиції,account.data_account_type_non_current_assets,False,l10n_ua_ias_chart_template
@@ -38,6 +38,7 @@ ua_ias_1202,1202,Податок на прибуток,account.data_account_type_
 ua_ias_1203,1203,ПДВ,account.data_account_type_payable,True,l10n_ua_ias_chart_template
 ua_ias_1204,1204,Податкові зобов’язання по ПДВ,account.data_account_type_current_liabilities,True,l10n_ua_ias_chart_template
 ua_ias_1205,1205,ПДФО,account.data_account_type_payable,True,l10n_ua_ias_chart_template
+ua_ias_12051,12051,Військовий збір,account.data_account_type_payable,True,l10n_ua_ias_chart_template
 ua_ias_1206,1206,ЄСВ,account.data_account_type_payable,True,l10n_ua_ias_chart_template
 ua_ias_1207,1207,Інші податки,account.data_account_type_payable,True,l10n_ua_ias_chart_template
 ua_ias_1208,1208,Заробітна плата та винагороди,account.data_account_type_payable,True,l10n_ua_ias_chart_template
