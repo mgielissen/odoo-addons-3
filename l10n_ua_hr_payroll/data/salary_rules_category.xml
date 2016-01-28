@@ -5,16 +5,16 @@
             <field name="name">Заробітна плата</field>
             <field name="code">ZP</field>
         </record>
-        <record id="hr_payroll_ua_cat_bonus" model="hr.salary.rule.category">
-            <field name="name">Надбавки та премії</field>
-            <field name="code">BONUS</field>
+        <record id="hr_payroll_ua_cat_vidp" model="hr.salary.rule.category">
+            <field name="name">Відпустки</field>
+            <field name="code">VIDP</field>
         </record>
-        <record id="hr_payroll_ua_cat_comp" model="hr.salary.rule.category">
-            <field name="name">Компенсації</field>
-            <field name="code">COMPNS</field>
+        <record id="hr_payroll_ua_cat_compss" model="hr.salary.rule.category">
+            <field name="name">Компенсації соц. страхування</field>
+            <field name="code">COMPSS</field>
         </record>
         <record id="hr_payroll_ua_cat_fop" model="hr.salary.rule.category">
-            <field name="name">Всього нараховано</field>
+            <field name="name">Фонд оплати праці</field>
             <field name="code">FOP</field>
         </record>
         <record id="hr_payroll_ua_cat_utr" model="hr.salary.rule.category">

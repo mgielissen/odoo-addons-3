@@ -94,7 +94,7 @@ result = contract.wage</field>
         </record>
         <!-- bonus,    seq 40 - 59 -->
         <record id="hr_payroll_rules_ua_zp_bonus_fix" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_bonus"/>
+            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">40</field>
             <field name="name">Надбавка фіксованою сумою</field>
             <field name="code">BONUS_FIX</field>
@@ -104,7 +104,7 @@ result = contract.wage</field>
             <field name="amount_python_compute">result = contract.bonus_fix</field>
         </record>
         <record id="hr_payroll_rules_ua_zp_bonus_perc" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_bonus"/>
+            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">41</field>
             <field name="name">Надбавка відсотком</field>
             <field name="code">BONUS_PERC</field>
@@ -114,9 +114,9 @@ result = contract.wage</field>
             <field name="amount_python_compute">result = categories.ZP
 result_rate =contract.bonus_perc</field>
         </record>
-        <!-- compns,    seq 60 - 79 -->
+        <!-- indexation,    seq 60 - 79 -->
         <record id="hr_payroll_rules_ua_comp_index_cur" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
+            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">60</field>
             <field name="name">Індексація окладу</field>
             <field name="code">INDEX_CUR</field>
@@ -127,7 +127,7 @@ result_rate =contract.bonus_perc</field>
 result_rate = payslip.indexation_coef</field>
         </record>
         <record id="hr_payroll_rules_ua_comp_index_cur_hr" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
+            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">61</field>
             <field name="name">Індексація погодинного тарифу</field>
             <field name="code">INDEX_CUR_HR</field>
@@ -139,7 +139,7 @@ result_rate = payslip.indexation_coef
 result_qty = (worked_days.WORK100 and worked_days.WORK100.number_of_days) + (worked_days.SV and worked_days.SV.number_of_days or 0)</field>
         </record>
         <record id="hr_payroll_rules_ua_comp_index_fix" model="hr.salary.rule">
-            <field name="category_id" ref="hr_payroll_ua_cat_comp"/>
+            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">62</field>
             <field name="name">Індексація фіксована</field>
             <field name="code">INDEX_FIX</field>
@@ -152,33 +152,33 @@ result_qty = (worked_days.WORK100 and worked_days.WORK100.number_of_days) + (wor
         <record id="hr_payroll_rules_ua_fop" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
             <field name="sequence">80</field>
-            <field name="name">Всього нараховано</field>
+            <field name="name">Фонд оплати праці</field>
             <field name="note">Враховується в адміністративних витратах</field>
             <field name="code">FOP</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.BONUS, 2) + round(categories.COMPNS, 2)</field>
+            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2)</field>
             <field name="register_id" ref="ua_contrib_register_fop"/>
         </record>
         <record id="hr_payroll_rules_ua_fop_zvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
             <field name="sequence">80</field>
-            <field name="name">Всього нараховано ЗВВ</field>
+            <field name="name">Фонд оплати праці в ЗВВ</field>
             <field name="note">Враховується в загальновиробничих витратах</field>
             <field name="code">FOPZVV</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.BONUS, 2) + round(categories.COMPNS, 2)</field>
+            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2)</field>
             <field name="register_id" ref="ua_contrib_register_fop"/>
         </record><record id="hr_payroll_rules_ua_fop_pvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
             <field name="sequence">80</field>
-            <field name="name">Всього нараховано ПВВ</field>
+            <field name="name">Фонд оплати праці в ПВВ</field>
             <field name="note">Враховується в прямих виробничих витратах</field>
             <field name="code">FOPPVV</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.BONUS, 2) + round(categories.COMPNS, 2)</field>
+            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2)</field>
             <field name="register_id" ref="ua_contrib_register_fop"/>
         </record>
         <!-- utr,    seq 100 - 119 -->

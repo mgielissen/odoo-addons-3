@@ -28,8 +28,32 @@
 
         <!--відпустка -->
         <record model="hr.holidays.status" id="holiday_status_vp">
-            <field name="name">Відпустка</field>
+            <field name="name">Щорічна основна відпустка</field>
             <field name="code">VP</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">brown</field>
+        </record>
+        <record model="hr.holidays.status" id="holiday_status_vp_plus">
+            <field name="name">Щорічна додаткова відпустка</field>
+            <field name="code">VPPLUS</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">brown</field>
+        </record>
+        <record model="hr.holidays.status" id="holiday_status_vp_nozp">
+            <field name="name">Відпустка без збереження ЗП</field>
+            <field name="code">VPNOZP</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">brown</field>
+        </record>
+        <record model="hr.holidays.status" id="holiday_status_vp_pol">
+            <field name="name">Відпустка у зв’язку з вагітністю та пологами</field>
+            <field name="code">VPPOL</field>
+            <field name="limit" eval="True"/>
+            <field name="color_name">brown</field>
+        </record>
+        <record model="hr.holidays.status" id="holiday_status_vp_dogl">
+            <field name="name">Відпустка для догляду за дитиною до 3 років</field>
+            <field name="code">VPDOGL</field>
             <field name="limit" eval="True"/>
             <field name="color_name">brown</field>
         </record>
