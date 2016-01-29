@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
 {
     'name': 'Ukraine - Payroll',
+    'author': "Bohdan Lisnenko",
+    'website': "https://erp.co.ua",
     'category': 'Localization',
     'depends': ['hr_payroll', 'hr_holidays'],
     'version': '1.0',

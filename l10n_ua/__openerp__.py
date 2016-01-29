@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': u"Ukraine - Accounting",
+    'author': "Bohdan Lisnenko",
+    'website': "https://erp.co.ua",
     'summary': u"Український бухоблік згідно МСФЗ",
     'description': u"""
 Бухгалтерський облік для України (МСФЗ)

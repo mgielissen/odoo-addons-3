@@ -8,7 +8,8 @@
 
         Конфліктує з модулем: base_vat
     """,
-    'author': "Bogdan Lisnenko",
+    'author': "Bohdan Lisnenko",
+    'website': "https://erp.co.ua",
     'category': 'Localization/Account Charts',
     'version': '0.1',
     'depends': ['account',
