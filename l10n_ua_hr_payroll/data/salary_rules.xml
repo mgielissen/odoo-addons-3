@@ -2,8 +2,6 @@
 <odoo>
     <data>
         <!-- TODO: правила для ЦПХ, лікарняних, відпусток, ПДФО кондагентам? -->
-        <!-- регістри накопичення -->
-        <!-- перегрупувати розрахунки, щоб було зручно рахувати лікарняні та відпускні -->
         <record id="ua_contrib_register_fop" model="hr.contribution.register">
             <field name="name">Всього нараховано</field>
             <!-- <field name="partner_id" ref="res_partner_pp"/> -->
@@ -92,6 +90,22 @@ result = contract.wage</field>
             <field name="amount_python_compute">result_qty = worked_days.WORK100.number_of_days + (worked_days.SV and worked_days.SV.number_of_days or 0)
 result = contract.wage</field>
         </record>
+        <record id="hr_payroll_rules_ua_wage" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
+            <field name="sequence">23</field>
+            <field name="name">Винагорода по договору ЦПХ</field>
+            <field name="code">WAGE</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result_qty = inputs.WAGE_QUANT.amount
+result = contract.wage</field>
+        </record>
+        <!-- inputs -->
+        <record id="ua_inputs_wage_quantity" model="hr.rule.input">
+            <field name="name">Кількість виконаних одиниць згідно акту</field>
+            <field name="code">WAGE_QUANT</field>
+            <field name="input_id" ref="hr_payroll_rules_ua_wage"/>
+        </record>
         <!-- bonus,    seq 40 - 59 -->
         <record id="hr_payroll_rules_ua_zp_bonus_fix" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
@@ -157,7 +171,7 @@ result_qty = (worked_days.WORK100 and worked_days.WORK100.number_of_days) + (wor
             <field name="code">FOP</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2)</field>
+            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2) + round(categories.COMPSS, 2)</field>
             <field name="register_id" ref="ua_contrib_register_fop"/>
         </record>
         <record id="hr_payroll_rules_ua_fop_zvv" model="hr.salary.rule">
@@ -168,7 +182,7 @@ result_qty = (worked_days.WORK100 and worked_days.WORK100.number_of_days) + (wor
             <field name="code">FOPZVV</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2)</field>
+            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2) + round(categories.COMPSS, 2)</field>
             <field name="register_id" ref="ua_contrib_register_fop"/>
         </record><record id="hr_payroll_rules_ua_fop_pvv" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
@@ -178,7 +192,7 @@ result_qty = (worked_days.WORK100 and worked_days.WORK100.number_of_days) + (wor
             <field name="code">FOPPVV</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2)</field>
+            <field name="amount_python_compute">result = round(categories.ZP, 2) + round(categories.VIDP, 2) + round(categories.COMPSS, 2)</field>
             <field name="register_id" ref="ua_contrib_register_fop"/>
         </record>
         <!-- utr,    seq 100 - 119 -->
@@ -228,7 +242,7 @@ result_qty=  1.0</field>
             <field name="code">VYPL</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
-            <field name="amount_python_compute">result = round(categories.FOP, 2) - round(categories.UTR, 2)</field>
+            <field name="amount_python_compute">result = round(categories.FOP, 2) + round(categories.VYPL, 2) - round(categories.UTR, 2)</field>
         </record>
         <!-- nar,    seq 140 - 159 -->
         <record id="hr_payroll_rules_ua_nar_esv" model="hr.salary.rule">

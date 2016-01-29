@@ -136,5 +136,22 @@
             name="rule_ids"/>
         <field name="company_id" ref="base.main_company"/>
     </record>
+    <record id="hr_payroll_salary_structure_taryf_pvv" model="hr.payroll.structure">
+        <field name="code">WAGEPVV</field>
+        <field name="name">Договір ЦПХ прямі виробничі витрати</field>
+        <field eval="[(6, 0, [
+            ref('hr_payroll_rules_ua_wage'),
+            ref('hr_payroll_rules_ua_fop_pvv'),
+            ref('hr_payroll_rules_ua_utr_pdfo'),
+            ref('hr_payroll_rules_ua_utr_vz'),
+            ref('hr_payroll_rules_ua_vypl'),
+            ref('hr_payroll_rules_ua_nar_esv_pvv'),
+            ref('hr_payroll_rules_ua_nar_esv_delta_pvv'),
+            ])]"
+            name="rule_ids"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <!-- Договір ЦПХ в прямих витратах -->
+
     </data>
 </odoo>

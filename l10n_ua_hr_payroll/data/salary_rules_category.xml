@@ -17,6 +17,10 @@
             <field name="name">Фонд оплати праці</field>
             <field name="code">FOP</field>
         </record>
+        <record id="hr_payroll_ua_cat_vyplaty" model="hr.salary.rule.category">
+            <field name="name">Одноразові виплати не ФОП</field>
+            <field name="code">VYPL</field>
+        </record>
         <record id="hr_payroll_ua_cat_utr" model="hr.salary.rule.category">
             <field name="name">Утримання</field>
             <field name="code">UTR</field>
