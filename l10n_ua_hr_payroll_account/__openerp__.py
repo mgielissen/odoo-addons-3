@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 {
     'name': 'Ukrainian - Payroll with Accounting',
     'author': "Bohdan Lisnenko",
