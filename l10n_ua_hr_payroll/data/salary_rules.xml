@@ -1,34 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="res_partner_pdfo" model="res.partner">
+            <field name="name">Податкова - ПДФО</field>
+            <field name="supplier" eval="True"/>
+            <field name="customer" eval="False"/>
+            <field name="is_company" eval="True"/>
+        </record>
+        <record id="res_partner_vz" model="res.partner">
+            <field name="name">Податкова - ВЗ</field>
+            <field name="supplier" eval="True"/>
+            <field name="customer" eval="False"/>
+            <field name="is_company" eval="True"/>
+        </record>
+        <record id="res_partner_esv" model="res.partner">
+            <field name="name">Податкова - ЄСВ</field>
+            <field name="supplier" eval="True"/>
+            <field name="customer" eval="False"/>
+            <field name="is_company" eval="True"/>
+        </record>
         <!-- TODO: правила для ЦПХ, лікарняних, відпусток, ПДФО кондагентам? -->
         <record id="ua_contrib_register_fop" model="hr.contribution.register">
             <field name="name">Всього нараховано</field>
-            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
         </record>
         <record id="ua_contrib_register_pdfo" model="hr.contribution.register">
             <field name="name">ПДФО</field>
-            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+            <field name="partner_id" ref="res_partner_pdfo"/>
         </record>
         <record id="ua_contrib_register_pdfo_psp" model="hr.contribution.register">
             <field name="name">ПДФО з ПСП</field>
-            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+            <field name="partner_id" ref="res_partner_pdfo"/>
         </record>
         <record id="ua_contrib_register_vz" model="hr.contribution.register">
             <field name="name">Військовий збір</field>
-            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+            <field name="partner_id" ref="res_partner_vz"/>
         </record>
         <record id="ua_contrib_register_esv" model="hr.contribution.register">
             <field name="name">Нараховано ЄСВ</field>
-            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+            <field name="partner_id" ref="res_partner_esv"/>
         </record>
         <record id="ua_contrib_register_esv_disable" model="hr.contribution.register">
             <field name="name">Нараховано ЄСВ інвалідам</field>
-            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+            <field name="partner_id" ref="res_partner_esv"/>
         </record>
         <record id="ua_contrib_register_esv_delta" model="hr.contribution.register">
             <field name="name">Нараховано ЄСВ на різницю між МЗП і ЗП</field>
-            <!-- <field name="partner_id" ref="res_partner_pp"/> -->
+            <field name="partner_id" ref="res_partner_esv"/>
         </record>
         <!-- info,  seq 1 - 19 -->
         <record id="hr_payroll_rules_ua_temp_oklad" model="hr.salary.rule">
