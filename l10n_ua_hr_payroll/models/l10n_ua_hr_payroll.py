@@ -291,7 +291,7 @@ class HrMzpL10nUa(models.Model):
         return super(HrMzpL10nUa, self).create(vals)
 
 
-class HrMzpL10nUa(models.Model):
+class HolidaysStatusCodeL10nUa(models.Model):
     _inherit = 'hr.holidays.status'
 
     code = fields.Char(string=u"Код")
