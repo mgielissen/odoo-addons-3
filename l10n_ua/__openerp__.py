@@ -17,7 +17,6 @@
 Також буде створено налаштування податків
 для обліку ПДВ
     """,
-    'author': "Bogdan Lisnenko",
     'category': 'Localization/Account Charts',
     'version': '1.1',
     'depends': ['account'],
