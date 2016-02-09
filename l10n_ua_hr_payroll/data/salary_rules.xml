@@ -19,7 +19,7 @@
             <field name="customer" eval="False"/>
             <field name="is_company" eval="True"/>
         </record>
-        <!-- TODO: правила для ЦПХ, лікарняних, відпусток, ПДФО кондагентам? -->
+        <!-- TODO: лікарняних, відпусток, ПДФО кондагентам? -->
         <record id="ua_contrib_register_fop" model="hr.contribution.register">
             <field name="name">Всього нараховано</field>
         </record>
