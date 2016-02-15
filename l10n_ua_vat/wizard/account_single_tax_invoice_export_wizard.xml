@@ -41,7 +41,7 @@
         </record>
 
         <record id="action_account_single_tax_invoice_export" model="ir.actions.act_window">
-            <field name="name">Single Tax Invoice Export</field>
+            <field name="name">Вивантаження податкової накладної</field>
             <field name="res_model">account.taxinvoice.export_single</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
