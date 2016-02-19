@@ -7,7 +7,7 @@
             <field name="account_credit" search="[('code', 'like', '120800%')]"/>
         </record>
         <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_fop_zvv" model="hr.salary.rule">
-            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_debit" search="[('code', 'like', '250000%')]"/>
             <field name="account_credit" search="[('code', 'like', '120800%')]"/>
         </record>
         <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_fop_pvv" model="hr.salary.rule">
@@ -35,7 +35,7 @@
             <field name="account_tax_id" search="[('name', '=', 'ЄСВ 22%')]"/>
         </record>
         <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_zvv" model="hr.salary.rule">
-            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_debit" search="[('code', 'like', '250000%')]"/>
             <field name="account_credit" search="[('code', 'like', '120600%')]"/>
             <field name="account_tax_id" search="[('name', '=', 'ЄСВ 22%')]"/>
         </record>
@@ -50,7 +50,7 @@
             <field name="account_tax_id" search="[('name', '=', 'ЄСВ 8,41%')]"/>
         </record>
         <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_inv_zvv" model="hr.salary.rule">
-            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_debit" search="[('code', 'like', '250000%')]"/>
             <field name="account_credit" search="[('code', 'like', '120600%')]"/>
             <field name="account_tax_id" search="[('name', '=', 'ЄСВ 8,41%')]"/>
         </record>
@@ -65,7 +65,7 @@
             <field name="account_tax_id" search="[('name', '=', 'ЄСВ 22%')]"/>
         </record>
         <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_nar_esv_delta_zvv" model="hr.salary.rule">
-            <field name="account_debit" search="[('code', 'like', '220100%')]"/>
+            <field name="account_debit" search="[('code', 'like', '250000%')]"/>
             <field name="account_credit" search="[('code', 'like', '120600%')]"/>
             <field name="account_tax_id" search="[('name', '=', 'ЄСВ 22%')]"/>
         </record>
