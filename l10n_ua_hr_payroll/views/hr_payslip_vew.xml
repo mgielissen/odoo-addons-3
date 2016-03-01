@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
             <data>
                 <!-- make fields visible on payslip for debugging -->
-                 <!-- <xpath expr="//field[@name='credit_note']" position="after">
+                 <xpath expr="//field[@name='credit_note']" position="after">
                     <field name="last_day"/>
                     <field name="monthly_days"/>
                     <field name="monthly_hours"/>
@@ -18,10 +18,10 @@
                     <field name="january_mzp_hr"/>
                     <field name="current_mzp"/>
                     <field name="current_mzp_hr"/>
+                    <field name="comp_start_day"/>
+                    <field name="comp_last_day"/>
+                    <field name="comp_numb_days"/>
                  </xpath>
-                 <xpath expr="//field[@name='date_to']" position="attributes">
-                    <attribute name="on_change">onchange_employee_id(date_from, date_to, employee_id, contract_id)</attribute>
-                 </xpath> -->
             </data>
             </field>
         </record>

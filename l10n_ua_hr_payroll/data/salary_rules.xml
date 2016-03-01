@@ -48,10 +48,15 @@
             <field name="name">Нараховано ЄСВ на різницю між МЗП і ЗП</field>
             <!-- <field name="partner_id" ref="res_partner_esv"/> -->
         </record>
+        <record id="ua_contrib_register_naruky" model="hr.contribution.register">
+            <field name="name">До виплати на руки</field>
+            <!-- <field name="partner_id" ref="res_partner_esv"/> -->
+        </record>
         <!-- info,  seq 1 - 19 -->
         <record id="hr_payroll_rules_ua_temp_oklad" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
             <field name="sequence">1</field>
+            <field name="appears_on_payslip" eval="False"/>
             <field name="name">Місячний оклад</field>
             <field name="code">T_OKLAD</field>
             <field name="condition_select">none</field>
@@ -61,6 +66,7 @@
         <record id="hr_payroll_rules_ua_temp_monthly_days" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
             <field name="sequence">2</field>
+            <field name="appears_on_payslip" eval="False"/>
             <field name="name">Норма робочих днів</field>
             <field name="code">T_M_DAYS</field>
             <field name="condition_select">none</field>
@@ -70,11 +76,63 @@
         <record id="hr_payroll_rules_ua_temp_worked_days" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
             <field name="sequence">3</field>
+            <field name="appears_on_payslip" eval="False"/>
             <field name="name">Відпрацьовано днів</field>
             <field name="code">T_W_DAYS</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = worked_days.WORK100 and worked_days.WORK100.number_of_days</field>
+        </record>
+        <record id="hr_payroll_rules_ua_temp_month_days" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
+            <field name="sequence">4</field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="name">Календарних днів</field>
+            <field name="code">M_DAYS</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = payslip.comp_numb_days or 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_temp_zp_lik" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
+            <field name="sequence">5</field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="name">Дохід для лікарняних</field>
+            <field name="code">LIK_DOH</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = (worked_days.SC and worked_days.SC.number_of_days > 0) or (worked_days.SI and worked_days.SI.number_of_days > 0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+fr = payslip.comp_start_day
+to = payslip.comp_last_day
+res = payslip.sum('FOP', fr, to) \
+        + payslip.sum('FOPPVV', fr, to) \
+        + payslip.sum('FOPZVV', fr, to) \
+        - payslip.sum('LIKAR_PIDPR', fr, to) \
+        - payslip.sum('COMP_POLOG', fr, to) \
+        - payslip.sum('VIDP_VLASN', fr, to) \
+        - payslip.sum('VIDP_DOGL', fr, to)
+result = res if res > 0 else 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_temp_days_lik" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_temp"/>
+            <field name="sequence">6</field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="name">Кл. днів для лікарняних</field>
+            <field name="code">LIK_DN</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = (worked_days.SC and worked_days.SC.number_of_days > 0) or (worked_days.SI and worked_days.SI.number_of_days > 0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+fr = payslip.comp_start_day
+to = payslip.comp_last_day
+res = payslip.sum('M_DAYS', fr, to) \
+        - worked_days.sum('SC', fr, to) \
+        - worked_days.sum('SI', fr, to) \
+        - worked_days.sum('VPPOL', fr, to) \
+        - worked_days.sum('VPNOZP', fr, to) \
+        - worked_days.sum('VPDOGL', fr, to)
+result = res if res > 1 else 1</field>
         </record>
         <!-- zp,  seq 20 - 39 -->
         <record id="hr_payroll_rules_ua_okl_dn" model="hr.salary.rule">
@@ -146,7 +204,7 @@ result = contract.wage</field>
             <field name="amount_python_compute">result = categories.ZP
 result_rate =contract.bonus_perc</field>
         </record>
-        <!-- indexation,    seq 60 - 79 -->
+        <!-- indexation,    seq 60 - 65 -->
         <record id="hr_payroll_rules_ua_comp_index_cur" model="hr.salary.rule">
             <field name="category_id" ref="hr_payroll_ua_cat_zp"/>
             <field name="sequence">60</field>
@@ -179,6 +237,141 @@ result_qty = (worked_days.WORK100 and worked_days.WORK100.number_of_days) + (wor
             <field name="condition_python">result = contract.index_fix > 0.0</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = contract.index_fix</field>
+        </record>
+        <!-- Compensations,    seq 66 - 70 -->
+        <record id="hr_payroll_rules_ua_comp_lik_pidp" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_compss"/>
+            <field name="sequence">65</field>
+            <field name="name">Лікарняний за рахунок підприємства</field>
+            <field name="code">LIKAR_PIDPR</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = worked_days.SC and worked_days.SC.number_of_days > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result_qty = worked_days.SC and worked_days.SC.number_of_days or 0
+result_rate = contract.ensurance_exp or 100
+result = inputs.AVG_ZP1.amount or round(((LIK_DOH or 0) / (LIK_DN or 1)), 2) or 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_comp_lik_fond" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_fop"/>
+            <field name="sequence">65</field>
+            <field name="name">Лікарняний за рахунок фонду</field>
+            <field name="code">LIKAR_FOND</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = worked_days.SI and worked_days.SI.number_of_days > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result_qty = worked_days.SI and worked_days.SI.number_of_days or 0
+result_rate = contract.ensurance_exp or 100
+result = inputs.AVG_ZP1.amount or round(((LIK_DOH or 0) / (LIK_DN or 1)), 2) or 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_comp_polog" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_compss"/>
+            <field name="sequence">65</field>
+            <field name="name">Декретні виплати</field>
+            <field name="code">COMP_POLOG</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = worked_days.VPPOL and worked_days.VPPOL.number_of_days > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result_qty = worked_days.VPPOL and worked_days.VPPOL.number_of_days or 0
+result_rate = contract.ensurance_exp or 100
+result = inputs.AVG_ZP1.amount or round(((LIK_DOH or 0) / (inputs.POLOG_DN.amount or LIK_DN or 1)), 2) or 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_vidp_vlasn" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_compss"/>
+            <field name="sequence">65</field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="name">Відпустка за власн. рах.</field>
+            <field name="code">VIDP_VLASN</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = worked_days.VPNOZP and worked_days.VPNOZP.number_of_days > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_vidp_dogl" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_compss"/>
+            <field name="sequence">65</field>
+            <field name="appears_on_payslip" eval="False"/>
+            <field name="name">Відпустка по догляду за дит.</field>
+            <field name="code">VIDP_DOGL</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = worked_days.VPDOGL and worked_days.VPDOGL.number_of_days > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_comp_vidp" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_compss"/>
+            <field name="sequence">66</field>
+            <field name="name">Щорічна відпустка</field>
+            <field name="code">VIDP</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = worked_days.VP and worked_days.VP.number_of_days > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result_qty = worked_days.VP and worked_days.VP.number_of_days or 0
+result_rate = 100
+fr = payslip.comp_start_day
+to = payslip.comp_last_day
+vlasn_dn = worked_days.sum('VPNOZP', fr, to)
+dohid = payslip.sum('FOP', fr, to) \
+        - payslip.sum('COMP_VIDP', fr, to)
+result = inputs.AVG_ZP2.amount or round(((dohid or 0) / (365 - 11 - vlasn_dn), 2) or 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_comp_vidp_plus" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_compss"/>
+            <field name="sequence">66</field>
+            <field name="name">Щорічна додаткова відпустка</field>
+            <field name="code">VIDP_PLUS</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = worked_days.VPPLUS and worked_days.VPPLUS.number_of_days > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result_qty = worked_days.VPPLUS and worked_days.VPPLUS.number_of_days or 0
+result_rate = 100
+fr = payslip.comp_start_day
+to = payslip.comp_last_day
+vlasn_dn = worked_days.sum('VPNOZP', fr, to)
+dohid = payslip.sum('FOP', fr, to) \
+        + payslip.sum('FOPPVV', fr, to) \
+        + payslip.sum('FOPZVV', fr, to) \
+        - payslip.sum('COMP_VIDP', fr, to)
+result = inputs.AVG_ZP2.amount or round(((dohid or 0) / (365 - 11 - vlasn_dn), 2) or 0</field>
+        </record>
+        <record id="hr_payroll_rules_ua_comp_vidp_nevykor" model="hr.salary.rule">
+            <field name="category_id" ref="hr_payroll_ua_cat_compss"/>
+            <field name="sequence">66</field>
+            <field name="name">Компенсація за невикор. відпустку</field>
+            <field name="code">COMP_VIDP</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.VIDP_DN.amount > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result_qty = inputs.VIDP_DN.amount
+result_rate = 100
+fr = payslip.comp_start_day
+to = payslip.comp_last_day
+vlasn_dn = worked_days.sum('VPNOZP', fr, to)
+dohid = payslip.sum('FOP', fr, to) \
+        + payslip.sum('FOPPVV', fr, to) \
+        + payslip.sum('FOPZVV', fr, to) \
+        - payslip.sum('COMP_VIDP', fr, to)
+result = inputs.VIDP_DN.amount or round(((dohid or 0) / (365 - 11 - vlasn_dn), 2) or 0</field>
+        </record>
+        <!-- inputs -->
+        <record id="ua_inputs_avg_zp1" model="hr.rule.input">
+            <field name="name">Середня ЗП для лік. за рах. підпр.</field>
+            <field name="code">AVG_ZP1</field>
+            <field name="input_id" ref="hr_payroll_rules_ua_comp_lik_pidp"/>
+        </record>
+        <record id="ua_inputs_avg_zp2" model="hr.rule.input">
+            <field name="name">Середня ЗП для відпускних</field>
+            <field name="code">AVG_ZP2</field>
+            <field name="input_id" ref="hr_payroll_rules_ua_comp_vidp"/>
+        </record>
+        <record id="ua_inputs_polog_dniv" model="hr.rule.input">
+            <field name="name">Кількість днів для декретних</field>
+            <field name="code">POLOG_DN</field>
+            <field name="input_id" ref="hr_payroll_rules_ua_comp_polog"/>
+        </record>
+        <record id="ua_inputs_vidp_dniv" model="hr.rule.input">
+            <field name="name">Кількість днів комп. невикор. відп.</field>
+            <field name="code">VIDP_DN</field>
+            <field name="input_id" ref="hr_payroll_rules_ua_comp_vidp_nevykor"/>
         </record>
         <!-- fop,    seq 80 - 99 -->
         <record id="hr_payroll_rules_ua_fop" model="hr.salary.rule">
@@ -261,6 +454,7 @@ result_qty=  1.0</field>
             <field name="condition_select">none</field>
             <field name="amount_select">code</field>
             <field name="amount_python_compute">result = round(categories.FOP, 2) + round(categories.VYPL, 2) - round(categories.UTR, 2)</field>
+            <field name="register_id" ref="ua_contrib_register_naruky"/>
         </record>
         <!-- nar,    seq 140 - 159 -->
         <record id="hr_payroll_rules_ua_nar_esv" model="hr.salary.rule">

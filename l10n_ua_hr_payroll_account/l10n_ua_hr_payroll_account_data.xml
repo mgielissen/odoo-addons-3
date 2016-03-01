@@ -2,6 +2,10 @@
 <odoo>
     <data>
 <!-- HR SALARY RULES-->
+        <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_comp_lik_fond" model="hr.salary.rule">
+            <field name="account_debit" search="[('code', 'like', '113100%')]"/>
+            <field name="account_credit" search="[('code', 'like', '120800%')]"/>
+        </record>
         <record id="l10n_ua_hr_payroll.hr_payroll_rules_ua_fop" model="hr.salary.rule">
             <field name="account_debit" search="[('code', 'like', '230000%')]"/>
             <field name="account_credit" search="[('code', 'like', '120800%')]"/>

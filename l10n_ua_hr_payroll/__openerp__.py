@@ -5,7 +5,7 @@
     'website': "https://erp.co.ua",
     'category': 'Localization',
     'depends': ['hr_payroll', 'hr_holidays'],
-    'version': '1.0',
+    'version': '1.1',
     'description': """
 Заробітна плата для України.
 =============================

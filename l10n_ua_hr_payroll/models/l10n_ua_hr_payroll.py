@@ -37,6 +37,17 @@ class HrContractL10nUa(models.Model):
         string=u"Індексація фіксована",
         default=0.0,
         digits_compute=dp.get_precision('Payroll'))
+    ensurance_exp = fields.Selection([
+        (50, u"50% - До 3 років"),
+        (60, u"60% - Від 3 до 5 років"),
+        (70, u"70% - Від 5 до 8 років"),
+        (100, u"100% - Понад 8 років"),
+        ],
+        string=u"Страховий стаж",
+        index=True,
+        readonly=False,
+        default=50,
+        copy=False)
 
 
 class HrPayslipL10nUa(models.Model):
@@ -83,6 +94,20 @@ class HrPayslipL10nUa(models.Model):
         default=0.00,
         digits=(7, 2),
         store=True)
+    comp_start_day = fields.Date(
+        string=u"Перший день для розрах комп.",
+        compute='_compute_comp_days',
+        store=True)
+    comp_last_day = fields.Date(
+        string=u"Останній день для розрах комп.",
+        compute='_compute_comp_days',
+        store=True)
+    comp_numb_days = fields.Float(
+        string=u"Кількість календарних днів у місяці розрахунку",
+        compute='_compute_comp_days',
+        default=0.00,
+        digits=(7, 2),
+        store=True)
 
     @api.model
     def get_worked_day_lines(self,
@@ -117,6 +142,22 @@ class HrPayslipL10nUa(models.Model):
                 record.last_day = str(fields.Date.from_string(
                     record.date_from) + relativedelta.relativedelta(
                     months=+1, day=1, days=-1))[:10]
+
+    @api.depends('date_from', 'date_to')
+    def _compute_comp_days(self):
+        for record in self:
+            if record.date_from:
+                record.comp_start_day = str(fields.Date.from_string(
+                    record.date_from) + relativedelta.relativedelta(
+                    years=-1, day=1))[:10]
+                record.comp_last_day = str(fields.Date.from_string(
+                    record.date_from) + relativedelta.relativedelta(
+                    day=1, days=-1))[:10]
+                delta = fields.Date.from_string(
+                    record.date_to) - \
+                    fields.Date.from_string(
+                        record.date_from)
+                record.comp_numb_days = delta.days
 
     @api.depends('date_from', 'date_to', 'contract_id', 'last_day')
     def _compute_monthly_due(self):
