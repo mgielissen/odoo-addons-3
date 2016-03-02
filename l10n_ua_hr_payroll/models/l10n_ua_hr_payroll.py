@@ -157,7 +157,7 @@ class HrPayslipL10nUa(models.Model):
                     record.date_to) - \
                     fields.Date.from_string(
                         record.date_from)
-                record.comp_numb_days = delta.days
+                record.comp_numb_days = delta.days + 1
 
     @api.depends('date_from', 'date_to', 'contract_id', 'last_day')
     def _compute_monthly_due(self):
