@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="ibank2csv_bank_stat_import_view" model="ir.ui.view">
+            <field name="name">account.bank.statement.import.wizard.inh</field>
+            <field name="model">account.bank.statement.import</field>
+            <field name="inherit_id" ref="account_bank_statement_import.account_bank_statement_import_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//ul[@id='statement_format']" position="inside">
+                    <div>
+                        Формат Ibank2 з розширенням файлу csv
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
