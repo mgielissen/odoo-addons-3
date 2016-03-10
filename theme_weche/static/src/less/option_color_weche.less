@@ -1,0 +1,97 @@
+/*WECHE colors*/
+@color-weche-main: #A31621;
+@color-weche-sec: #828F95;
+@color-weche-extra: #5EB1BF;
+@color-weche-bg: #F8F8F8;
+@color-weche-main-dark: #761018;
+/* COLORS --------------------------------------------------------- */
+@color-primary: @color-concrete;
+@color-success: @color-turquoise;
+@color-info: @color-stone;
+@color-warning: @color-concrete-dark;
+@color-danger: @color-weche-extra;
+/* COLORED BG -------------------------------------------------------- */
+.bg-primary {
+    background-color: #ccc;
+}
+.bg-success {
+    background-color: @color-weche-sec;
+}
+.bg-info {
+    background-color: @color-weche-extra;
+}
+.bg-warning {
+    background-color: @color-weche-main;
+}
+.bg-danger {
+    background-color: @color-weche-bg;
+}
+/* TEXT & LINKS -------------------------------------------------------- */
+@text-muted: @color-weche-sec;
+@link-color: @color-weche-main;
+@link-hover-color: @color-weche-main-dark;
+/* BUTTONS --------------------------------------------------------- */
+@btn-primary-bg: @color-weche-main;
+@btn-success-bg: @color-weche-main;
+@btn-info-bg: @color-weche-main;
+@btn-warning-bg: @color-weche-sec;
+@btn-danger-bg: @color-weche-extra;
+.btn .fa {
+    color: white;
+}
+//white
+.btn-default .fa {
+    color: @gray-dark;
+}
+// @gray-dark
+.btn-default:hover,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active {
+    color: white;
+    background-color: @color-weche-extra;
+    border-color: @color-weche-extra;
+}
+/* TRANSPARENT BG --------------------------------------------------- */
+/* Used in snippets Prx Image Color and Prx Image Shade ------------- */
+.bg-transparent-color {
+    background: @color-weche-sec;
+    opacity: 0.9;
+}
+.bg-transparent-shade {
+    background: black;
+    opacity: 0.5;
+}
+/*Blog side bar bg*/
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover {
+    background: @color-weche-main;
+}
+/*tag bg*/
+.label {
+    background: @color-weche-extra;
+}
+
+
+/* Footer ----------------------------------------------------------- */
+//
+// #wrapwrap footer {
+//    background-color: @color-clouds;
+//    color: @color-weche-sec;
+//     }
+// footer ul li a {
+// 	color: @color-clouds;
+// 	}
+// footer ul li a:hover {
+// 	color: white;
+//     text-decoration: none;
+// 	}
+// footer h4 {
+// 	color: @color-silver;
+// 	padding-bottom: 12px;
+//     text-transform: uppercase;
+//     }
+// footer .fa {
+//     color: @color-clouds;
+//   }
