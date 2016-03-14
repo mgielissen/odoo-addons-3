@@ -9,7 +9,7 @@
                 <td>
                     <label class="chd-color-combi">
                         <img
-                            src="/theme_weche/static/src/img/theme/variant-weche.gif"
+                            src="/theme_weche/static/src/img/theme/variant-weche.png"
                             alt="Weche"
                             class="chd-color-combi-img"/>
                         <input
@@ -138,6 +138,21 @@
                 <attribute name="t-if">blog_post.blog_id.show_author</attribute>
             </xpath>
         </template> -->
+
+
+        <!-- custom favicon -->
+        <template
+            id="weche_layout_favicon"
+            inherit_id="website.layout"
+            name="weche layout favicon"
+            priority="17">
+            <xpath expr="//head//link" position="after">
+                <link
+                    rel="shortcut icon"
+                    href="theme_weche/static/src/img/favicon.ico"
+                    type="image/x-icon"/>
+            </xpath>
+        </template>
 
         <record id="weche_blog_view_form" model="ir.ui.view">
             <field name="name">weche.blog.form.inherit</field>
