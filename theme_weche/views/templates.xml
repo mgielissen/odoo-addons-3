@@ -19,7 +19,7 @@
                     </label>
                 </td>
             </xpath>
-      </template>
+        </template>
         <template
             id="option_color_weche"
             name="option_color_weche"
@@ -31,6 +31,9 @@
                     href="/theme_weche/static/src/less/option_color_weche.less"
                     rel="stylesheet"
                     type="text/less"/>
+                <script
+                    type="text/javascript"
+                    src="/theme_weche/static/src/js/website_blog.js"/>
             </xpath>
         </template>
 
@@ -65,16 +68,16 @@
                             <span t-field="blog_post.author_id" style="display: inline-block;" t-field-options='{
                                 "widget": "contact",
                                 "fields": ["name"]
-                            }'/> &#5760;
+                            }'/> &#8212;
                             </t>
                             <span t-field="blog_post.create_date" t-field-options='{"format": "MMMM yyyy"}'/>
                             <span t-if="len(blog_post.message_ids) &gt; 0">
-                                &#5760; <t t-esc="len(blog_post.message_ids)"/>
+                                &#8212; <t t-esc="len(blog_post.message_ids)"/>
                                 <t t-if="len(blog_post.message_ids) &lt;= 1" >comment</t>
                                 <t t-if="len(blog_post.message_ids) > 1">comments</t>
                             </span>
                             <span t-if="blog_post.visits &gt; 0">
-                                &#5760; <t t-esc="blog_post.visits"/>
+                                &#8212; <t t-esc="blog_post.visits"/>
                                 <t t-if="blog_post.visits &lt;= 1" >view</t>
                                 <t t-if="blog_post.visits > 1">views</t>
                             </span>
