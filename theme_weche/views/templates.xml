@@ -152,7 +152,7 @@
             <xpath expr="//head//link" position="after">
                 <link
                     rel="shortcut icon"
-                    href="theme_weche/static/src/img/favicon.ico"
+                    href="/theme_weche/static/src/img/favicon.ico"
                     type="image/x-icon"/>
             </xpath>
         </template>
