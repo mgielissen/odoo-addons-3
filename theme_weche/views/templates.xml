@@ -99,10 +99,10 @@
                         <meta property="og:description" t-att-content="blog_post.subtitle" />
                         <meta property="og:type" content="website" />
                         <meta property="og:url" t-att-content="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
-                        <meta property="og:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}"/>
-                        <meta itemprop="name" t-att-content="blog_post.name"/>
-                        <meta itemprop="description" t-att-content="blog_post.subtitle"/>
-                        <meta itemprop="image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}"/>
+                        <meta property="og:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
+                        <meta itemprop="name" t-att-content="blog_post.name" />
+                        <meta itemprop="description" t-att-content="blog_post.subtitle" />
+                        <meta itemprop="image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
                     </t>
                 </t>
                 <div class="blog_title">
@@ -145,14 +145,76 @@
             </div>
             </xpath>
         </template>
-        <!-- <template
-            id="weche_blog_atom_hide_author"
-            inherit_id="website_blog.blog_feed"
-            name="Hide author on blog">
-            <xpath expr="//author" position="attributes">
-                <attribute name="t-if">blog_post.blog_id.show_author</attribute>
+        <!-- custom share buttons after blog post -->
+        <template
+            id="weche_blog_post_share"
+            name="Enable blog post share"
+            inherit_id="website_blog.blog_post_complete"
+            active="False"
+            customize_show="True">
+            <xpath expr="//div[@id='blog_content']" position="after">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <!-- Load Facebook SDK for JavaScript -->
+                            <div id="fb-root"></div>
+                            <script>(function(d, s, id) {
+                              var js, fjs = d.getElementsByTagName(s)[0];
+                              if (d.getElementById(id)) return;
+                              js = d.createElement(s); js.id = id;
+                              js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1";
+                              fjs.parentNode.insertBefore(js, fjs);
+                            }(document, 'script', 'facebook-jssdk'));</script>
+
+                            <!-- Your share button code -->
+                            <div class="fb-like"
+                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                data-layout="standard"
+                                data-action="like"
+                                data-show-faces="true">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="windows-1251"></script>
+                            <script type="text/javascript">
+                            document.write(VK.Share.button(true, {type: 'round', text: 'Зберегти'}));
+                            </script>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="https://twitter.com/share"
+                               class="twitter-share-button"
+                               t-att-data-url="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                               data-via="wecheinfo"
+                               data-hashtags="weche">Tweet</a>
+                            <script>!function(d,s,id){
+                                var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+                                if(!d.getElementById(id)){
+                                js=d.createElement(s);
+                                js.id=id;
+                                js.src=p+'://platform.twitter.com/widgets.js';
+                                fjs.parentNode.insertBefore(js,fjs);
+                                }
+                                }
+                                (document, 'script', 'twitter-wjs');
+                            </script>
+                        </div>
+                        <div class="col-md-1">
+                            <!-- Розмістіть цей тег у заголовку або перед закриваючим тегом тексту. -->
+                            <script src="https://apis.google.com/js/platform.js">
+                            {lang: 'uk'}
+                            </script>
+
+                            <!-- Розмістіть цей тег у місці, де потрібно відтворити кнопка "Поділитися" -->
+                            <div
+                                class="g-plus"
+                                data-action="share"
+                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </xpath>
-        </template> -->
+        </template>
 
 
         <!-- custom favicon -->
