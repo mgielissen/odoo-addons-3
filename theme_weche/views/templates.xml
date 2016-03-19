@@ -70,7 +70,7 @@
                                 "fields": ["name"]
                             }'/> &#8212;
                             </t>
-                            <span t-field="blog_post.create_date" t-field-options='{"format": "MMMM yyyy"}'/>
+                            <span t-field="blog_post.create_date" t-field-options='{"format": "dd MMMM yyyy"}'/>
                             <span t-if="len(blog_post.message_ids) &gt; 0">
                                 &#8212; <t t-esc="len(blog_post.message_ids)"/>
                                 <t t-if="len(blog_post.message_ids) &lt;= 1" >comment</t>
