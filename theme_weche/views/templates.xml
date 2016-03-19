@@ -155,32 +155,50 @@
             <xpath expr="//div[@id='blog_content']" position="after">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-1">
+                        <div class="col-xs-auto">
                             <!-- Load Facebook SDK for JavaScript -->
                             <div id="fb-root"></div>
-                            <script>(function(d, s, id) {
-                              var js, fjs = d.getElementsByTagName(s)[0];
-                              if (d.getElementById(id)) return;
-                              js = d.createElement(s); js.id = id;
-                              js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1";
-                              fjs.parentNode.insertBefore(js, fjs);
-                            }(document, 'script', 'facebook-jssdk'));</script>
+                            <script>
+                              window.fbAsyncInit = function() {
+                                FB.init({
+                                  appId      : '792123857559330',
+                                  xfbml      : true,
+                                  version    : 'v2.5'
+                                });
+                              };
 
-                            <!-- Your share button code -->
+                              (function(d, s, id){
+                                 var js, fjs = d.getElementsByTagName(s)[0];
+                                 if (d.getElementById(id)) {return;}
+                                 js = d.createElement(s); js.id = id;
+                                 js.src = "//connect.facebook.net/uk_UA/sdk.js";
+                                 fjs.parentNode.insertBefore(js, fjs);
+                               }(document, 'script', 'facebook-jssdk'));
+                            </script>
+
+                            <!-- Your like button code -->
                             <div class="fb-like"
                                 t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
-                                data-layout="standard"
+                                data-layout="button_count"
                                 data-action="like"
-                                data-show-faces="true">
+                                data-show-faces="true"
+                                data-share="true"></div>
+                        </div>
+                        <div class="col-xs-auto">
+                            <!-- Розмістіть цей тег у заголовку або перед закриваючим тегом тексту. -->
+                            <script src="https://apis.google.com/js/platform.js">
+                            {lang: 'uk'}
+                            </script>
+
+                            <!-- Розмістіть цей тег у місці, де потрібно відтворити кнопка "Поділитися" -->
+                            <div
+                                class="g-plus"
+                                data-action="share"
+                                data-annotation="bubble"
+                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)">
                             </div>
                         </div>
-                        <div class="col-md-1">
-                            <script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="windows-1251"></script>
-                            <script type="text/javascript">
-                            document.write(VK.Share.button(true, {type: 'round', text: 'Зберегти'}));
-                            </script>
-                        </div>
-                        <div class="col-md-1">
+                        <div class="col-xs-auto">
                             <a href="https://twitter.com/share"
                                class="twitter-share-button"
                                t-att-data-url="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
@@ -198,19 +216,25 @@
                                 (document, 'script', 'twitter-wjs');
                             </script>
                         </div>
-                        <div class="col-md-1">
-                            <!-- Розмістіть цей тег у заголовку або перед закриваючим тегом тексту. -->
-                            <script src="https://apis.google.com/js/platform.js">
-                            {lang: 'uk'}
-                            </script>
-
-                            <!-- Розмістіть цей тег у місці, де потрібно відтворити кнопка "Поділитися" -->
-                            <div
-                                class="g-plus"
-                                data-action="share"
-                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)">
-                            </div>
+                        <div class="col-xs-auto">
+                            <script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="windows-1251"></script>
+                            <a
+                                t-attf-href="http://vk.com/share.php?url=#{request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)}"
+                                target="_blank"><img src="http://vk.com/images/vk16.png" /></a>
+                            <!-- <script type="text/javascript">
+                            document.write(VK.Share.button({url: 'http://mysite.com', type: 'round', text: 'Зберегти'}));
+                            </script> -->
                         </div>
+                    </div>
+                    <!-- fb comments -->
+                    <div class="row">
+                        <section id="comments" class="read_width">
+                            <hr/>
+                            <div class="fb-comments"
+                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                data-numposts="5">
+                            </div>
+                        </section>
                     </div>
                 </div>
             </xpath>
