@@ -103,6 +103,11 @@
                         <meta itemprop="name" t-att-content="blog_post.name" />
                         <meta itemprop="description" t-att-content="blog_post.subtitle" />
                         <meta itemprop="image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
+                        <meta name="twitter:card" content="summary_large_image" />
+                        <meta name="twitter:site" content="@WecheInfo" />
+                        <meta name="twitter:title" t-att-content="blog_post.name" />
+                        <meta name="twitter:description" t-att-content="blog_post.subtitle" />
+                        <meta name="twitter:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
                     </t>
                 </t>
                 <div class="blog_title">
@@ -202,7 +207,7 @@
                             <a href="https://twitter.com/share"
                                class="twitter-share-button"
                                t-att-data-url="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
-                               data-via="wecheinfo"
+                               data-via="WecheInfo"
                                data-hashtags="weche">Tweet</a>
                             <script>!function(d,s,id){
                                 var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -218,12 +223,12 @@
                         </div>
                         <div class="col-xs-auto">
                             <script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="windows-1251"></script>
-                            <a
+                            <!-- <a
                                 t-attf-href="http://vk.com/share.php?url=#{request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)}"
-                                target="_blank"><img src="http://vk.com/images/vk16.png" /></a>
-                            <!-- <script type="text/javascript">
-                            document.write(VK.Share.button({url: 'http://mysite.com', type: 'round', text: 'Зберегти'}));
-                            </script> -->
+                                target="_blank"><img src="http://vk.com/images/vk16.png" /></a> -->
+                            <script type="text/javascript">
+                            document.write(VK.Share.button({url: $("meta[property='og:url']").attr('content'), type: 'round', text: 'Зберегти'}));
+                            </script>
                         </div>
                     </div>
                     <!-- fb comments -->
