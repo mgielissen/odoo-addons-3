@@ -9,5 +9,5 @@
     'data': [
         'views/templates.xml'
     ],
-    'depends': ['website', 'website_blog', 'theme_default'],
+    'depends': ['website', 'website_blog', 'website_event', 'theme_default'],
 }

@@ -245,6 +245,34 @@
             </xpath>
         </template>
 
+        <!-- event snipper override -->
+        <template
+            id="weche_layout_event_snippet"
+            inherit_id="website_event.country_events_list"
+            name="Event snippet improved">
+            <xpath expr="//div[@class='country_events_list']" position="replace">
+                <div class="country_events_list">
+                    <div style="color: #fff;">
+                        <h4><b>Майбутні події</b></h4>
+                        <div t-foreach="events[:5]" t-as="event_dict" class="oe_website_overflow_ellipsis mb8">
+                            <t t-if="not event_dict['event'].website_published">
+                                <span class="label label-danger"><i class="fa fa-ban"></i></span>
+                            </t>
+                            <t t-if="event_dict['event'].address_id">
+                                <i class="fa fa-map-marker"></i>
+                            </t>
+                            <t t-if="not event_dict['event'].address_id">
+                                <i class="fa fa-cloud"></i>
+                            </t>
+                            <b><span t-esc="event_dict['date']"/>: <span><a t-att-href="event_dict['url']"><t t-esc="event_dict['event'].name"/></a></span></b>
+                        </div>
+                        <t t-if="len(events) > 5">
+                                <b><a href="/event">Переглянути решту подій </a></b>
+                        </t>
+                    </div>
+                </div>
+            </xpath>
+        </template>
 
         <!-- custom favicon -->
         <template
