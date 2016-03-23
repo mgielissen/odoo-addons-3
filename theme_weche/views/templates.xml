@@ -95,9 +95,10 @@
             <xpath expr="(//div[@class='blog_title'])[1]" position="replace">
                 <t t-set="head">
                     <t>
+                        <meta property="fb:app_id" content="792123857559330" />
                         <meta property="og:title" t-att-content="blog_post.name" />
                         <meta property="og:description" t-att-content="blog_post.subtitle" />
-                        <meta property="og:type" content="website" />
+                        <meta property="og:type" content="article" />
                         <meta property="og:url" t-att-content="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
                         <meta property="og:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
                         <meta itemprop="name" t-att-content="blog_post.name" />
@@ -179,6 +180,16 @@
                                  js.src = "//connect.facebook.net/uk_UA/sdk.js";
                                  fjs.parentNode.insertBefore(js, fjs);
                                }(document, 'script', 'facebook-jssdk'));
+                                /* make the API call */
+                                FB.api(
+                                    "/me/objects/article",
+                                    "POST",
+                                    {
+                                        "object": "{\"fb:app_id\":\"792123857559330\",\"og:type\": $(\"meta[property=\'og:type\']\").attr(\'content\'),\"og:url\": $(\"meta[property=\'og:url\']\").attr(\'content\'),\"og:title\": $(\"meta[property=\'og:title\']\").attr(\'content\'),\"og:image\": $(\"meta[property=\'og:image\']\").attr(\'content\')}"
+                                    },
+                                    function (response) {
+                                    }
+                                );
                             </script>
 
                             <!-- Your like button code -->
