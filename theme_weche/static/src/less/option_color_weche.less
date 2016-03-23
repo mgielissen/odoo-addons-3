@@ -10,6 +10,23 @@
 @color-info: @color-stone;
 @color-warning: @color-concrete-dark;
 @color-danger: @color-weche-extra;
+
+/* GRAYS --------------------------------------------------------- */
+
+@gray-darker:          lighten(#000, 10%);
+@gray-dark:            lighten(#000, 20%);
+@gray:                 lighten(#000, 30%);
+@gray-light:           lighten(#000, 60%);
+@gray-lighter:         lighten(#000, 70%);
+.navbar-default .navbar-nav>li>a {
+    color: @gray;
+}
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:focus,
+.navbar-default .navbar-nav>.active>a:hover {
+    color: @gray-dark;
+}
+
 /* COLORED BG -------------------------------------------------------- */
 .bg-primary {
     background-color: #ccc;
