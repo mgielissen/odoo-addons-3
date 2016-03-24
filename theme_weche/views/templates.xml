@@ -101,14 +101,66 @@
                         <meta property="og:type" content="article" />
                         <meta property="og:url" t-att-content="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
                         <meta property="og:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
-                        <meta itemprop="name" t-att-content="blog_post.name" />
-                        <meta itemprop="description" t-att-content="blog_post.subtitle" />
-                        <meta itemprop="image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
                         <meta name="twitter:card" content="summary_large_image" />
                         <meta name="twitter:site" content="@WecheInfo" />
                         <meta name="twitter:title" t-att-content="blog_post.name" />
                         <meta name="twitter:description" t-att-content="blog_post.subtitle" />
                         <meta name="twitter:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
+
+                        <!-- Load Facebook SDK for JavaScript -->
+                        <div id="fb-root"></div>
+                        <script>
+                          window.fbAsyncInit = function() {
+                            FB.init({
+                              appId      : '792123857559330',
+                              xfbml      : true,
+                              version    : 'v2.5'
+                            });
+
+                            /* make the API call */
+                            FB.api(
+                                "/me/objects/article",
+                                "POST",
+                                {
+                                    "object": "{\"fb:app_id\":\"792123857559330\",\"og:type\": $(\"meta[property=\'og:type\']\").attr(\'content\'),\"og:url\": $(\"meta[property=\'og:url\']\").attr(\'content\'),\"og:title\": $(\"meta[property=\'og:title\']\").attr(\'content\'),\"og:image\": $(\"meta[property=\'og:image\']\").attr(\'content\')}"
+                                },
+                                function (response) {
+                                }
+                            );
+                          };
+
+                          (function(d, s, id){
+                             var js, fjs = d.getElementsByTagName(s)[0];
+                             if (d.getElementById(id)) {return;}
+                             js = d.createElement(s); js.id = id;
+                             js.src = "//connect.facebook.net/uk_UA/sdk.js";
+                             fjs.parentNode.insertBefore(js, fjs);
+                           }(document, 'script', 'facebook-jssdk'));
+                        </script>
+
+                        <!-- g+ sdk -->
+                        <script src="https://apis.google.com/js/platform.js">
+                        {lang: 'uk'}
+                        </script>
+
+                        <!-- twitter sdk -->
+                        <script>!function(d,s,id){
+                            var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+                            if(!d.getElementById(id)){
+                            js=d.createElement(s);
+                            js.id=id;
+                            js.src=p+'://platform.twitter.com/widgets.js';
+                            fjs.parentNode.insertBefore(js,fjs);
+                            }
+                            }
+                            (document, 'script', 'twitter-wjs');
+                        </script>
+
+                        <!-- vk sdk -->
+                        <script type="text/javascript"
+                            src="http://vk.com/js/api/share.js?90"
+                            charset="windows-1251">
+                        </script>
                     </t>
                 </t>
                 <div class="blog_title">
@@ -162,36 +214,6 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-auto">
-                            <!-- Load Facebook SDK for JavaScript -->
-                            <div id="fb-root"></div>
-                            <script>
-                              window.fbAsyncInit = function() {
-                                FB.init({
-                                  appId      : '792123857559330',
-                                  xfbml      : true,
-                                  version    : 'v2.5'
-                                });
-                              };
-
-                              (function(d, s, id){
-                                 var js, fjs = d.getElementsByTagName(s)[0];
-                                 if (d.getElementById(id)) {return;}
-                                 js = d.createElement(s); js.id = id;
-                                 js.src = "//connect.facebook.net/uk_UA/sdk.js";
-                                 fjs.parentNode.insertBefore(js, fjs);
-                               }(document, 'script', 'facebook-jssdk'));
-                                /* make the API call */
-                                FB.api(
-                                    "/me/objects/article",
-                                    "POST",
-                                    {
-                                        "object": "{\"fb:app_id\":\"792123857559330\",\"og:type\": $(\"meta[property=\'og:type\']\").attr(\'content\'),\"og:url\": $(\"meta[property=\'og:url\']\").attr(\'content\'),\"og:title\": $(\"meta[property=\'og:title\']\").attr(\'content\'),\"og:image\": $(\"meta[property=\'og:image\']\").attr(\'content\')}"
-                                    },
-                                    function (response) {
-                                    }
-                                );
-                            </script>
-
                             <!-- Your like button code -->
                             <div class="fb-like"
                                 t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
@@ -201,11 +223,6 @@
                                 data-share="true"></div>
                         </div>
                         <div class="col-xs-auto">
-                            <!-- Розмістіть цей тег у заголовку або перед закриваючим тегом тексту. -->
-                            <script src="https://apis.google.com/js/platform.js">
-                            {lang: 'uk'}
-                            </script>
-
                             <!-- Розмістіть цей тег у місці, де потрібно відтворити кнопка "Поділитися" -->
                             <div
                                 class="g-plus"
@@ -220,23 +237,8 @@
                                t-att-data-url="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
                                data-via="WecheInfo"
                                data-hashtags="weche">Tweet</a>
-                            <script>!function(d,s,id){
-                                var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-                                if(!d.getElementById(id)){
-                                js=d.createElement(s);
-                                js.id=id;
-                                js.src=p+'://platform.twitter.com/widgets.js';
-                                fjs.parentNode.insertBefore(js,fjs);
-                                }
-                                }
-                                (document, 'script', 'twitter-wjs');
-                            </script>
                         </div>
                         <div class="col-xs-auto">
-                            <script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="windows-1251"></script>
-                            <!-- <a
-                                t-attf-href="http://vk.com/share.php?url=#{request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)}"
-                                target="_blank"><img src="http://vk.com/images/vk16.png" /></a> -->
                             <script type="text/javascript">
                             document.write(VK.Share.button({url: $("meta[property='og:url']").attr('content'), type: 'round', text: 'Зберегти'}));
                             </script>
@@ -256,7 +258,7 @@
             </xpath>
         </template>
 
-        <!-- event snipper override -->
+        <!-- event snippet override -->
         <template
             id="weche_layout_event_snippet"
             inherit_id="website_event.country_events_list"
@@ -312,5 +314,91 @@
             </data>
             </field>
         </record>
+
+        <!-- Snippets -->
+        <!-- fb -->
+        <template id="snippet_fb_post_js" inherit_id="website.assets_editor" name="snippet_fb_post Js">
+          <xpath expr="." position="inside">
+            <script type="text/javascript" src="/theme_weche/static/src/js/snippet_fb_post.js" />
+          </xpath>
+        </template>
+        <template id="snippet_fbpost" name="Facebook post">
+            <section class="snippet_fbpost">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-4">
+                            <div class="js_fb_post_link">
+                                <div class="fb-post" data-href="https://www.facebook.com/20531316728/posts/10154009990506729/"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <template id="fb_post_sidebar" inherit_id="website.snippets" name="Place fb into bar">
+           <xpath expr="//div[@id='snippet_content']/div[@class='o_panel_body']" position="inside">
+            <t t-snippet="theme_weche.snippet_fbpost"
+                t-thumbnail="/theme_weche/static/src/img/ui/facebook.jpeg"/>
+          </xpath>
+        </template>
+
+        <template id="snippet_fbpost_opt" name="Snippet FB post Options" inherit_id="website.snippet_options">
+          <xpath expr="//div[@data-js='background']" position="after">
+            <div data-js='js_fb_post_link' data-selector=".js_fb_post_link" data-no-check="true"/>
+          </xpath>
+        </template>
+
+        <!-- tw -->
+        <template id="snippet_twpost" name="tw post">
+            <section class="snippet_twpost">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-4">
+                            <div class="js_tw_post_link">
+                                <div class="tweet" tweetID="515490786800963584"></div>
+                                <script>
+                                    window.onload = (function(){
+                                        var tweets = document.getElementsByClassName("tweet");
+                                        Array.prototype.forEach.call(tweets, function(el) {
+                                            var tw_id = el.getAttribute("tweetID");
+                                            while (el.firstChild) {
+                                                el.removeChild(el.firstChild);
+                                            }
+                                            if (tw_id != null) {
+                                                twttr.widgets.createTweet(
+                                                    tw_id,
+                                                    el, {
+                                                        conversation : 'all',
+                                                        cards        : 'visible',
+                                                        linkColor    : '#A31621',
+                                                        theme        : 'light'
+                                                    }
+                                                );
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <template id="tw_post_sidebar" inherit_id="website.snippets" name="Place tw into bar">
+           <xpath expr="//div[@id='snippet_content']/div[@class='o_panel_body']" position="inside">
+            <t t-snippet="theme_weche.snippet_twpost"
+                t-thumbnail="/theme_weche/static/src/img/ui/twitter.jpeg"/>
+          </xpath>
+        </template>
+
+        <template id="snippet_twpost_opt" name="Snippet tw post Options" inherit_id="website.snippet_options">
+          <xpath expr="//div[@data-js='background']" position="after">
+            <div data-js='js_tw_post_link' data-selector=".js_tw_post_link" data-no-check="true"/>
+          </xpath>
+        </template>
+
+
     </data>
 </odoo>
