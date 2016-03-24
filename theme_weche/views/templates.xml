@@ -116,17 +116,6 @@
                               xfbml      : true,
                               version    : 'v2.5'
                             });
-
-                            /* make the API call */
-                            FB.api(
-                                "/me/objects/article",
-                                "POST",
-                                {
-                                    "object": "{\"fb:app_id\":\"792123857559330\",\"og:type\": $(\"meta[property=\'og:type\']\").attr(\'content\'),\"og:url\": $(\"meta[property=\'og:url\']\").attr(\'content\'),\"og:title\": $(\"meta[property=\'og:title\']\").attr(\'content\'),\"og:image\": $(\"meta[property=\'og:image\']\").attr(\'content\')}"
-                                },
-                                function (response) {
-                                }
-                            );
                           };
 
                           (function(d, s, id){
