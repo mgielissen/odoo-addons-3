@@ -223,8 +223,7 @@
                         <div class="col-xs-auto">
                             <a href="https://twitter.com/share"
                                class="twitter-share-button"
-                               t-att-data-url="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
-                               data-via="WecheInfo"
+                               t-att-data-url="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
                                data-hashtags="weche">Tweet</a>
                         </div>
                         <div class="col-xs-auto">
