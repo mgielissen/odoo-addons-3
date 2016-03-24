@@ -324,9 +324,20 @@
         </template>
         <template id="snippet_fbpost" name="Facebook post">
             <section class="snippet_fbpost">
-                <div class="container-fluid">
+                <div class="container">
                     <div class="row">
-                        <div class="col-md-6 col-md-offset-4">
+                        <div class="col-md-6 mt16">
+                            <h3>A Section Subtitle</h3>
+                            <p>
+                                Write one or two paragraphs describing your product,
+                                services or a specific feature. To be successful
+                                your content needs to be useful to your readers.
+                            </p><p>
+                                Start with the customer – find out what they want
+                                and give it to them.
+                            </p>
+                        </div>
+                        <div class="col-md-6 mt16">
                             <div class="js_fb_post_link">
                                 <div class="fb-post" data-href="https://www.facebook.com/20531316728/posts/10154009990506729/"></div>
                             </div>
@@ -352,33 +363,44 @@
         <!-- tw -->
         <template id="snippet_twpost" name="tw post">
             <section class="snippet_twpost">
-                <div class="container-fluid">
+                <div class="container">
                     <div class="row">
-                        <div class="col-md-4 col-md-offset-4">
+                        <div class="col-md-6 mt16">
+                            <h3>A Section Subtitle</h3>
+                            <p>
+                                Write one or two paragraphs describing your product,
+                                services or a specific feature. To be successful
+                                your content needs to be useful to your readers.
+                            </p><p>
+                                Start with the customer – find out what they want
+                                and give it to them.
+                            </p>
+                        </div>
+                        <div class="col-md-6 mt16">
                             <div class="js_tw_post_link">
                                 <div class="tweet" tweetID="515490786800963584"></div>
-                                <script>
-                                    window.onload = (function(){
-                                        var tweets = document.getElementsByClassName("tweet");
-                                        Array.prototype.forEach.call(tweets, function(el) {
-                                            var tw_id = el.getAttribute("tweetID");
-                                            while (el.firstChild) {
-                                                el.removeChild(el.firstChild);
-                                            }
-                                            if (tw_id != null) {
-                                                twttr.widgets.createTweet(
-                                                    tw_id,
-                                                    el, {
-                                                        conversation : 'all',
-                                                        cards        : 'visible',
-                                                        linkColor    : '#A31621',
-                                                        theme        : 'light'
-                                                    }
-                                                );
-                                            }
+                                    <script>
+                                        window.onload = (function(){
+                                            var tweets = document.getElementsByClassName("tweet");
+                                            Array.prototype.forEach.call(tweets, function(el) {
+                                                var tw_id = el.getAttribute("tweetID");
+                                                while (el.firstChild) {
+                                                    el.removeChild(el.firstChild);
+                                                }
+                                                if (tw_id != null) {
+                                                    twttr.widgets.createTweet(
+                                                        tw_id,
+                                                        el, {
+                                                            conversation : 'all',
+                                                            cards        : 'visible',
+                                                            linkColor    : '#A31621',
+                                                            theme        : 'light'
+                                                        }
+                                                    );
+                                                }
+                                            });
                                         });
-                                    });
-                                </script>
+                                    </script>
                             </div>
                         </div>
                     </div>
