@@ -8,9 +8,9 @@
     'description': """LiqPay Payment Acquirer""",
     'depends': ['payment'],
     'data': [
-        # 'views/liqpay.xml',
-        # 'views/payment_acquirer.xml',
-        # 'data/liqpay.xml',
+        'views/liqpay.xml',
+        'views/payment_liqpay.xml',
+        'data/liqpay.xml',
     ],
     'installable': True,
 }

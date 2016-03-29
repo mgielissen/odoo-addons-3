@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <template id="liqpay_acquirer_button">
+            <form t-if="acquirer.liqpay_public_key"
+                t-att-action="tx_url"
+                method="post"
+                target="_self"
+                accept-charset="utf-8">
+                <input type="hidden" name="data" t-att-value="liqpay_data"/>
+                <input type="hidden" name="signature" t-att-value="liqpay_signature"/>
+                <!-- submit -->
+                <button type="submit" width="100px"
+                    t-att-class="submit_class">
+                    <img t-if="not submit_txt" src="/payment_liqpay/static/src/img/liqpay2.png2"/>
+                    <span t-if="submit_txt"><t t-esc="submit_txt"/> <span class="fa fa-long-arrow-right"/></span>
+                </button>
+            </form>
+        </template>
+
+    </data>
+</odoo>
