@@ -59,7 +59,7 @@ class AcquirerLiqPay(osv.Model):
             uid,
             'web.base.url')
         return_url = '%s' % urlparse.urljoin(
-            base_url, '/payment/liqpay/return')
+            base_url, values['return_url'])
         callback_url = '%s' % urlparse.urljoin(
             base_url, '/payment/liqpay/callback')
         request = {
@@ -68,7 +68,7 @@ class AcquirerLiqPay(osv.Model):
           'action': 'pay',
           'amount': values['amount'],
           'currency': values['currency'] and values['currency'].name or 'UAH',
-          'description': 'Order payment. Transaction %s' % values['reference'],
+          'description': _('Order payment: %s') % values['reference'],
           'order_id': values['reference'],
           'sandbox': '1' if acquirer.environment == 'test' else '',
           'server_url': callback_url,
@@ -81,7 +81,7 @@ class AcquirerLiqPay(osv.Model):
         data = base64.b64encode(json.dumps(request))
         signature = self._make_signature(
             acquirer.liqpay_private_key,
-            json.dumps(request),
+            data,
             acquirer.liqpay_private_key)
         values.update({
             'liqpay_data': data,

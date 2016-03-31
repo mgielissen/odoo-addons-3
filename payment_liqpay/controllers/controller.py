@@ -16,16 +16,6 @@ _logger = logging.getLogger(__name__)
 
 
 class LiqPayController(http.Controller):
-    _return_url = '/payment/liqpay/return/'
-    _callback_url = '/payment/liqpay/callback/'
-
-    @http.route([
-        '/payment/liqpay/return',
-    ], type='http', auth='none', csrf=False)
-    def liqpay_return(self, **post):
-        # TODO: reder some success text
-        return werkzeug.utils.redirect('/')
-
     @http.route([
         '/payment/liqpay/callback',
     ], type='http', auth='none', methods=['POST'], csrf=False)
@@ -76,7 +66,7 @@ class LiqPayController(http.Controller):
             return 'not ok'
 
         generated_sign = str_to_sign(
-            private_key + json.dumps(recvd_data) + private_key)
+            private_key + data + private_key)
 
         if generated_sign != signature:
             _logger.warning('Received wrong signature: %s' % signature)
@@ -124,7 +114,10 @@ class LiqPayController(http.Controller):
                         'acquirer_reference': acquirer_reference,
                     })
                 if status in succes_statuses:
-                    completion_date = recvd_data.get('completion_date', '')
+                    now = datetime.date.today().strftime('%Y-%m-%d %H:%M:%S')
+                    completion_date = recvd_data.get(
+                        'completion_date',
+                        now)
                     odoo_completion_date = datetime.datetime.strptime(
                         completion_date,
                         '%Y-%m-%d %H:%M:%S').strftime(
@@ -135,6 +128,10 @@ class LiqPayController(http.Controller):
                         'acquirer_reference': acquirer_reference,
                         'date_validate': odoo_completion_date,
                     })
+                    if tr.sale_order_id:
+                        tr.sale_order_id.with_context(dict(
+                            request.context,
+                            send_email=True)).action_confirm()
                 if status in error_statuses:
                     tr.write({
                         'state': 'error',

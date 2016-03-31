@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-31 12:11+0000\n"
-"PO-Revision-Date: 2016-03-31 12:11+0000\n"
+"POT-Creation-Date: 2016-03-31 17:19+0000\n"
+"PO-Revision-Date: 2016-03-31 17:19+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,12 @@ msgstr "Liqpay Private Key"
 #: model:ir.model.fields,field_description:payment_liqpay.field_payment_acquirer_liqpay_public_key
 msgid "Liqpay Public Key"
 msgstr "Liqpay Public Key"
+
+#. module: payment_liqpay
+#: code:addons/payment_liqpay/models/payment_liqpay.py:71
+#, python-format
+msgid "Order payment: %s"
+msgstr "Order payment: %s"
 
 #. module: payment_liqpay
 #: model:ir.model,name:payment_liqpay.model_payment_acquirer
