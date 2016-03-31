@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import json
 import logging
 import pprint
@@ -7,6 +8,7 @@ import werkzeug
 
 from openerp import http, SUPERUSER_ID
 from openerp.http import request
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 import base64
 import hashlib
 
@@ -26,40 +28,83 @@ class LiqPayController(http.Controller):
 
     @http.route([
         '/payment/liqpay/callback',
-    ], type='http', auth='none', methods=['POST', 'GET'], csrf=False)
+    ], type='http', auth='none', methods=['POST'], csrf=False)
     def liqpay_callback(self, **post):
         def str_to_sign(str):
             return base64.b64encode(hashlib.sha1(str).digest())
+
         data = post.get('data')
         signature = post.get('signature')
-        print data
-        print signature
 
         if data is None:
             _logger.warning('No data in callback')
-            print 'no data'
-            return
+            return 'not ok'
         if signature is None:
             _logger.warning('No signature in callback')
-            print 'no signature'
-            return
+            return 'not ok'
+
+        try:
+            decoded_data = base64.b64decode(data)
+        except TypeError:
+            _logger.warning('Can not decode received data')
+            return 'not ok'
+        try:
+            recvd_data = json.loads(decoded_data)
+        except TypeError:
+            _logger.warning('Can not parse received json request')
+            return 'not ok'
+
+        aq_id = request.registry['payment.acquirer'].search(
+            request.cr,
+            SUPERUSER_ID,
+            [('provider', '=', 'liqpay')], limit=1, context=request.context)
+        if aq_id is None:
+            _logger.warning('Can not find liqpay acquirer id')
+            return 'not ok'
+        liqpay_aq = request.registry['payment.acquirer'].browse(
+            request.cr,
+            SUPERUSER_ID,
+            aq_id,
+            context=request.context)
+
+        private_key = liqpay_aq.liqpay_private_key
+        public_key = liqpay_aq.liqpay_public_key
+        recvd_pub_key = recvd_data.get('public_key', '')
+
+        if public_key != recvd_pub_key:
+            _logger.warning('Received wrong public key: %s' % recvd_pub_key)
+            return 'not ok'
+
+        generated_sign = str_to_sign(
+            private_key + json.dumps(recvd_data) + private_key)
+
+        if generated_sign != signature:
+            _logger.warning('Received wrong signature: %s' % signature)
+            return 'not ok'
+
         tr_ids = request.registry['payment.transaction'].search(
             request.cr,
             SUPERUSER_ID,
-            # [('reference', 'in', [post.get('merchantReference')])],
-            # limit=1,
+            [('acquirer_id', 'in', aq_id)],
             context=request.context)
-        for tr in tr_ids:
-            print 'checking tx %s' % tr.reference
-            private_key = tr.acquirer_id and tr.acquirer_id.liqpay_private_key
-            sign = str_to_sign(private_key + data + private_key)
-            print 'private key %s' % private_key
-            print 'signature %s' % signature
-            print 'sign %s' % sign
-            if private_key and sign and (signature == sign):
-                print 'tx is found'
-                req = json.loads(base64.b64decode(data))
-                print 'recvd state is %s' % req['status']
+
+        order_id = recvd_data.get('order_id', '')
+        status = recvd_data.get('status', '')
+        acquirer_reference = recvd_data.get('acquirer_reference', '')
+        found = False
+
+        for tr_id in tr_ids:
+            tr = request.registry['payment.transaction'].browse(
+                request.cr,
+                SUPERUSER_ID,
+                tr_id,
+                context=request.context)
+
+            if (tr.reference == order_id) and not found:
+                found = True
+                _logger.info('Received callback for order: %s' % order_id)
+                _logger.info('Received status is: %s' % status)
+
                 pending_statuses = ['processing',
                                     'wait_bitcoin',
                                     'wait_secure',
@@ -73,16 +118,29 @@ class LiqPayController(http.Controller):
                                    'sandbox']
                 error_statuses = ['error',
                                   'failure']
-                if req['status'] in pending_statuses:
-                    print 'uprating state to pending'
-                    tr.write({'state': 'pending'})
-                if req['status'] in succes_statuses:
-                    print 'uprating state to done'
-                    tr.write({'state': 'done'})
-                if req['status'] in error_statuses:
-                    print 'uprating state to error'
-                    tr.write({'state': 'error'})
+                if status in pending_statuses:
+                    tr.write({
+                        'state': 'pending',
+                        'acquirer_reference': acquirer_reference,
+                    })
+                if status in succes_statuses:
+                    completion_date = recvd_data.get('completion_date', '')
+                    odoo_completion_date = datetime.datetime.strptime(
+                        completion_date,
+                        '%Y-%m-%d %H:%M:%S').strftime(
+                            DEFAULT_SERVER_DATE_FORMAT)
+                    _logger.info('Compl date is: %s' % completion_date)
+                    tr.write({
+                        'state': 'done',
+                        'acquirer_reference': acquirer_reference,
+                        'date_validate': odoo_completion_date,
+                    })
+                if status in error_statuses:
+                    tr.write({
+                        'state': 'error',
+                        'acquirer_reference': acquirer_reference,
+                    })
                 break
-            else:
-                print 'not this tx'
-        return
+        if not found:
+            _logger.warning('Received unknown transaction: %s' % order_id)
+        return 'ok'
