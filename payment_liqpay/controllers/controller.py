@@ -114,7 +114,7 @@ class LiqPayController(http.Controller):
                         'acquirer_reference': acquirer_reference,
                     })
                 if status in succes_statuses:
-                    now = datetime.date.today().strftime('%Y-%m-%d %H:%M:%S')
+                    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     completion_date = recvd_data.get(
                         'completion_date',
                         now)
