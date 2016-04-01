@@ -4,9 +4,11 @@
     'name': 'LiqPay Payment Acquirer',
     'category': 'Hidden',
     'summary': 'Payment Acquirer: LiqPay Implementation',
-    'version': '1.0',
+    'version': '1.1',
+    'author': "Bohdan Lisnenko",
+    'website': "https://erp.co.ua",
     'description': """LiqPay Payment Acquirer""",
-    'depends': ['payment'],
+    'depends': ['payment', 'website_sale'],
     'data': [
         'views/liqpay.xml',
         'views/payment_liqpay.xml',

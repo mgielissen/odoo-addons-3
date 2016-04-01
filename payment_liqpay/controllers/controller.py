@@ -80,7 +80,7 @@ class LiqPayController(http.Controller):
 
         order_id = recvd_data.get('order_id', '')
         status = recvd_data.get('status', '')
-        acquirer_reference = recvd_data.get('acquirer_reference', '')
+        acquirer_reference = recvd_data.get('payment_id', '')
         found = False
 
         for tr_id in tr_ids:
