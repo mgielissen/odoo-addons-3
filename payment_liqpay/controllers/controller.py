@@ -81,7 +81,7 @@ class LiqPayController(http.Controller):
             context=request.context)
 
         action = recvd_data.get('action', '')
-        if action != 'pay' or action != 'paysplit':
+        if action != 'pay':
             _logger.warning('Received wrong action: %s' % action)
             return 'not ok'
 
