@@ -77,6 +77,14 @@ class AcquirerLiqPay(osv.Model):
           'sender_city': values['billing_partner_city'] or '',
           'sender_address': values['billing_partner_address'] or '',
           'sender_postal_code': values['billing_partner_zip'] or '',
+          'split_rules': [
+                          {
+                            'public_key': 'i52266751425',
+                            'amount': 10,
+                            'commission_payer': 'receiver',
+                            'server_url': callback_url
+                          },
+                        ]
         }
         data = base64.b64encode(json.dumps(request))
         signature = self._make_signature(

@@ -44,6 +44,8 @@ class LiqPayController(http.Controller):
             _logger.warning('Can not parse received json request')
             return 'not ok'
 
+        _logger.info('Received data: %s' % pprint.pformat(recvd_data))
+
         aq_id = request.registry['payment.acquirer'].search(
             request.cr,
             SUPERUSER_ID,
@@ -77,6 +79,11 @@ class LiqPayController(http.Controller):
             SUPERUSER_ID,
             [('acquirer_id', 'in', aq_id)],
             context=request.context)
+
+        action = recvd_data.get('action', '')
+        if action != 'pay' or action != 'paysplit':
+            _logger.warning('Received wrong action: %s' % action)
+            return 'not ok'
 
         order_id = recvd_data.get('order_id', '')
         status = recvd_data.get('status', '')
@@ -114,6 +121,7 @@ class LiqPayController(http.Controller):
                         'acquirer_reference': acquirer_reference,
                     })
                 if status in succes_statuses:
+                    desc = recvd_data.get('description', '')
                     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     completion_date = recvd_data.get(
                         'completion_date',
@@ -127,15 +135,20 @@ class LiqPayController(http.Controller):
                         'state': 'done',
                         'acquirer_reference': acquirer_reference,
                         'date_validate': odoo_completion_date,
+                        'state_message': desc,
                     })
                     if tr.sale_order_id:
                         tr.sale_order_id.with_context(dict(
                             request.context,
                             send_email=True)).action_confirm()
                 if status in error_statuses:
+                    err_desc = recvd_data.get(
+                        'err_description',
+                        'error')
                     tr.write({
                         'state': 'error',
                         'acquirer_reference': acquirer_reference,
+                        'state_message': err_desc,
                     })
                 break
         if not found:
