@@ -1,0 +1,68 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* payment_liqpay
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-31 17:19+0000\n"
+"PO-Revision-Date: 2016-03-31 17:19+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: payment_liqpay
+#: model:payment.acquirer,cancel_msg:payment_liqpay.payment_acquirer_liqpay
+msgid "<span><i>Cancel,</i> Your payment has been cancelled.</span>"
+msgstr "<span><i>Cancel,</i> Your payment has been cancelled.</span>"
+
+#. module: payment_liqpay
+#: model:payment.acquirer,done_msg:payment_liqpay.payment_acquirer_liqpay
+msgid "<span><i>Done,</i> Your online payment has been successfully processed. Thank you for your order.</span>"
+msgstr "<span><i>Done,</i> Your online payment has been successfully processed. Thank you for your order.</span>"
+
+#. module: payment_liqpay
+#: model:payment.acquirer,error_msg:payment_liqpay.payment_acquirer_liqpay
+msgid "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but won't be paid. Don't hesitate to contact us if you have any questions on the status of your order.</span>"
+msgstr "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but won't be paid. Don't hesitate to contact us if you have any questions on the status of your order.</span>"
+
+#. module: payment_liqpay
+#: model:payment.acquirer,pending_msg:payment_liqpay.payment_acquirer_liqpay
+msgid "<span><i>Pending,</i> Your online payment has been successfully processed. But your order is not validated yet.</span>"
+msgstr "<span><i>Pending,</i> Your online payment has been successfully processed. But your order is not validated yet.</span>"
+
+#. module: payment_liqpay
+#: model:payment.acquirer,name:payment_liqpay.payment_acquirer_liqpay
+msgid "LiqPay"
+msgstr "LiqPay"
+
+#. module: payment_liqpay
+#: model:ir.model.fields,field_description:payment_liqpay.field_payment_acquirer_liqpay_private_key
+msgid "Liqpay Private Key"
+msgstr "Liqpay Private Key"
+
+#. module: payment_liqpay
+#: model:ir.model.fields,field_description:payment_liqpay.field_payment_acquirer_liqpay_public_key
+msgid "Liqpay Public Key"
+msgstr "Liqpay Public Key"
+
+#. module: payment_liqpay
+#: code:addons/payment_liqpay/models/payment_liqpay.py:71
+#, python-format
+msgid "Order payment: %s"
+msgstr "Order payment: %s"
+
+#. module: payment_liqpay
+#: model:ir.model,name:payment_liqpay.model_payment_acquirer
+msgid "Payment Acquirer"
+msgstr "Payment Acquirer"
+
+#. module: payment_liqpay
+#: model:payment.acquirer,pre_msg:payment_liqpay.payment_acquirer_liqpay
+msgid "You will be redirected to the liqpay website after clicking on the payment button."
+msgstr "You will be redirected to the liqpay website after clicking on the payment button."
+

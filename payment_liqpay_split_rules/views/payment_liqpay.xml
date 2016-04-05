@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Add liqpay keys to res.partner -->
+       <record id="view_partners_form_Liqpay_split" model="ir.ui.view">
+               <field name="name">view.res.partner.form.liqpay.split</field>
+               <field name="model">res.partner</field>
+               <field name="inherit_id" ref="account.partner_view_buttons"/>
+               <field name="arch" type="xml">
+                   <xpath expr='//field[@name="ref"]' position="after">
+                       <field name="liqpay_public_key"/>
+                       <field name="liqpay_split_commision"/>
+                   </xpath>
+               </field>
+       </record>
+       <record id="acquirer_form_liqpay2" model="ir.ui.view">
+           <field name="name">acquirer.form.liqpay2</field>
+           <field name="model">payment.acquirer</field>
+           <field name="inherit_id" ref="payment.acquirer_form"/>
+           <field name="arch" type="xml">
+               <xpath expr='//field[@name="liqpay_private_key"]' position='after'>
+                   <field name="liqpay_2nd_public_key"/>
+                   <field name="liqpay_2nd_private_key"/>
+               </xpath>
+           </field>
+       </record>
+
+    </data>
+</odoo>

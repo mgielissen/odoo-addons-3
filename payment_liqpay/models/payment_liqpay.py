@@ -78,6 +78,13 @@ class AcquirerLiqPay(osv.Model):
           'sender_address': values['billing_partner_address'] or '',
           'sender_postal_code': values['billing_partner_zip'] or '',
         }
+
+        split = values.get('split_rules', '')
+        if split != '':
+            request.update({
+                'split_rules': split,
+            })
+
         data = base64.b64encode(json.dumps(request))
         signature = self._make_signature(
             acquirer.liqpay_private_key,
