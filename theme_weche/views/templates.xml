@@ -99,7 +99,7 @@
                         <meta property="og:title" t-att-content="blog_post.name" />
                         <meta property="og:description" t-att-content="blog_post.subtitle" />
                         <meta property="og:type" content="article" />
-                        <meta property="og:url" t-att-content="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
+                        <meta property="og:url" t-att-content="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)" />
                         <meta property="og:image" t-attf-content="#{blog_post_cover_properties.get('background-image', 'none')[4:-1]}" />
                         <meta name="twitter:card" content="summary_large_image" />
                         <meta name="twitter:site" content="@WecheInfo" />
@@ -202,46 +202,48 @@
             <xpath expr="//div[@id='blog_content']" position="after">
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-auto">
-                            <!-- Your like button code -->
-                            <div class="fb-like"
-                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
-                                data-layout="button_count"
-                                data-action="like"
-                                data-show-faces="true"
-                                data-share="true"></div>
-                        </div>
-                        <div class="col-xs-auto">
-                            <!-- Розмістіть цей тег у місці, де потрібно відтворити кнопка "Поділитися" -->
-                            <div
-                                class="g-plus"
-                                data-action="share"
-                                data-annotation="bubble"
-                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)">
+                        <div class="read_width">
+                            <div class="col-xs-auto">
+                                <!-- Your like button code -->
+                                <div class="fb-like"
+                                    t-att-data-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                    data-layout="button_count"
+                                    data-action="like"
+                                    data-show-faces="true"
+                                    data-share="true"></div>
                             </div>
-                        </div>
-                        <div class="col-xs-auto">
-                            <a href="https://twitter.com/share"
-                               class="twitter-share-button"
-                               t-att-data-url="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
-                               data-hashtags="weche">Tweet</a>
-                        </div>
-                        <div class="col-xs-auto">
-                            <script type="text/javascript">
-                            document.write(VK.Share.button({url: $("meta[property='og:url']").attr('content'), type: 'round', text: 'Зберегти'}));
-                            </script>
+                            <div class="col-xs-auto">
+                                <!-- Розмістіть цей тег у місці, де потрібно відтворити кнопка "Поділитися" -->
+                                <div
+                                    class="g-plus"
+                                    data-action="share"
+                                    data-annotation="bubble"
+                                    t-att-data-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)">
+                                </div>
+                            </div>
+                            <div class="col-xs-auto">
+                                <a href="https://twitter.com/share"
+                                   class="twitter-share-button"
+                                   t-att-data-url="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                   data-hashtags="weche">Tweet</a>
+                            </div>
+                            <div class="col-xs-auto">
+                                <script type="text/javascript">
+                                document.write(VK.Share.button({url: $("meta[property='og:url']").attr('content'), type: 'round', text: 'Зберегти'}));
+                                </script>
+                            </div>
                         </div>
                     </div>
                     <!-- fb comments -->
-                    <div class="row">
+                    <!-- <div class="row">
                         <section id="comments" class="read_width">
                             <hr/>
                             <div class="fb-comments"
-                                t-att-data-href="request.httprequest.url_root+'/blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
+                                t-att-data-href="request.httprequest.url_root+'blog/'+slug(blog_post.blog_id)+'/post/'+slug(blog_post)"
                                 data-numposts="5">
                             </div>
                         </section>
-                    </div>
+                    </div> -->
                 </div>
             </xpath>
         </template>
@@ -302,6 +304,19 @@
             </data>
             </field>
         </record>
+        <record id="weche_blogp_view_form" model="ir.ui.view">
+            <field name="name">weche.blogp.form.inherit</field>
+            <field name="model">blog.post</field>
+            <field name="inherit_id" ref="website_blog.view_blog_post_form"/>
+            <field name="arch" type="xml">
+            <data>
+                 <xpath expr="//field[@name='blog_id']" position="after">
+                    <field name="author_id"/>
+                    <field name="author_avatar"/>
+                 </xpath>
+            </data>
+            </field>
+        </record>
 
         <!-- Snippets -->
         <!-- fb -->
@@ -314,7 +329,7 @@
             <section class="snippet_fbpost">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-6 mt16">
+                        <div class="col-sm-6 mt16">
                             <h3>A Section Subtitle</h3>
                             <p>
                                 Write one or two paragraphs describing your product,
@@ -325,9 +340,10 @@
                                 and give it to them.
                             </p>
                         </div>
-                        <div class="col-md-6 mt16">
+                        <div class="col-sm-6 mt16">
                             <div class="js_fb_post_link">
-                                <div class="fb-post" data-href="https://www.facebook.com/20531316728/posts/10154009990506729/"></div>
+                                <div class="fb-post"
+                                    data-href="https://www.facebook.com/20531316728/posts/10154009990506729/"></div>
                             </div>
                         </div>
                     </div>
