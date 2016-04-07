@@ -19,7 +19,13 @@ odoo.define('theme_weche.snippet_fbpost_opt', function(require) {
                     this.$target.find('.fb-post').attr('data-href', new_url);
                 }
             }
-        }
+        },
+        clean_for_save: function() {
+            var fb_post = this.$target.find('.fb-post');
+            fb_post.removeClass('fb_iframe_widget');
+            fb_post.removeAttr('fb-xfbml-state fb-iframe-plugin-query');
+            fb_post.empty();
+        },
     });
 
     s_options.registry.js_tw_post_link = s_options.Class.extend({
