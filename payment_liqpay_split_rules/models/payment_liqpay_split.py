@@ -68,7 +68,7 @@ class AcquirerLiqPaySplit(osv.Model):
                            SUPERUSER_ID,
                            tx_id,
                            context=context)
-        print 'Found tx: %s' % tx.reference
+        _logger.info('Found tx: %s' % tx.reference)
 
         if not tx.sale_order_id:    # zrada
             return \
@@ -102,24 +102,22 @@ class AcquirerLiqPaySplit(osv.Model):
                                 'commission_payer': 'receiver',
                                 'server_url': callback_url
                             }
-                        print 'Organizer: %s' % org.name
-                        print 'Ticket name: %s' % ticket.name
-                        print ' subtotal: %s' % line.price_subtotal
-                        print ' tax: %s' % line.price_tax
-                        print ' total: %s' % line.price_total
-                        print ' perc: %s' % perc
-                        print ' amount: %s' % amount
-                        print '-----------'
+                        _logger.info('Organizer: %s' % org.name)
+                        _logger.info('Ticket name: %s' % ticket.name)
+                        _logger.info(' subtotal: %s' % line.price_subtotal)
+                        _logger.info(' tax: %s' % line.price_tax)
+                        _logger.info(' total: %s' % line.price_total)
+                        _logger.info(' perc: %s' % perc)
+                        _logger.info(' amount: %s' % amount)
+                        _logger.info('-----------')
 
         sum_amnt = 0
         my_amount = round(my_amount, 2)
-        print 'before my amount: %s' % my_amount
         for k in split:
             sum_amnt += split[k]['amount']
         delta = values['amount'] - sum_amnt - my_amount
         if delta != 0:
             my_amount += delta
-        print 'after my amount: %s' % my_amount
         split['my'] = {
             'public_key': tx.acquirer_id.liqpay_2nd_public_key,
             'amount': my_amount,
@@ -133,7 +131,7 @@ class AcquirerLiqPaySplit(osv.Model):
         values.update({
             'split_rules': split_rules
         })
-        print 'values: %s' % pprint.pformat(values)
+        _logger.info('values: %s' % pprint.pformat(values))
         return super(AcquirerLiqPaySplit, self).liqpay_form_generate_values(
             cr,
             uid,
