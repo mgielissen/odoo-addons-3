@@ -23,7 +23,7 @@ class res_partner_split(osv.osv):
                 required=False,
                 digits=(16, 2),
                 track_visibility='always',
-                help='In percent')
+                help='This amount will be sent to shop where ticket was sold')
     }
 
 

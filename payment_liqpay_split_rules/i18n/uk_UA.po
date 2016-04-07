@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* payment_liqpay
+#	* payment_liqpay_split_rules
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-31 17:19+0000\n"
-"PO-Revision-Date: 2016-03-31 17:19+0000\n"
+"POT-Creation-Date: 2016-04-07 14:58+0000\n"
+"PO-Revision-Date: 2016-04-07 14:58+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,54 +15,37 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: payment_liqpay
-#: model:payment.acquirer,cancel_msg:payment_liqpay.payment_acquirer_liqpay
-msgid "<span><i>Cancel,</i> Your payment has been cancelled.</span>"
-msgstr "<span><i>Скасовано,</i> Ваш платіж було скасовано.</span>"
+#. module: payment_liqpay_split_rules
+#: model:ir.model.fields,field_description:payment_liqpay_split_rules.field_res_partner_liqpay_split_commision
+msgid "Commision percent to shop"
+msgstr "Комісія веб-магазину у відсотках"
 
-#. module: payment_liqpay
-#: model:payment.acquirer,done_msg:payment_liqpay.payment_acquirer_liqpay
-msgid "<span><i>Done,</i> Your online payment has been successfully processed. Thank you for your order.</span>"
-msgstr "<span><i>Завершено,</i> Ваш онлайн платіж був успішно оброблений. Дякуємо за замовлення.</span>"
+#. module: payment_liqpay_split_rules
+#: model:ir.model.fields,field_description:payment_liqpay_split_rules.field_payment_acquirer_liqpay_2nd_private_key
+msgid "Liqpay 2nd Private Key"
+msgstr "Другий приватний ключ Liqpay"
 
-#. module: payment_liqpay
-#: model:payment.acquirer,error_msg:payment_liqpay.payment_acquirer_liqpay
-msgid "<span><i>Error,</i> Please be aware that an error occurred during the transaction. The order has been confirmed but won't be paid. Don't hesitate to contact us if you have any questions on the status of your order.</span>"
-msgstr "<span><i>Помилка,</i> Зверніть увагу, що виникла помилка під час транзакції. Замовлення підтверджено, але не буде оплачено. Зв’яжіться з нами, якщо у вас виникли питання щодо статусу вашого замовлення."
+#. module: payment_liqpay_split_rules
+#: model:ir.model.fields,field_description:payment_liqpay_split_rules.field_payment_acquirer_liqpay_2nd_public_key
+msgid "Liqpay 2nd Public Key"
+msgstr "Другий публічний ключ Liqpay"
 
-#. module: payment_liqpay
-#: model:payment.acquirer,pending_msg:payment_liqpay.payment_acquirer_liqpay
-msgid "<span><i>Pending,</i> Your online payment has been successfully processed. But your order is not validated yet.</span>"
-msgstr "<span><i>Обробляється,</i> Вашо онлайн платіж було успішно оброблено. Але ваше замовлення поки що не підтверджене.</span>"
-
-#. module: payment_liqpay
-#: model:payment.acquirer,name:payment_liqpay.payment_acquirer_liqpay
-msgid "LiqPay"
-msgstr "LiqPay"
-
-#. module: payment_liqpay
-#: model:ir.model.fields,field_description:payment_liqpay.field_payment_acquirer_liqpay_private_key
-msgid "Liqpay Private Key"
-msgstr "Приватний ключ"
-
-#. module: payment_liqpay
-#: model:ir.model.fields,field_description:payment_liqpay.field_payment_acquirer_liqpay_public_key
+#. module: payment_liqpay_split_rules
+#: model:ir.model.fields,field_description:payment_liqpay_split_rules.field_res_partner_liqpay_public_key
 msgid "Liqpay Public Key"
-msgstr "Публічний ключ"
+msgstr "Публічний ключ Liqpay"
 
-#. module: payment_liqpay
-#: code:addons/payment_liqpay/models/payment_liqpay.py:71
-#, python-format
-msgid "Order payment: %s"
-msgstr "Оплата замовлення: %s"
+#. module: payment_liqpay_split_rules
+#: model:ir.model,name:payment_liqpay_split_rules.model_res_partner
+msgid "Partner"
+msgstr "Партнер"
 
-#. module: payment_liqpay
-#: model:ir.model,name:payment_liqpay.model_payment_acquirer
+#. module: payment_liqpay_split_rules
+#: model:ir.model,name:payment_liqpay_split_rules.model_payment_acquirer
 msgid "Payment Acquirer"
 msgstr "Оплата банком-екваєром"
 
-#. module: payment_liqpay
-#: model:payment.acquirer,pre_msg:payment_liqpay.payment_acquirer_liqpay
-msgid "You will be redirected to the liqpay website after clicking on the payment button."
-msgstr "You will be redirected to the liqpay website after clicking on the payment button."
-
+#. module: payment_liqpay_split_rules
+#: model:ir.model.fields,help:payment_liqpay_split_rules.field_res_partner_liqpay_split_commision
+msgid "This amount will be sent to shop where ticket was sold"
+msgstr "Цей відсоток від загальної суми буде відправлено на рахунок магазину продавця."
