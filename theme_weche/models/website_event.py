@@ -12,7 +12,7 @@ class weche_Event(models.Model):
             cr,
             uid,
             ids,
-            zoom=15,
+            zoom=17,
             width=298,
             height=298,
             context=None):
