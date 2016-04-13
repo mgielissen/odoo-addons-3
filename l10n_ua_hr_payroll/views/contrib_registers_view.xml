@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_contribution_register_form_l10n_ua_view_form" model="ir.ui.view">
+            <field name="name">hr.contrib.reg.form.inherit.form.ua</field>
+            <field name="model">hr.contribution.register</field>
+            <field name="inherit_id" ref="hr_payroll.hr_contribution_register_form"/>
+            <field name="arch" type="xml">
+            <data>
+                <!-- make fields visible on payslip for debugging -->
+                 <xpath expr="//field[@name='name']" position="after">
+                    <field name="partner_id"/>
+                 </xpath>
+            </data>
+            </field>
+        </record>
+    </data>
+</odoo>
