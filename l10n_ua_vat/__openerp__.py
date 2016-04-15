@@ -11,7 +11,7 @@
     'author': "Bohdan Lisnenko",
     'website': "https://erp.co.ua",
     'category': 'Localization/Account Charts',
-    'version': '0.1',
+    'version': '1.0',
     'depends': ['account',
                 'account_accountant',
                 'l10n_ua'

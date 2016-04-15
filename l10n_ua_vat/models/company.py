@@ -14,3 +14,5 @@ class CompanySti(models.Model):
                                index=True,
                                required=True)
     kod_filii = fields.Char(string=u"Код філії", size=4)
+
+CompanySti()
