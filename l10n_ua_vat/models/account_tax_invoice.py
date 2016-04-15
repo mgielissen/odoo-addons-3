@@ -60,6 +60,10 @@ class TaxInvoice(models.Model):
                          default=False,
                          readonly=True,
                          states={'draft': [('readonly', False)]})
+    h03 = fields.Boolean(string=u"Зведена ПН",
+                         default=False,
+                         readonly=True,
+                         states={'draft': [('readonly', False)]})
     horig1 = fields.Boolean(string=u"Не видається покупцю",
                             states={'draft': [('readonly', False)]},
                             readonly=True,
@@ -143,10 +147,22 @@ class TaxInvoice(models.Model):
                           states={'draft': [('readonly', False)]},
                           readonly=True,
                           size=1)
+
+    @api.model
+    def _get_my_number2(self):
+        company_id = self.env.user.company_id
+        my_code = company_id.kod_filii or ''
+        return my_code
+
     number2 = fields.Char(string=u"Код філії",
                           states={'draft': [('readonly', False)]},
                           readonly=True,
+                          default=_get_my_number2,
                           size=4)
+    kod_filii = fields.Char(string=u"Код філії партнера",
+                            states={'draft': [('readonly', False)]},
+                            readonly=True,
+                            size=4)
 
     category = fields.Selection([
         ('out_tax_invoice', u"Видані ПН"),
@@ -263,23 +279,8 @@ class TaxInvoice(models.Model):
         else:
             self.ipn_partner = self.partner_id.vat if \
                 self.partner_id.vat else ''
-            self.tel_partner = self.partner_id.phone if \
-                self.partner_id.phone else ''
-            self.adr_partner = ''
-            if self.partner_id.zip:
-                self.adr_partner = self.adr_partner + self.partner_id.zip
-            if self.partner_id.state_id.name:
-                self.adr_partner = self.adr_partner + ', ' + \
-                    self.partner_id.state_id.name
-            if self.partner_id.city:
-                self.adr_partner = self.adr_partner + \
-                    ', ' + self.partner_id.city
-            if self.partner_id.street:
-                self.adr_partner = self.adr_partner + \
-                    ', ' + self.partner_id.street
-            if self.partner_id.street2:
-                self.adr_partner = self.adr_partner + \
-                    ', ' + self.partner_id.street2
+            self.kod_filii = self.partner_id.kod_filii if \
+                self.partner_id.kod_filii else ''
         return {}
 
     @api.model
@@ -623,7 +624,7 @@ class TaxInvoice(models.Model):
         fname += self.company_id.company_registry.zfill(10)
         fname += 'J12'
         fname += '010'
-        fname += '07'
+        fname += '08'
         fname += '1'
         fname += '00'
         fname += self.number.zfill(7)
@@ -634,14 +635,14 @@ class TaxInvoice(models.Model):
         fname += '.xml'
         declar = ET.Element('DECLAR')
         declar.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-        declar.set('xsi:noNamespaceSchemaLocation', 'J1201007.xsd')
+        declar.set('xsi:noNamespaceSchemaLocation', 'J1201008.xsd')
         declarhead = ET.SubElement(declar, 'DECLARHEAD')
         # declarhead part
         ET.SubElement(declarhead, 'TIN').text = \
             self.company_id.company_registry
         ET.SubElement(declarhead, 'C_DOC').text = 'J12'
         ET.SubElement(declarhead, 'C_DOC_SUB').text = '010'
-        ET.SubElement(declarhead, 'C_DOC_VER').text = '7'
+        ET.SubElement(declarhead, 'C_DOC_VER').text = '8'
         ET.SubElement(declarhead, 'C_DOC_TYPE').text = '0'
         ET.SubElement(declarhead, 'C_DOC_CNT').text = self.number
         ET.SubElement(declarhead, 'C_REG').text = \
@@ -659,10 +660,10 @@ class TaxInvoice(models.Model):
         ET.SubElement(declarhead, 'SOFTWARE').text = 'Odoo 9'
         # declarbody part
         declarbody = ET.SubElement(declar, 'DECLARBODY')
-        if self.h01:
-            ET.SubElement(declarbody, 'H01').text = '1'
+        if self.h03:
+            ET.SubElement(declarbody, 'H03').text = '1'
         else:
-            ET.SubElement(declarbody, 'H01').set('xsi:nil', 'true')
+            ET.SubElement(declarbody, 'H03').set('xsi:nil', 'true')
         if self.horig1:
             ET.SubElement(declarbody, 'HORIG1').text = '1'
             ET.SubElement(declarbody, 'HTYPR').text = self.htypr
@@ -675,82 +676,47 @@ class TaxInvoice(models.Model):
             ET.SubElement(declarbody, 'HNUM1').text = self.number1
         else:
             ET.SubElement(declarbody, 'HNUM1').set('xsi:nil', 'true')
-        if self.number2 is not False:
-            ET.SubElement(declarbody, 'HNUM2').text = self.number2
-        else:
-            ET.SubElement(declarbody, 'HNUM2').set('xsi:nil', 'true')
         if self.category == 'out_tax_invoice':
+            if self.number2 is not False:
+                ET.SubElement(declarbody, 'HNUM2').text = self.number2
+            else:
+                ET.SubElement(declarbody, 'HNUM2').set('xsi:nil', 'true')
+            if self.kod_filii is not False:
+                ET.SubElement(declarbody, 'HFBUY').text = self.kod_filii
+            else:
+                ET.SubElement(declarbody, 'HFBUY').set('xsi:nil', 'true')
             ET.SubElement(declarbody, 'HNAMESEL').text = self.company_id.name
             ET.SubElement(declarbody, 'HNAMEBUY').text = \
                 self.partner_id.parent_name or self.partner_id.name
             ET.SubElement(declarbody, 'HKSEL').text = self.company_id.vat
             ET.SubElement(declarbody, 'HKBUY').text = self.ipn_partner
-            comp_adr = ''
-            if self.company_id.zip:
-                comp_adr += self.company_id.zip
-            if self.company_id.state_id:
-                if self.company_id.state_id.name:
-                    comp_adr += ', ' + self.company_id.state_id.name
-            if self.company_id.city:
-                comp_adr += ', ' + self.company_id.city
-            if self.company_id.street:
-                comp_adr += ', ' + self.company_id.street
-            if self.company_id.street2:
-                comp_adr += ', ' + self.company_id.street2
-            ET.SubElement(declarbody, 'HLOCSEL').text = comp_adr
-            ET.SubElement(declarbody, 'HLOCBUY').text = self.adr_partner
-            ET.SubElement(declarbody, 'HTELSEL').text = self.company_id.phone
-            ET.SubElement(declarbody, 'HTELBUY').text = self.tel_partner
         else:   # in tax invoice
+            if self.number2 is not False:
+                ET.SubElement(declarbody, 'HFBUY').text = self.number2
+            else:
+                ET.SubElement(declarbody, 'HFBUY').set('xsi:nil', 'true')
+            if self.kod_filii is not False:
+                ET.SubElement(declarbody, 'HNUM2').text = self.kod_filii
+            else:
+                ET.SubElement(declarbody, 'HNUM2').set('xsi:nil', 'true')
             ET.SubElement(declarbody, 'HNAMEBUY').text = self.company_id.name
             ET.SubElement(declarbody, 'HNAMESEL').text = \
                 self.partner_id.parent_name or self.partner_id.name
             ET.SubElement(declarbody, 'HKBUY').text = self.company_id.vat
             ET.SubElement(declarbody, 'HKSEL').text = self.ipn_partner
-            comp_adr = ''
-            if self.company_id.zip:
-                comp_adr += self.company_id.zip
-            if self.company_id.state_id:
-                if self.company_id.state_id.name:
-                    comp_adr += ', ' + self.company_id.state_id.name
-            if self.company_id.city:
-                comp_adr += ', ' + self.company_id.city
-            if self.company_id.street:
-                comp_adr += ', ' + self.company_id.street
-            if self.company_id.street2:
-                comp_adr += ', ' + self.company_id.street2
-            ET.SubElement(declarbody, 'HLOCBUY').text = comp_adr
-            ET.SubElement(declarbody, 'HLOCSEL').text = self.adr_partner
-            ET.SubElement(declarbody, 'HTELBUY').text = self.company_id.phone
-            ET.SubElement(declarbody, 'HTELSEL').text = self.tel_partner
 
-        if self.contract_type:
-            ET.SubElement(declarbody, 'H01G1S').text = \
-                self.contract_type.name
-        else:
-            ET.SubElement(declarbody, 'H01G1S').set('xsi:nil', 'true')
-        if self.contract_date is not False:
-            contr_date = fields.Date.from_string(self.contract_date)
-            ET.SubElement(declarbody, 'H01G2D').text = \
-                contr_date.strftime('%d%m%Y')
-        else:
-            ET.SubElement(declarbody, 'H01G2D').set('xsi:nil', 'true')
-        if self.contract_numb is not False:
-            ET.SubElement(declarbody, 'H01G3S').text = self.contract_numb
-        else:
-            ET.SubElement(declarbody, 'H01G3S').set('xsi:nil', 'true')
-        if self.payment_meth:
-            ET.SubElement(declarbody, 'H02G1S').text = self.payment_meth.name
-        else:
-            ET.SubElement(declarbody, 'H02G1S').set('xsi:nil', 'true')
         # for tax lines loop
         row_num = 0
+        not_vat_base = 0
         for tl in self.taxinvoice_line_ids:
+            tax_id = tl.taxinvoice_line_tax_id
+
+            if tax_id.name.find(u"не є об’єктом ПДВ") >= 0:
+                not_vat_base += tl.price_subtotal
+                continue
+                # do not export lines with this tax
+
             row_num += 1
-            tl_date = fields.Date.from_string(tl.date_vynyk)
-            el = ET.SubElement(declarbody, 'RXXXXG2D')
-            el.text = tl_date.strftime('%d%m%Y')
-            el.set('ROWNUM', str(row_num))
 
             el = ET.SubElement(declarbody, 'RXXXXG3S')
             el.text = tl.product_id.name
@@ -781,39 +747,27 @@ class TaxInvoice(models.Model):
             el = ET.SubElement(declarbody, 'RXXXXG6')
             el.text = str(tl.price_unit)
             el.set('ROWNUM', str(row_num))
-
-            tax_id = tl.taxinvoice_line_tax_id
-            el = ET.SubElement(declarbody, 'RXXXXG7')
+            el = ET.SubElement(declarbody, 'RXXXXG008')
             if tax_id.name.find(u"ПДВ 20%") >= 0:
-                el.text = str(tl.price_subtotal)
-            else:
-                el.set('xsi:nil', 'true')
-            el.set('ROWNUM', str(row_num))
-
-            el = ET.SubElement(declarbody, 'RXXXXG109')
+                el.text = '20'
             if tax_id.name.find(u"ПДВ 7%") >= 0:
-                el.text = str(tl.price_subtotal)
-            else:
-                el.set('xsi:nil', 'true')
-            el.set('ROWNUM', str(row_num))
-
-            el8 = ET.SubElement(declarbody, 'RXXXXG8')
-            el9 = ET.SubElement(declarbody, 'RXXXXG9')
+                el.text = '7'
             if tax_id.name.find(u"ПДВ 0%") >= 0:
                 if self.htypr == '07':  # if export
-                    el9.text = str(tl.price_subtotal)
-                    el8.set('xsi:nil', 'true')
+                    el.text = '901'
                 else:
-                    el8.text = str(tl.price_subtotal)
-                    el9.set('xsi:nil', 'true')
-            else:
-                el8.set('xsi:nil', 'true')
-                el9.set('xsi:nil', 'true')
-            el8.set('ROWNUM', str(row_num))
-            el9.set('ROWNUM', str(row_num))
-
-            el = ET.SubElement(declarbody, 'RXXXXG10')
+                    el.text = '902'
             if tax_id.name.find(u"від ПДВ") >= 0:
+                el.text = '903'
+            el.set('ROWNUM', str(row_num))
+            el = ET.SubElement(declarbody, 'RXXXXG009')
+            if tl.kod_pilg:
+                el.text = tl.kod_pilg
+            else:
+                el.set('xsi:nil', 'true')
+            el.set('ROWNUM', str(row_num))
+            el = ET.SubElement(declarbody, 'RXXXXG010')
+            if tl.price_subtotal != 0:
                 el.text = str(tl.price_subtotal)
             else:
                 el.set('xsi:nil', 'true')
@@ -825,57 +779,39 @@ class TaxInvoice(models.Model):
                 found_20 = True
                 ET.SubElement(declarbody, 'R01G7').text = str(tx.base)
                 ET.SubElement(declarbody, 'R03G7').text = str(tx.amount)
-                ET.SubElement(declarbody, 'R04G7').text = \
-                    str(tx.base + tx.amount)
                 continue
             if tx.name.find(u"ПДВ 7%") >= 0 and not found_7:
                 found_7 = True
                 ET.SubElement(declarbody, 'R01G109').text = str(tx.base)
                 ET.SubElement(declarbody, 'R03G109').text = str(tx.amount)
-                ET.SubElement(declarbody, 'R04G109').text = \
-                    str(tx.base + tx.amount)
                 continue
             if tx.name.find(u"ПДВ 0%") >= 0 and not found_0:
                 found_0 = True
                 if self.htypr == '07':  # if export
                     ET.SubElement(declarbody, 'R01G9').text = str(tx.base)
-                    ET.SubElement(declarbody, 'R04G9').text = str(tx.base)
                     ET.SubElement(declarbody, 'R01G8').set('xsi:nil', 'true')
-                    ET.SubElement(declarbody, 'R04G8').set('xsi:nil', 'true')
                 else:
                     ET.SubElement(declarbody, 'R01G8').text = str(tx.base)
-                    ET.SubElement(declarbody, 'R04G8').text = str(tx.base)
                     ET.SubElement(declarbody, 'R01G9').set('xsi:nil', 'true')
-                    ET.SubElement(declarbody, 'R04G9').set('xsi:nil', 'true')
                 continue
             if tx.name.find(u"від ПДВ") >= 0 and not found_zv:
                 found_zv = True
                 ET.SubElement(declarbody, 'R01G10').text = str(tx.base)
-                ET.SubElement(declarbody, 'R04G10').text = str(tx.base)
                 ET.SubElement(declarbody, 'R03G10S').text = u"Звільнено"
                 continue
         if not found_20:
             ET.SubElement(declarbody, 'R01G7').set('xsi:nil', 'true')
             ET.SubElement(declarbody, 'R03G7').set('xsi:nil', 'true')
-            ET.SubElement(declarbody, 'R04G7').set('xsi:nil', 'true')
         if not found_7:
             ET.SubElement(declarbody, 'R01G109').set('xsi:nil', 'true')
             ET.SubElement(declarbody, 'R03G109').set('xsi:nil', 'true')
-            ET.SubElement(declarbody, 'R04G109').set('xsi:nil', 'true')
         if not found_0:
             ET.SubElement(declarbody, 'R01G8').set('xsi:nil', 'true')
-            ET.SubElement(declarbody, 'R04G8').set('xsi:nil', 'true')
             ET.SubElement(declarbody, 'R01G9').set('xsi:nil', 'true')
-            ET.SubElement(declarbody, 'R04G9').set('xsi:nil', 'true')
         if not found_zv:
             ET.SubElement(declarbody, 'R01G10').set('xsi:nil', 'true')
-            ET.SubElement(declarbody, 'R04G10').set('xsi:nil', 'true')
             ET.SubElement(declarbody, 'R03G10S').set('xsi:nil', 'true')
         # total
-        if self.amount_untaxed:
-            ET.SubElement(declarbody, 'R01G11').text = str(self.amount_untaxed)
-        else:
-            ET.SubElement(declarbody, 'R01G11').set('xsi:nil', 'true')
         if self.amount_tara > 0:
             ET.SubElement(declarbody, 'R02G11').text = str(self.amount_tara)
         else:
@@ -885,12 +821,16 @@ class TaxInvoice(models.Model):
         else:
             ET.SubElement(declarbody, 'R03G11').set('xsi:nil', 'true')
         if self.amount_total:
-            ET.SubElement(declarbody, 'R04G11').text = str(self.amount_total)
+            ET.SubElement(declarbody, 'R04G11').text = str(
+                self.amount_total - not_vat_base)
         else:
             ET.SubElement(declarbody, 'R04G11').set('xsi:nil', 'true')
         # footer
         ET.SubElement(declarbody, 'H10G1S').text = self.signer_id.name
-        ET.SubElement(declarbody, 'R003G10S').text = self.prych_zv
+        if self.prych_zv:
+            ET.SubElement(declarbody, 'R003G10S').text = self.prych_zv
+        else:
+            ET.SubElement(declarbody, 'R003G10S').set('xsi:nil', 'true')
 
         xmldata = ET.tostring(declar,
                               encoding='windows-1251',
@@ -926,7 +866,7 @@ class TaxInvoiceLine(models.Model):
                                     ondelete='cascade', index=True)
     date_vynyk = fields.Date(string=u"Дата виникнення ПЗ", index=True,
                              help=u"Дата першої події з ПДВ",
-                             copy=True, required=True)
+                             copy=True, required=False)
     product_id = fields.Many2one('product.product', string='Product',
                                  ondelete='restrict',
                                  index=True, required=True)
@@ -960,6 +900,7 @@ class TaxInvoiceLine(models.Model):
                                                        parent.company_id), \
                                                        ('name', 'like', \
                                                        u'ПДВ')]")
+    kod_pilg = fields.Char(string=u"Код пільги")
     price_subtotal = fields.Float(string=u"Сума",
                                   digits=dp.get_precision('Account'),
                                   store=True,
@@ -1057,8 +998,9 @@ class TaxInvoiceLine(models.Model):
                     if category == 'in_tax_invoice':
                         self.price_unit = product.standard_price
                     self.price_unit = self.price_unit * \
-                        currency.with_context(dict(self._context or {},
-                                                   date=self.date_vynyk)).rate
+                        currency.with_context(
+                            dict(self._context or {},
+                                 date=self.taxinvoice_id.date_vyp)).rate
 
                 if self.uom_id and self.uom_id.id != product.uom_id.id:
                     self.price_unit = \

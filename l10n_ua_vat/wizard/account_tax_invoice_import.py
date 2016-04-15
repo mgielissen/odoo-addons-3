@@ -46,7 +46,7 @@ class TaxInvoiceImport(models.TransientModel):
             raise UserError(_(u"Невірна версія формату xml"))
             return True
         c_doc_ver = declarhead.find('C_DOC_VER')
-        if c_doc_ver is None or c_doc_ver.text != '7':
+        if c_doc_ver is None or c_doc_ver.text != '8':
             raise UserError(_(u"Невірна версія формату xml"))
             return True
 
@@ -62,6 +62,18 @@ class TaxInvoiceImport(models.TransientModel):
         if hkbuy.text.find(company_id.vat) < 0:
             raise UserError(_(u"ІПН %s покупця не співпадає "
                               u"з ІПН вашої організації!" % hkbuy.text))
+
+        hfbuy = declarbody.find('HFBUY')
+        if hfbuy is None:
+            raise UserError(_(u"Невірний формат файлу"))
+            return True
+        num2txt = hfbuy.text or ''
+        my_code = company_id.kod_filii or ''
+        if my_code != num2txt:
+            raise UserError(
+             _(u"Код філії '%s' не співпадає "
+               u"з кодом філії вашої організації!" % my_code))
+            return True
         # check if partner is already in database
         hksel = declarbody.find('HKSEL')
         if hksel is None:
@@ -84,34 +96,24 @@ class TaxInvoiceImport(models.TransientModel):
         ctx['state'] = 'draft'
         date = datetime.datetime.strptime(declarbody.find('HFILL').text,
                                           '%d%m%Y').date()
-        cd = declarbody.find('H01G2D')
-        if cd is None or cd.text is None:
-            cont_date = None
-        else:
-            cont_date = \
-             fields.Date.to_string(datetime.datetime.strptime(cd.text,
-                                                              '%d%m%Y').date())
         acc_ti = self.env['account.taxinvoice']
         account = acc_ti.with_context(ctx)._default_account()
         journal = acc_ti.with_context(ctx)._default_journal()
         currency = acc_ti.with_context(ctx)._default_currency()
         tax_invoice = acc_ti.with_context(ctx).create({
             'state': 'draft',
-            'h01': True if declarbody.find('H01').text == '1' else False,
+            'h03': True if declarbody.find('H03').text == '1' else False,
             'horig1': True if declarbody.find('HORIG1').text == '1' else False,
             'htypr': declarbody.find('HTYPR').text or '00',
             'date_vyp': fields.Date.to_string(date),
             'number': declarbody.find('HNUM').text or '0',
             'number1': declarbody.find('HNUM1').text or None,
-            'number2': declarbody.find('HNUM2').text or None,
+            'number2': declarbody.find('HFBUY').text or None,
+            'kod_filii': declarbody.find('HNUM2').text or None,
             'category': 'in_tax_invoice',
             'doc_type': 'pn',
             'partner_id': partner_id.id,
             'ipn_partner': hksel.text,
-            'adr_partner': declarbody.find('HLOCSEL').text or ' ',
-            'tel_partner': declarbody.find('HTELSEL').text or None,
-            'contract_date': cont_date,
-            'contract_numb': declarbody.find('H01G3S').text or None,
             'prych_zv': declarbody.find('R003G10S').text or None,
             'currency_id': currency.id,
             'journal_id': journal.id,

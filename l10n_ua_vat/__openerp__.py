@@ -25,6 +25,7 @@
         'views/account_spr_sti_view.xml',
         'views/company_view.xml',
         'views/product_view.xml',
+        'views/partner_view.xml',
         'wizard/account_tax_invoice_export_wizard.xml',
         'wizard/account_tax_invoice_import_wizard.xml',
         'data/account.sprsti.csv',
